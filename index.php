@@ -1,4 +1,4 @@
 <?php
 $nome = "PA-E-COMMERCE";
-echo "<h1>Bem-vindo ao $nome</h1>";
+echo "<h1>Olá mundo! $nome</h1>";
 ?>
