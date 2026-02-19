@@ -1,0 +1,1 @@
+console.log("JS do e-commerce carregado");
