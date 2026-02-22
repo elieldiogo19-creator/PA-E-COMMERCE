@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: index.php');
                 exit;
             } else {
-                $erros[] = 'Login ou senha incorretos.';
+                $erros[] = 'Senha incorreta ou usuário inexistente.';
             }
         } catch (PDOException $e) {
             $erros[] = 'Erro ao tentar fazer login: ' . $e->getMessage();
