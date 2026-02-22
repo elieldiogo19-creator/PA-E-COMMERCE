@@ -1,20 +1,16 @@
-﻿# PA-E-COMMERCE
- O arquivo principal do projeto, no caso o "index.php", será o fonte do desenvolvimento e a base de apreseentação da E-COMMERCE.
+# React + Vite
 
- Responsáveis ao front-end, atenção ao editarem qualquer arquivo ".php", manterem as validações em PHP ("method, action" e "name" dos inputs).
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
- Dados a respeitar:
+Currently, two official plugins are available:
 
-    .  method="POST"
-  
-    .  action="arquivo_certo.php"
-  
-    .  name DOS INPUTS: nome, email, senha, senha2 (cadastro) & email/login, senha (login).
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
- A estilização em ".css" e as interatividades em ".js" estarão atribuidas a pasta "assets/ativos" para maior organização.
+## React Compiler
 
- Os arquivos "test/teste.php" são totalmente irrelevantes, ou seja, totalmente descartáveis.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
+## Expanding the ESLint configuration
 
-
-
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
