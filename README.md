@@ -5,15 +5,16 @@
 
  Dados a respeitar:
 
-  .  method="POST"
+    .  method="POST"
   
-  .  action="arquivo_certo.php"
+    .  action="arquivo_certo.php"
   
-  .  name DOS INPUTS: nome, email, senha, senha2 (cadastro) & email/login, senha (login).
+    .  name DOS INPUTS: nome, email, senha, senha2 (cadastro) & email/login, senha (login).
 
  A estilização em ".css" e as interatividades em ".js" estarão atribuidas a pasta "assets/ativos" para maior organização.
 
  Os arquivos "test/teste.php" são totalmente irrelevantes, ou seja, totalmente descartáveis.
+
 
 
 
