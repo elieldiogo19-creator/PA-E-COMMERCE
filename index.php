@@ -18,7 +18,7 @@
 
     <?php if (!empty($_SESSION['usuario_nome'])): ?>
         <p>Logado como: <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?></p>
-        <p><a href="logout.php">Sair</a></p>
+        <p><a href="produtos.php">Produtos</a> | <a href="logout.php">Sair</a></p>
     <?php else: ?>
         <p><a href="login.php">Entrar</a> | <a href="cadastro.php">Cadastrar</a></p>
     <?php endif; ?>
