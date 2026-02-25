@@ -69,7 +69,7 @@ if (isset($_GET['remover'])) {
 
   <?php if (empty($produtosCarrinho)): ?>
     <p>Seu carrinho está vazio.</p>
-    <p><a href="produtos.php">Ver produtos</a></p>
+    <p><a href="produtos.php">Ver produtos</a> | <a href="index.php">Página Inicial</a></p>
   <?php else: ?>
     <table border="1" cellpadding="8" cellspacing="0">
       <thead>

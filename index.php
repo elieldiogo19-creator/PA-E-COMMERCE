@@ -9,8 +9,8 @@
 </head>
 <body>
     <?php
-        $nome = "PA-E-COMMERCE";
-        echo "<h1>Bem-vindo! $nome</h1>";
+        $nome = "XAVITA";
+        echo "<h1> $nome</h1>";
     ?>
     <?php
         session_start();
@@ -18,9 +18,17 @@
 
     <?php if (!empty($_SESSION['usuario_nome'])): ?>
         <p>Logado como: <?php echo htmlspecialchars($_SESSION['usuario_nome']); ?></p>
-        <p><a href="produtos.php">Produtos</a> | <a href="logout.php">Sair</a></p>
+        <nav>
+            <a href="index.php">Home</a>
+            <a href="produtos.php">Produtos</a>
+            <a href="carrinho.php">Carrinho</a>
+            <a href="logout.php">Logout</a>
+         </nav>
     <?php else: ?>
-        <p><a href="login.php">Entrar</a> | <a href="cadastro.php">Cadastrar</a></p>
+        <nav>
+            <a href="produtos.php">Produtos</a>
+            <p><a href="login.php">Entrar</a> | <a href="cadastro.php">Cadastrar</a></p>
+         </nav>
     <?php endif; ?>
     <script src="assets/js/main.js"></script>
 </body>
