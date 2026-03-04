@@ -1,1 +1,0 @@
-fuck jose diogo
