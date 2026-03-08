@@ -3,19 +3,21 @@ session_start();
 require __DIR__ . '/config/db.php';
 
 try {
-    $stmt = $pdo->query('SELECT id, nome, descricao, preco, imagem FROM produtos ORDER BY criado_em DESC');
-    $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt = $pdo->query('SELECT id, nome, descricao, preco, imagem FROM produtos ORDER BY criado_em DESC');
+  $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    die('Erro ao buscar produtos: ' . $e->getMessage());
+  die('Erro ao buscar produtos: ' . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>Produtos</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
   <!-- HEADER simples (teu mano depois deixa bonito) -->
   <header class="header">
@@ -41,8 +43,7 @@ try {
               <img
                 src="<?php echo htmlspecialchars($produto['imagem']); ?>"
                 alt="<?php echo htmlspecialchars($produto['nome']); ?>"
-                style="max-width: 150px;"
-              >
+                style="max-width: 150px;">
             <?php endif; ?>
 
             <h3><?php echo htmlspecialchars($produto['nome']); ?></h3>
@@ -52,8 +53,8 @@ try {
             </p>
 
             <p><strong>
-               <?php echo number_format($produto['preco'], 2, ',', '.'); ?> AOA
-            </strong></p>
+                <?php echo number_format($produto['preco'], 2, ',', '.'); ?> AOA
+              </strong></p>
 
             <!-- Botão/link de carrinho (vamos implementar depois) -->
             <a href="adicionar_ao_carrinho.php?id=<?php echo $produto['id']; ?>">
@@ -65,4 +66,5 @@ try {
     <?php endif; ?>
   </main>
 </body>
+
 </html>

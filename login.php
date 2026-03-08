@@ -5,49 +5,51 @@ require __DIR__ . '/config/db.php'; // conexão ($pdo)
 $erros = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Pode ser e-mail OU nome
-    $login = trim($_POST['login'] ?? '');
-    $senha = $_POST['senha'] ?? '';
+  // Pode ser e-mail OU nome
+  $login = trim($_POST['login'] ?? '');
+  $senha = $_POST['senha'] ?? '';
 
-    if ($login === '' || $senha === '') {
-        $erros[] = 'Preencha login e senha.';
-    }
+  if ($login === '' || $senha === '') {
+    $erros[] = 'Preencha login e senha.';
+  }
 
-    if (empty($erros)) {
-        try {
-            // Procura usuário cujo email OU nome bate com o que foi digitado
-            $stmt = $pdo->prepare('
+  if (empty($erros)) {
+    try {
+      // Procura usuário cujo email OU nome bate com o que foi digitado
+      $stmt = $pdo->prepare('
                 SELECT id, nome, email, senha_hash
                 FROM usuarios
                 WHERE email = ? OR nome = ?
                 LIMIT 1
             ');
-            $stmt->execute([$login, $login]);
-            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+      $stmt->execute([$login, $login]);
+      $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($usuario && password_verify($senha, $usuario['senha_hash'])) {
-                // Guarda dados básicos na sessão
-                $_SESSION['usuario_id']   = $usuario['id'];
-                $_SESSION['usuario_nome'] = $usuario['nome'];
+      if ($usuario && password_verify($senha, $usuario['senha_hash'])) {
+        // Guarda dados básicos na sessão
+        $_SESSION['usuario_id']   = $usuario['id'];
+        $_SESSION['usuario_nome'] = $usuario['nome'];
 
-                header('Location: index.php');
-                exit;
-            } else {
-                $erros[] = 'Senha incorreta ou usuário inexistente.';
-            }
-        } catch (PDOException $e) {
-            $erros[] = 'Erro ao tentar fazer login: ' . $e->getMessage();
-        }
+        header('Location: index.php');
+        exit;
+      } else {
+        $erros[] = 'Senha incorreta ou usuário inexistente.';
+      }
+    } catch (PDOException $e) {
+      $erros[] = 'Erro ao tentar fazer login: ' . $e->getMessage();
     }
+  }
 }
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>Login</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
   <h1>Login</h1>
 
@@ -79,4 +81,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <p>Ainda não tem conta? <a href="cadastro.php">Cadastre-se</a></p>
 </body>
+
 </html>

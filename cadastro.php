@@ -5,62 +5,64 @@ $erros = [];
 $sucesso = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome   = trim($_POST['nome']   ?? '');
-    $email  = trim($_POST['email']  ?? '');
-    $senha  = $_POST['senha']  ?? '';
-    $senha2 = $_POST['senha2'] ?? '';
+  $nome   = trim($_POST['nome']   ?? '');
+  $email  = trim($_POST['email']  ?? '');
+  $senha  = $_POST['senha']  ?? '';
+  $senha2 = $_POST['senha2'] ?? '';
 
-    // Validações básicas
-    if ($nome === '' || $email === '' || $senha === '' || $senha2 === '') {
-        $erros[] = 'Preencha todos os campos.';
-    }
+  // Validações básicas
+  if ($nome === '' || $email === '' || $senha === '' || $senha2 === '') {
+    $erros[] = 'Preencha todos os campos.';
+  }
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $erros[] = 'E-mail inválido.';
-    }
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $erros[] = 'E-mail inválido.';
+  }
 
-    if ($senha !== $senha2) {
-        $erros[] = 'As senhas não conferem.';
-    }
+  if ($senha !== $senha2) {
+    $erros[] = 'As senhas não conferem.';
+  }
 
-    if (strlen($senha) < 6) {
-        $erros[] = 'A senha deve ter pelo menos 6 caracteres.';
-    }
+  if (strlen($senha) < 6) {
+    $erros[] = 'A senha deve ter pelo menos 6 caracteres.';
+  }
 
-    // Se não tem erro de validação, tenta salvar no banco
-    if (empty($erros)) {
-      try {
-          // Verificar se já existe usuário com esse e-mail OU esse nome
-          $stmt = $pdo->prepare('SELECT id FROM usuarios WHERE email = ? OR nome = ? LIMIT 1');
-          $stmt->execute([$email, $nome]);
+  // Se não tem erro de validação, tenta salvar no banco
+  if (empty($erros)) {
+    try {
+      // Verificar se já existe usuário com esse e-mail OU esse nome
+      $stmt = $pdo->prepare('SELECT id FROM usuarios WHERE email = ? OR nome = ? LIMIT 1');
+      $stmt->execute([$email, $nome]);
 
-          if ($stmt->fetch()) {
-            $erros[] = 'Já existe um usuário com esse e-mail ou nome.';
-          } else {
-            // Gerar hash da senha
-              $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+      if ($stmt->fetch()) {
+        $erros[] = 'Já existe um usuário com esse e-mail ou nome.';
+      } else {
+        // Gerar hash da senha
+        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
-            // Inserir usuário
-              $stmt = $pdo->prepare(
-                  'INSERT INTO usuarios (nome, email, senha_hash) VALUES (?, ?, ?)'
-              );
-              $stmt->execute([$nome, $email, $senhaHash]);
+        // Inserir usuário
+        $stmt = $pdo->prepare(
+          'INSERT INTO usuarios (nome, email, senha_hash) VALUES (?, ?, ?)'
+        );
+        $stmt->execute([$nome, $email, $senhaHash]);
 
-              $sucesso = 'Cadastro realizado com sucesso! Você já pode fazer login.';
-          }
-      } catch (PDOException $e) {
-          $erros[] = 'Erro ao cadastrar usuário: ' . $e->getMessage();
+        $sucesso = 'Cadastro realizado com sucesso! Você já pode fazer login.';
       }
+    } catch (PDOException $e) {
+      $erros[] = 'Erro ao cadastrar usuário: ' . $e->getMessage();
     }
   }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>Cadastro de Usuário</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
   <h1>Cadastro</h1>
 
@@ -109,4 +111,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </form>
   <p>Já tem conta? <a href="login.php">Entrar</a></p>
 </body>
+
 </html>
