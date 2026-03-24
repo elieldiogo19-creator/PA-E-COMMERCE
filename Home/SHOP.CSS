@@ -1,0 +1,286 @@
+*{margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;}
+
+    .main-header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        padding: 13px 4%;
+        background: hsl(0, 0%, 100%);
+        margin-top: 30px;
+        border-radius: 45px;
+        
+        margin: 20px 25px;
+    }
+    
+    .header-left{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 40px;
+       
+        
+    }
+    .logo{
+        color: whitesmoke;
+        font-size: 27px;
+        font-weight: bold;
+        letter-spacing: 4px
+    }
+    .logo span{
+        color: red;
+    }
+    .nav-links{
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        gap: 50px;
+
+    }
+    .nav-links a{
+        text-decoration: none;
+        color: #948b8b;
+        font-weight: 400;
+    }
+    .nav-links a:hover{
+        color:#e94f57;
+        transition: 0.2s;
+         text-decoration: underline;
+         font-weight: 400;
+    }
+
+    .header-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    
+}
+.header-icons {
+  display: flex;         
+  align-items: center;   
+  gap: 23px; 
+            
+}
+.fa-user{
+    font-size: 19px;
+    color: black;
+}
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.search-box input {
+    padding: 8px 35px 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+    width: 150px; 
+}
+.search-box input:focus {
+    width: 200px; 
+    border-color: #f42c37;
+}
+ .fa-solid{
+    position: absolute;
+    right: 12px;
+    font-size: 14px;
+    color: black
+}
+.fa-solid:hover{
+    color: #f42c37;
+}
+
+
+.item img {
+  width: 100%;
+  display: block;
+}
+
+
+.hero{
+    background-color:  #e7e2e2;
+    height: 2000px;
+    margin: 0 45px;
+    border-radius: 45px;
+}
+.content-geral{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    margin: 0  180px;
+    gap: 20px;
+
+    
+    
+    
+    
+}
+.card{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #948b8b;
+    height: 250px;
+    margin-top: 35px;
+    
+    
+    
+}
+.vlad img{
+    width: 200px;
+    filter: brightness(0) invert(1);
+
+}
+.mulato img{
+    width: 200px;
+    justify-content: center;
+margin-top: -6%;
+    width: 200px;
+    filter: brightness(0) invert(1);
+
+}
+h1{
+    font-size: 45px;
+font-weight: bold;
+color: white;
+margin-bottom: 55px;
+}
+.daniel{
+    font-weight: bold;
+    font-size: 23px;
+    color: white;
+
+}
+.arnaldo{
+    font-weight: bold;
+    font-size: 23px;
+    color: white;
+    margin-left: 24px;
+}
+.eliel{
+    font-weight: bold;
+    font-size: 23px;
+    color: white;
+    margin-top: -17%;
+    
+}
+.arnaldo{
+    margin-top: 28px;
+}
+.orange { background-color: #ec7036; }
+.gray   { background-color: #686a6b; }
+.blue   { background-color: #1395a3; }
+
+.orange:hover{
+    transform: scale(1) translateY(-5px);
+     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
+    cursor: pointer;
+    border: 2px solid #722907;;
+}
+.gray:hover{
+    transform: scale(1) translateY(-5px);
+     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
+    cursor: pointer;
+}
+.blue:hover{
+  transform: scale(1) translateY(-5px);
+     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
+    cursor: pointer;  
+}
+.produtos-grid-interno{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 20px;
+    
+    
+}
+.pc img{
+    width: 90px;
+    display: flex;
+    justify-content: center;
+    margin-left: 150px;
+}
+.iphone img{
+    width: 90px;
+     display: flex;
+    justify-content: center;
+     margin-left: 150px;
+}
+.escutadores img{
+    width: 170px;
+     display: flex;
+    justify-content: center;
+     margin-left: 130px;
+     margin-top: 0,5%;
+}
+.duroh1{
+    margin-top: 9%;
+    color: black;
+    font-size: 35px;
+    margin-left: 180px;
+    
+}
+.produtos-card-interno{
+    background-color: rgb(194, 188, 188);
+    height: 260px;
+    border-radius: 7px;
+}
+.produtos-grid-interno{
+    margin: 0 180px;
+}
+span{
+    font-weight: bold;
+    margin-left: 9px;
+}
+.press{
+    font-weight: bold;
+    color: #f42c37;
+}
+.btn-shop1{
+    background-color: #ff0000;
+    color: white;
+    padding: 11px 35px;
+    border-radius: 50px;
+    text-decoration: none;
+    margin-left: 85px;
+    margin-top: 5px;
+    
+    
+}
+.titulo{
+    font-weight: bold;
+    margin-left: 180px ;
+    margin-bottom: 39px; 
+}
+
+.btn-shop1:hover{
+     transform: scale(1.1) translateY(-5px);
+     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
+    cursor: pointer;
+}
+    .revelar {
+    opacity: 0;
+    /* Começa: 40px abaixo, menor (scale 0.8) e levemente inclinado */
+    transform: translateY(40px) scale(0.9) rotateX(-5deg);
+    
+    /* Transição suave com efeito 'elástico' (cubic-bezier) */
+    transition: opacity 0.8s ease, transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backface-visibility: hidden;
+}
+
+/* Quando o elemento entra na tela, ele volta ao normal */
+.revelar.show {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+}
+
+/* Efeito Cascata: o segundo e o terceiro demoram um pouquinho mais */
+.revelar:nth-child(2) { transition-delay: 0.2s; }
+.revelar:nth-child(3) { transition-delay: 0.4s; }
+
