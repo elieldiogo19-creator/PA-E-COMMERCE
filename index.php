@@ -2,7 +2,7 @@
 session_start();
 require __DIR__ . '/config/db.php';
 
-$nomeProjeto = 'XAVITA';
+$nomeProjeto = 'CANZALA LDA,';
 
 // Buscar produtos em destaque (últimos 8)
 try {
@@ -50,9 +50,9 @@ $qtdCarrinho  = !empty($_SESSION['carrinho'])
             <nav class="navbar">
                 <a href="index.php">Home</a>
                 <a href="produtos.php">Shop</a>
+                <a href="servicos.php">Services</a>
                 <a href="sobre.php">About</a>
                 <a href="contato.php">Blogs</a>
-                <a href="servicos.php">Services</a>
             </nav>
 
             <div class="header-right">

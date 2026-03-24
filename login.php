@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
       if ($usuario && password_verify($senha, $usuario['senha_hash'])) {
+        session_regenerate_id(true);
         // Guarda dados básicos na sessão
         $_SESSION['usuario_id']   = $usuario['id'];
         $_SESSION['usuario_nome'] = $usuario['nome'];
@@ -36,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erros[] = 'Senha incorreta ou usuário inexistente.';
       }
     } catch (PDOException $e) {
-      $erros[] = 'Erro ao tentar fazer login: ' . $e->getMessage();
+      $erros[] = 'Ocorreu um erro interno. Tente novamente.' . $e->getMessage();
     }
   }
 }
@@ -65,8 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <form method="POST" action="">
     <label>
-      E-mail ou nome:
-      <input type="text" name="login" required>
+      Username ou E-mail:
+      <input type="text" name="login" value="<?php echo htmlspecialchars($login ?? '')?>"required>
     </label>
     <br><br>
 
