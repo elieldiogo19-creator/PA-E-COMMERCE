@@ -2,7 +2,7 @@ const produtos = [
     {
         id: 1,
         nome: "Headphone Bluetooth Pro Wireless ",
-        preco: "$ 800,00",
+        preco: " 800,00 AOA",
         descricao: `**Uma experiência sonora imersiva!** Este headphone combina um design moderno com alta fidelidade de áudio.
     
 *Som Hi-Fi Estéreo: Drivers de alta qualidade que entregam graves potentes.
@@ -16,7 +16,7 @@ const produtos = [
     {
         id: 2,
   nome: "Earphone Pro Max Silence Edition – True Wireless",
-  preco: "$ 800.00",
+  preco: " 800.00 AOA",
   descricao: `Sinta a liberdade de um som sem fios com tecnologia de ponta. Este earphone foi projetado para quem busca discrição, conforto e uma qualidade de áudio cristalina em qualquer lugar.
 
 *Áudio Espacial 360: Uma experiência de som surround que coloca você no centro da música.
@@ -30,7 +30,7 @@ image:"6f09ad7bc17beab600a89e3112455b14-removebg-preview.png"
     {
         id: 3,
         nome: "Z-Pulse Intelligence Watch",
-    preco: "$700.00",
+    preco: "700.00 AOA",
     descricao: `Experimente a fusão perfeita entre alta tecnologia e design minimalista. Este smartwatch foi desenvolvido para quem não abre mão de performance.
 
 *Tela AMOLED Retina: Cores vibrantes e nitidez absoluta em qualquer condição de luz.
@@ -44,7 +44,7 @@ image:"6f09ad7bc17beab600a89e3112455b14-removebg-preview.png"
     {
         id: 4,
         nome:"MacBook Pro Max M3 Ultra",
-        preco:"$1000.00",
+        preco:"1000.00 AOA",
         descricao:`Experimente o auge da computação móvel com um design ultrafino e uma potência sem precedentes. Este laptop foi construído para criadores de conteúdo, desenvolvedores e profissionais que exigem o máximo de desempenho em qualquer lugar.
         
         *Processador Ultra-Core: Velocidade absurda para edição de vídeos em 8K e multitarefas.
@@ -58,7 +58,7 @@ image:"Laptop-Image-1-300x300-removebg-preview.png"
     {
         id: 5,
         nome:"PlayStation 5 Pro Edition",
-        preco:"$1500.00",
+        preco:"1500.00 AOA",
         descricao:`Mergulhe em uma nova era de entretenimento com gráficos de tirar o fôlego e carregamentos quase instantâneos. Este console foi desenhado para oferecer a imersão definitiva, combinando potência bruta com uma biblioteca de jogos exclusivos e inovadores.
 
         *Arquitetura RDNA 2: Gráficos em 4K nativo com tecnologia Ray Tracing para reflexos reais.
@@ -71,7 +71,7 @@ image:"d1c58a7819a6438c66e326bc6b710251-removebg-preview-removebg-preview.png"
     {
         id: 6,
         nome:"Oculus Vision Pro Quest",
-        preco:"$750.00",
+        preco:"750.00 AOA",
         descricao:`Transcenda os limites da realidade física e entre em mundos digitais com uma clareza impressionante. Este headset de realidade virtual foi projetado para oferecer total liberdade de movimento e uma imersão sensorial profunda, sem a necessidade de cabos ou computadores externos.
 
         *Resolução Ultra-HD: Painéis de alta densidade para imagens nítidas e sem efeito de grade.
@@ -84,7 +84,7 @@ image:"Oculus_Quest_2_128gb_Metaverso_Realidade_Virtual_Headset-removebg-preview
     {
         id:7,
         nome:"Sonic Boom Pulse G2",
-        preco:"$400.00",
+        preco:"400.00 AOA",
         descricao:`Leve a festa para qualquer lugar com uma explosão sonora de alta fidelidade e graves profundos. Esta caixa de som foi projetada para quem vive em movimento, combinando uma estrutura ultra resistente com um sistema de áudio que preenche qualquer ambiente, seja ao ar livre ou em espaços fechados.
 
         *Som Imersivo 360°: Drivers de alta performance que distribuem o áudio uniformemente.
@@ -97,7 +97,7 @@ image:"Oculus_Quest_2_128gb_Metaverso_Realidade_Virtual_Headset-removebg-preview
     {
         id:8,
          nome: "Headphone Bluetooth Pro Wireless ",
-        preco: "$ 800,00",
+        preco: " 800,00 AOA",
         descricao: `**Uma experiência sonora imersiva!** Este headphone combina um design moderno com alta fidelidade de áudio.
     
 *Som Hi-Fi Estéreo: Drivers de alta qualidade que entregam graves potentes.
