@@ -6,7 +6,7 @@ $sucesso = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $nome   = trim($_POST['nome']   ?? '');
-  $email  = trim($_POST['email']  ?? '');
+  $email = strtolower(trim($_POST['email'] ?? ''));
   $senha  = $_POST['senha']  ?? '';
   $senha2 = $_POST['senha2'] ?? '';
 
@@ -31,11 +31,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (empty($erros)) {
     try {
       // Verificar se já existe usuário com esse e-mail OU esse nome
-      $stmt = $pdo->prepare('SELECT id FROM usuarios WHERE email = ? OR nome = ? LIMIT 1');
-      $stmt->execute([$email, $nome]);
-
+      // verificar email
+      $stmt = $pdo->prepare('SELECT id FROM usuarios WHERE email = ? LIMIT 1');
+      $stmt->execute([$email]);
       if ($stmt->fetch()) {
-        $erros[] = 'Já existe um usuário com esse e-mail ou nome.';
+            $erros[] = 'Este e-mail já está em uso.';
+      }
+
+      // verificar nome
+      $stmt = $pdo->prepare('SELECT id FROM usuarios WHERE nome = ? LIMIT 1');
+      $stmt->execute([$nome]);
+      if  ($stmt->fetch()) {
+              $erros[] = 'Este nome de utilizador já está em uso.';
       } else {
         // Gerar hash da senha
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
@@ -47,10 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$nome, $email, $senhaHash]);
 
         $sucesso = 'Cadastro realizado com sucesso! Você já pode fazer login.';
+        header("Location: login.php?cadastro=ok"); exit;
       }
     } catch (PDOException $e) {
-      $erros[] = 'Erro ao cadastrar usuário: ' . $e->getMessage();
+      $erros[] = 'Ocorreu um erro interno. Tente novamente.' . $e->getMessage();
     }
+    
   }
 }
 ?>
@@ -85,13 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <form method="POST" action="">
     <label>
       Nome:
-      <input type="text" name="nome" required>
+      <input type="text" name="nome" value="<?php echo htmlspecialchars($nome ?? ''); ?>" required>
     </label>
     <br><br>
 
     <label>
       E-mail:
-      <input type="email" name="email" required>
+      <input type="email" name="email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
     </label>
     <br><br>
 
