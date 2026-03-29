@@ -4,7 +4,7 @@ require __DIR__ . '/config/db.php';
 
 // Se não estiver logado, obriga a logar antes de finalizar
 if (empty($_SESSION['usuario_id'])) {
-    header('Location: login.php');
+    header('Location: login.php?from=checkout');
     exit;
 }
 
@@ -101,7 +101,9 @@ if (!empty($carrinho)) {
 
       <label>
         E-mail:
-        <input type="email" name="email_cliente" required>
+        <input type="email" name="email_cliente"
+               value="<?php echo htmlspecialchars($_SESSION['usuario_email'] ?? ''); ?>"
+               required>
       </label>
       <br><br>
 

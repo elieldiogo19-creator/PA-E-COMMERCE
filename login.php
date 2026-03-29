@@ -2,6 +2,13 @@
 session_start();
 require __DIR__ . '/config/db.php'; // conexão ($pdo)
 
+$from = $_GET['from'] ?? '';
+$mensagem = '';
+
+if ($from === 'checkout') {
+    $mensagem = 'Precisa iniciar sessão para finalizar a compra.';
+}
+
 $erros = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -26,14 +33,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
       if ($usuario && password_verify($senha, $usuario['senha_hash'])) {
-        session_regenerate_id(true);
-        // Guarda dados básicos na sessão
-        $_SESSION['usuario_id']   = $usuario['id'];
-        $_SESSION['usuario_nome'] = $usuario['nome'];
+    $_SESSION['usuario_id']   = $usuario['id'];
+    $_SESSION['usuario_nome'] = $usuario['nome'];
+    $_SESSION['usuario_email'] = $usuario['email'];
 
+    if (isset($_GET['from']) && $_GET['from'] === 'checkout') {
+        header('Location: checkout.php');
+    } else {
         header('Location: index.php');
-        exit;
-      } else {
+    }
+    exit;
+} else {
         $erros[] = 'Senha incorreta ou usuário inexistente.';
       }
     } catch (PDOException $e) {
@@ -64,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   <?php endif; ?>
 
-  <form method="POST" action="">
+  <form method="POST" action="<?php echo isset($_GET['from']) ? 'login.php?from=' . urlencode($_GET['from']) : 'login.php'; ?>">
     <label>
       Username ou E-mail:
       <input type="text" name="login" value="<?php echo htmlspecialchars($login ?? '')?>"required>

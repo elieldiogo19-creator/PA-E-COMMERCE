@@ -3,14 +3,14 @@ session_start();
 require __DIR__ . '/config/db.php';
 
 if (empty($_SESSION['usuario_id'])) {
-    header('Location: login.php');
+    header('Location: login.php?from=checkout');
     exit;
 }
 
 $carrinho = $_SESSION['carrinho'] ?? [];
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($carrinho)) {
-    header('Location: carrinho.php');
+    header('Location: carrinho.php?erro=vazio');
     exit;
 }
 
@@ -31,11 +31,32 @@ if (!filter_var($emailCliente, FILTER_VALIDATE_EMAIL)) {
 
 if (!empty($erros)) {
     // Em um projeto maior, você poderia guardar os erros em sessão e voltar pro checkout
-    foreach ($erros as $e) {
-        echo "<p>$e</p>";
-    }
-    echo '<p><a href="checkout.php">Voltar</a></p>';
+    if (!empty($erros)) {
+    ?>
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <title>Erro no pedido</title>
+        <link rel="stylesheet" href="assets/css/style.css">
+    </head>
+    <body>
+        <h1>Erro ao finalizar pedido</h1>
+
+        <div class="alert alert-erro">
+            <ul>
+                <?php foreach ($erros as $e): ?>
+                    <li><?php echo htmlspecialchars($e); ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+
+        <p><a href="checkout.php">Voltar ao checkout</a></p>
+    </body>
+    </html>
+    <?php
     exit;
+}
 }
 
 // Recalcula os itens e o total a partir do carrinho (igual ao checkout)
@@ -85,15 +106,16 @@ try {
 
     // Cria o pedido
     $stmt = $pdo->prepare("
-        INSERT INTO pedidos (usuario_id, nome_cliente, email_cliente, endereco, total)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO pedidos (usuario_id, nome_cliente, email_cliente, endereco, observacoes, total)
+        VALUES (?, ?, ?, ?, ?, ?)
     ");
     $stmt->execute([
-        $_SESSION['usuario_id'],
-        $nomeCliente,
-        $emailCliente,
-        $endereco,
-        $totalGeral
+    $_SESSION['usuario_id'],
+    $nomeCliente,
+    $emailCliente,
+    $endereco,
+    $observacoes,
+    $totalGeral
     ]);
 
     $pedidoId = $pdo->lastInsertId();
