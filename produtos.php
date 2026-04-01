@@ -2,69 +2,68 @@
 session_start();
 require __DIR__ . '/config/db.php';
 
+$nomeProjeto = 'CANZALA LDA,';
+$pageTitle = 'Produtos - ' . $nomeProjeto;
+$navbarMode = 'full';
+$baseUrl = '';
+require __DIR__ . '/includes/header.php';
+require __DIR__ . '/includes/navbar.php';
+
 try {
-  $stmt = $pdo->query('SELECT id, nome, descricao, preco, imagem FROM produtos ORDER BY criado_em DESC');
-  $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $pdo->query("
+        SELECT id, nome, descricao, preco, imagem
+        FROM produtos
+        ORDER BY criado_em DESC
+    ");
+    $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-  die('Erro ao buscar produtos: ' . $e->getMessage());
+    $produtos = [];
 }
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
 
-<head>
-  <meta charset="UTF-8">
-  <title>Produtos</title>
-  <link rel="stylesheet" href="assets/css/style.css">
-</head>
+<main>
+    <section class="section">
+        <h1>Shop / Produtos</h1>
+        <p>Explore todos os produtos disponíveis na nossa loja.</p>
 
-<body>
-  <!-- HEADER simples (teu mano depois deixa bonito) -->
-  <header class="header">
-    <h1>Produtos</h1>
-    <nav>
-      <a href="index.php">Home</a>
-      <a href="produtos.php">Produtos</a>
-      <a href="carrinho.php">Carrinho</a>
-      <a href="login.php">Login</a>
-    </nav>
-  </header>
+        <?php if (empty($produtos)): ?>
+            <p>Nenhum produto cadastrado.</p>
+        <?php else: ?>
+            <div class="products-grid">
+                <?php foreach ($produtos as $produto): ?>
+                    <article class="product-card">
+                        <?php if (!empty($produto['imagem'])): ?>
+                            <img
+                                src="<?php echo htmlspecialchars($produto['imagem']); ?>"
+                                alt="<?php echo htmlspecialchars($produto['nome']); ?>"
+                                class="product-image"
+                            >
+                        <?php endif; ?>
 
-  <main>
-    <h2>Lista de produtos</h2>
+                        <h3><?php echo htmlspecialchars($produto['nome']); ?></h3>
 
-    <?php if (empty($produtos)): ?>
-      <p>Nenhum produto cadastrado.</p>
-    <?php else: ?>
-      <div class="lista-produtos">
-        <?php foreach ($produtos as $produto): ?>
-          <article class="produto">
-            <?php if (!empty($produto['imagem'])): ?>
-              <img
-                src="<?php echo htmlspecialchars($produto['imagem']); ?>"
-                alt="<?php echo htmlspecialchars($produto['nome']); ?>"
-                style="max-width: 150px;">
-            <?php endif; ?>
+                        <p class="product-desc">
+                            <?php echo nl2br(htmlspecialchars($produto['descricao'])); ?>
+                        </p>
 
-            <h3><?php echo htmlspecialchars($produto['nome']); ?></h3>
+                        <p class="product-price">
+                            <?php echo number_format($produto['preco'], 2, ',', '.'); ?> AOA
+                        </p>
 
-            <p>
-              <?php echo nl2br(htmlspecialchars($produto['descricao'])); ?>
-            </p>
+                        <div class="product-actions">
+                            <a href="pages/detalhes.php?id=<?php echo (int) $produto['id']; ?>" class="btn">
+                                Saber mais
+                            </a>
 
-            <p><strong>
-                <?php echo number_format($produto['preco'], 2, ',', '.'); ?> AOA
-              </strong></p>
+                            <a href="actions/adicionar_ao_carrinho.php?id=<?php echo (int) $produto['id']; ?>" class="btn btn-primary">
+                                Adicionar ao carrinho
+                            </a>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </section>
+</main>
 
-            <!-- Botão/link de carrinho (vamos implementar depois) -->
-            <a href="adicionar_ao_carrinho.php?id=<?php echo $produto['id']; ?>">
-              Adicionar ao carrinho
-            </a>
-          </article>
-        <?php endforeach; ?>
-      </div>
-    <?php endif; ?>
-  </main>
-</body>
-
-</html>
+<?php require __DIR__ . '/includes/footer.php'; ?>

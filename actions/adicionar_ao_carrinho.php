@@ -1,23 +1,23 @@
 <?php
 session_start();
-require __DIR__ . '/config/db.php';
+require __DIR__ . '/../config/db.php';
 
-// Pega o id do produto da URL: adicionar_ao_carrinho.php?id=123
+// Pega o id do produto da URL
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
+// Se o ID for inválido, volta para produtos
 if ($id <= 0) {
-    header('Location: produtos.php');
+    header('Location: ../produtos.php');
     exit;
 }
 
-// Opcional: verificar se o produto existe mesmo no banco
+// Verifica se o produto existe no banco
 $stmt = $pdo->prepare('SELECT id FROM produtos WHERE id = ?');
 $stmt->execute([$id]);
 $produto = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$produto) {
-    // Produto não existe
-    header('Location: produtos.php');
+    header('Location: ../produtos.php');
     exit;
 }
 
@@ -33,6 +33,6 @@ if (isset($_SESSION['carrinho'][$id])) {
     $_SESSION['carrinho'][$id] = 1;
 }
 
-// Depois de adicionar, redireciona para o carrinho ou para a página anterior
-header('Location: carrinho.php');
+// Depois de adicionar, redireciona para o carrinho
+header('Location: ../pages/carrinho.php');
 exit;

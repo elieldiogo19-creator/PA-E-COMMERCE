@@ -1,0 +1,116 @@
+body {
+    background-color: #f2ede9; 
+}
+.container-producto{
+    display: grid;
+     grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin-left: 190px;
+    
+    
+}
+.card{
+    background-color: #aaa6a2;
+    border-radius: 15px;
+    padding: 30px 22px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 1%; 
+}
+.card:hover{
+     border: 2px solid red;
+
+}
+
+#foto-dinamica{
+     width: 100%;           
+    max-width: 250px;      
+    height: auto;          
+    object-fit: contain;   
+    display: block;
+    margin: 0 auto;
+    
+}
+p{
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 1.6; 
+    color: black;
+    margin-top: 4px;
+    
+}
+h1{
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.5px
+}
+.preco{
+    font-size: 20px;
+    font-weight: bolder;
+    color: rgb(226, 40, 40);
+    margin-top: -15px;
+}
+.bloco-info{
+    margin-left: 45px;
+}
+strong{
+     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    
+}
+.click{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+   gap: 10px; 
+   margin-top: 4%;
+   
+}
+
+.btn-carrinho{
+    padding: 12px 35px;
+    border-radius: 30px;
+    width: 600px;
+    font-size: 17px;
+    color: white;
+     background-color: #28aadc; 
+      font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 1.6; 
+    border: none;
+    
+}
+.btn-comprar{
+     padding: 12px 35px;
+    border-radius: 30px;
+    width: 600px;
+    font-weight: 600;
+    font-size: 18px;
+    color: white;
+    letter-spacing: 1px;
+       background-color: rgba(230, 0, 0, 0.85);  
+       border: none;             
+    
+}
+.linha-separadora{
+    border: 0;
+    border-top: 2px solid #d1d1d1;
+    margin: 10px 0; 
+    width: 100%;
+}
+
+
+.btn-comprar:hover{
+    transform: scale(1) translateY(-5px);
+    cursor: pointer;
+}
+.btn-carrinho:hover{
+     transform: scale(1) translateY(-5px);
+    cursor: pointer;
+}
