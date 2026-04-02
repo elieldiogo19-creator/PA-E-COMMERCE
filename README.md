@@ -1,1 +1,1 @@
-txtqua
+txt
