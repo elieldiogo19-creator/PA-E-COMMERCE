@@ -8,14 +8,14 @@ $baseUrl = '../';
 require __DIR__ . '/../includes/header.php';
 require __DIR__ . '/../includes/navbar.php';
 
-// Limpar carrinho inteiro
+// clean cart
 if (isset($_GET['limpar'])) {
     unset($_SESSION['carrinho']);
     header('Location: carrinho.php');
     exit;
 }
 
-// Remover item
+// item remove
 if (isset($_GET['remover'])) {
     $idRemover = (int) $_GET['remover'];
 
