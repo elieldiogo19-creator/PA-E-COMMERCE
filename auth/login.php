@@ -2,7 +2,7 @@
 session_start();
 require __DIR__ . '/../config/db.php';
 
-$nomeProjeto = 'CANZALA LDA';
+$nomeProjeto = 'CANZALA LDA,';
 $navbarMode = 'simple';
 $baseUrl = '../';
 $pageTitle = 'Login - ' . $nomeProjeto;
@@ -11,7 +11,7 @@ $erros = [];
 $mensagem = '';
 $from = $_GET['from'] ?? '';
 
-// Mensagem se veio do checkout
+// Message if U came of checkout
 if ($from === 'checkout') {
     $mensagem = 'Precisa iniciar sessão para finalizar a compra.';
 }

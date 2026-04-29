@@ -2,7 +2,7 @@
 session_start();
 require __DIR__ . '/../config/db.php';
 
-$nomeProjeto = 'CANZALA LDA';
+$nomeProjeto = 'CANZALA LDA,';
 $navbarMode = 'simple';
 $baseUrl = '../';
 
@@ -164,7 +164,7 @@ require __DIR__ . '/../includes/navbar.php';
 
         <p><strong>Número do pedido:</strong> #<?php echo htmlspecialchars($pedidoId); ?></p>
 
-        <p><strong>Total:</strong> <?php echo number_format($totalGeral, 2, ',', '.'); ?> AOA</p>
+        <p><strong>Total:</strong> <?php echo number_format($totalGeral, 2, ',', '.'); ?> Kz</p>
 
         <p><a href="/PA-E-COMMERCE/produtos.php">Voltar para a loja</a></p>
     </section>

@@ -23,7 +23,7 @@ try {
 
 <main>
     <section class="section">
-        <h1>Shop / Produtos</h1>
+        <h1>Shop / Loja</h1>
         <p>Explore todos os produtos disponíveis na nossa loja.</p>
 
         <?php if (empty($produtos)): ?>
@@ -43,11 +43,11 @@ try {
                         <h3><?php echo htmlspecialchars($produto['nome']); ?></h3>
 
                         <p class="product-desc">
-                            <?php echo nl2br(htmlspecialchars($produto['descricao'])); ?>
+                            <?php echo nl2br(htmlspecialchars(mb_strimwidth($produto['descricao'], 0, 120, '...'))); ?>
                         </p>
 
                         <p class="product-price">
-                            <?php echo number_format($produto['preco'], 2, ',', '.'); ?> AOA
+                            <?php echo number_format($produto['preco'], 2, ',', '.'); ?> Kz
                         </p>
 
                         <div class="product-actions">

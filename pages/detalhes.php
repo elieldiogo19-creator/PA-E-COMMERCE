@@ -6,14 +6,14 @@ $nomeProjeto = 'CANZALA LDA';
 $navbarMode = 'full';
 $baseUrl = '../';
 
-// Receber ID
+// Get ID
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 if ($id <= 0) {
     die('Produto inválido.');
 }
 
-// Buscar produto
+// Search Prod
 try {
     $stmt = $pdo->prepare("
         SELECT id, nome, descricao, preco, imagem
@@ -31,7 +31,7 @@ try {
     die('Erro ao carregar o produto.');
 }
 
-// Definir título só depois de já ter o produto
+// auto Prod title function
 $pageTitle = $produto['nome'] . ' - ' . $nomeProjeto;
 
 require __DIR__ . '/../includes/header.php';
@@ -63,7 +63,7 @@ require __DIR__ . '/../includes/navbar.php';
                 </div>
 
                 <p class="product-price">
-                    <?php echo number_format($produto['preco'], 2, ',', '.'); ?> AOA
+                    <?php echo number_format($produto['preco'], 2, ',', '.'); ?> Kz
                 </p>
 
 

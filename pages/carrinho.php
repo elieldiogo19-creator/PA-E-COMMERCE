@@ -27,7 +27,7 @@ if (isset($_GET['remover'])) {
     exit;
 }
 
-// Aumentar quantidade
+// item add quantity
 if (isset($_GET['aumentar'])) {
     $idAumentar = (int) $_GET['aumentar'];
 
@@ -39,7 +39,7 @@ if (isset($_GET['aumentar'])) {
     exit;
 }
 
-// Diminuir quantidade
+// item down quantity
 if (isset($_GET['diminuir'])) {
     $idDiminuir = (int) $_GET['diminuir'];
 
@@ -55,7 +55,7 @@ if (isset($_GET['diminuir'])) {
     exit;
 }
 
-// Processar carrinho
+// Cart process
 $carrinho = $_SESSION['carrinho'] ?? [];
 
 if (empty($carrinho)) {
@@ -134,13 +134,13 @@ if (empty($carrinho)) {
                     <?php foreach ($produtosCarrinho as $item): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($item['nome']); ?></td>
-                            <td><?php echo number_format($item['preco'], 2, ',', '.'); ?> AOA</td>
+                            <td><?php echo number_format($item['preco'], 2, ',', '.'); ?> Kz</td>
                             <td>
                                 <a href="carrinho.php?diminuir=<?php echo (int) $item['id']; ?>">➖</a>
                                 <?php echo (int) $item['quantidade']; ?>
                                 <a href="carrinho.php?aumentar=<?php echo (int) $item['id']; ?>">➕</a>
                             </td>
-                            <td><?php echo number_format($item['subtotal'], 2, ',', '.'); ?> AOA</td>
+                            <td><?php echo number_format($item['subtotal'], 2, ',', '.'); ?> Kz</td>
                             <td>
                                 <a href="carrinho.php?remover=<?php echo (int) $item['id']; ?>">🗑️ Remover</a>
                             </td>
@@ -149,7 +149,7 @@ if (empty($carrinho)) {
                 </tbody>
             </table>
 
-            <h2>Total: <?php echo number_format($totalGeral, 2, ',', '.'); ?> AOA</h2>
+            <h2>Total: <?php echo number_format($totalGeral, 2, ',', '.'); ?> Kz</h2>
 
             <p>
                 <a href="carrinho.php?limpar=1"

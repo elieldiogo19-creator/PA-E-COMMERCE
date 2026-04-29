@@ -9,7 +9,7 @@ $baseUrl = '';
 require __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/navbar.php';
 
-// Buscar produtos em destaque
+// Pull brand new prods
 try {
     $stmt = $pdo->query("
         SELECT id, nome, descricao, preco, imagem
@@ -30,7 +30,7 @@ try {
         <p>Plataforma de e-commerce para compra de produtos e solicitação de serviços.</p>
     </section>
 
-    <!-- PRODUTOS EM DESTAQUE -->
+    <!-- PROMO PRODS -->
     <section class="section">
         <h2>Produtos em destaque</h2>
 
@@ -51,7 +51,7 @@ try {
                         <h3><?php echo htmlspecialchars($produto['nome']); ?></h3>
 
                         <p class="product-price">
-                            <?php echo number_format($produto['preco'], 2, ',', '.'); ?> AOA
+                            <?php echo number_format($produto['preco'], 2, ',', '.'); ?> Kz
                         </p>
 
                         <div class="product-actions">

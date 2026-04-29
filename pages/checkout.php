@@ -7,13 +7,13 @@ $navbarMode = 'simple';
 $baseUrl = '../';
 $pageTitle = 'Checkout - ' . $nomeProjeto;
 
-// Se não estiver logado, redireciona para login
+// Redirect to Login if not Log
 if (empty($_SESSION['usuario_id'])) {
     header('Location: /PA-E-COMMERCE/auth/login.php?from=checkout');
     exit;
 }
 
-// Monta os dados do carrinho
+// Build cart data
 $carrinho = $_SESSION['carrinho'] ?? [];
 
 $produtosCarrinho = [];
@@ -83,15 +83,15 @@ require __DIR__ . '/../includes/navbar.php';
                     <?php foreach ($produtosCarrinho as $item): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($item['nome']); ?></td>
-                            <td><?php echo number_format($item['preco'], 2, ',', '.'); ?> AOA</td>
+                            <td><?php echo number_format($item['preco'], 2, ',', '.'); ?> Kz</td>
                             <td><?php echo (int) $item['quantidade']; ?></td>
-                            <td><?php echo number_format($item['subtotal'], 2, ',', '.'); ?> AOA</td>
+                            <td><?php echo number_format($item['subtotal'], 2, ',', '.'); ?> Kz</td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
 
-            <h2>Total: <?php echo number_format($totalGeral, 2, ',', '.'); ?> AOA</h2>
+            <h2>Total: <?php echo number_format($totalGeral, 2, ',', '.'); ?> Kz</h2>
 
             <h2>Dados do cliente</h2>
 

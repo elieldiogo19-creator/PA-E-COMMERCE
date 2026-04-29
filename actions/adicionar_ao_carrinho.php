@@ -2,10 +2,10 @@
 session_start();
 require __DIR__ . '/../config/db.php';
 
-// Pega o id do produto da URL
+// Get Prod ID from URL
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
-// Se o ID for inválido, volta para produtos
+// If invalid ID, back to produtos.php
 if ($id <= 0) {
     header('Location: ../produtos.php');
     exit;

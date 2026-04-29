@@ -14,14 +14,14 @@ $qtdCarrinho = !empty($_SESSION['carrinho']) ? array_sum($_SESSION['carrinho']) 
 <header class="site-header">
     <div class="header-inner">
 
-        <!-- Logo / Nome do projeto -->
+        <!-- Logo  -->
         <div class="header-left">
             <a href="<?php echo $baseUrl; ?>index.php" class="logo">
                 <span><?php echo htmlspecialchars($nomeProjeto); ?></span>
             </a>
         </div>
 
-        <!-- Navegação principal (só aparece no modo full) -->
+        <!-- FULL MODE NAVBAR -->
         <?php if ($navbarMode === 'full'): ?>
         <nav class="navbar">
             <a href="<?php echo $baseUrl; ?>index.php">Home</a>
@@ -35,7 +35,7 @@ $qtdCarrinho = !empty($_SESSION['carrinho']) ? array_sum($_SESSION['carrinho']) 
         <!-- Ações do lado direito -->
         <div class="header-right">
 
-            <!-- Busca (só aparece no modo full) -->
+            <!-- Search Bar (só aparece no modo full) -->
             <?php if ($navbarMode === 'full'): ?>
             <form class="search-box" method="GET" action="<?php echo $baseUrl; ?>produtos.php">
                 <input type="text" name="q" placeholder="Pesquisar produtos...">
@@ -43,7 +43,7 @@ $qtdCarrinho = !empty($_SESSION['carrinho']) ? array_sum($_SESSION['carrinho']) 
             </form>
             <?php endif; ?>
 
-            <!-- Carrinho (só aparece no modo full) -->
+            <!-- Cart (só aparece no modo full) -->
             <?php if ($navbarMode === 'full'): ?>
             <a href="<?php echo $baseUrl; ?>pages/carrinho.php" class="icon-button" title="Carrinho">
                 🛒
@@ -53,7 +53,7 @@ $qtdCarrinho = !empty($_SESSION['carrinho']) ? array_sum($_SESSION['carrinho']) 
             </a>
             <?php endif; ?>
 
-            <!-- Utilizador (só aparece no modo full) -->
+            <!-- User (só aparece no modo full) -->
             <?php if ($navbarMode === 'full'): ?>
                 <?php if ($usuarioNome): ?>
                     <span class="user-name">
