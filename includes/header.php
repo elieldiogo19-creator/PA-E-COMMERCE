@@ -1,6 +1,6 @@
 <?php
 $baseUrl = $baseUrl ?? '';
-$nomeProjeto = $nomeProjeto ?? 'CANZALA LDA,';
+$nomeProjeto = $nomeProjeto ?? 'CANZALA, LDA.';
 $pageTitle = $pageTitle ?? $nomeProjeto;
 ?>
 <!DOCTYPE html>

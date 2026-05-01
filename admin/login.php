@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . '/../config/db.php';
 
-$nomeProjeto = 'CANZALA LDA,';
+$nomeProjeto = 'CANZALA, LDA.';
 $pageTitle = 'Login Admin - ' . $nomeProjeto;
 $baseUrl = '../';
 

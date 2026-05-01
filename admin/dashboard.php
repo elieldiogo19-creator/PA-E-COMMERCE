@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/auth.php';
 
-$nomeProjeto = 'CANZALA LDA';
+$nomeProjeto = 'CANZALA, LDA.';
 $pageTitle = 'Dashboard Admin - ' . $nomeProjeto;
 $baseUrl = '../';
 

@@ -8,7 +8,7 @@ if (empty($_SESSION['admin_id'])) {
 
 require_once __DIR__ . '/../../config/db.php';
 
-$nomeProjeto = 'CANZALA LDA';
+$nomeProjeto = 'CANZALA, LDA.';
 $pageTitle = 'Pedidos - ' . $nomeProjeto;
 $baseUrl = '../../';
 

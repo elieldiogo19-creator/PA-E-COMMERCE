@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $baseUrl = $baseUrl ?? '';
-$nomeProjeto = $nomeProjeto ?? 'CANZALA LDA,';
+$nomeProjeto = $nomeProjeto ?? 'CANZALA, LDA.';
 $navbarMode = $navbarMode ?? 'full'; // padrão é completo
 
 $usuarioNome = $_SESSION['usuario_nome'] ?? null;

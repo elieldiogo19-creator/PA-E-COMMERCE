@@ -2,7 +2,7 @@
 session_start();
 require __DIR__ . '/../config/db.php';
 
-$nomeProjeto = 'CANZALA LDA';
+$nomeProjeto = 'CANZALA, LDA.';
 $navbarMode = 'full';
 $baseUrl = '../';
 
