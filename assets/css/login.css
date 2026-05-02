@@ -24,6 +24,16 @@ body {
   background: #101010;
 }
 
+.logo {
+  display: block;
+  width: 200px;           /* aumentei de 200px para 260px */
+  height: auto;           /* mantém proporção */
+  max-width: 90%;         /* não estoura o card em telas pequenas */
+  margin: 10px auto 5px auto;  /* espaço em cima e embaixo */
+  object-fit: contain;
+  filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0,0,0,0.3)); /* brilho e sombra suave */
+}
+
 canvas {
   position: absolute;
   z-index: 100;
@@ -134,7 +144,7 @@ form > button[type="submit"] {
   color: #f9f9f9;
   font-weight: 500;
   border: 0;
-  background: #564ec0;
+  background: #f0a927d0;
   font-size: 17px;
 }
 
