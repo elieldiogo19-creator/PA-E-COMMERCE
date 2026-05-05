@@ -2,9 +2,13 @@
 session_start();
 require __DIR__ . '/../config/db.php';
 
-$nomeProjeto = 'CANZALA, LDA.';
-$navbarMode = 'simple';
-$baseUrl = '../';
+// Se já estiver logado, vai para home
+if (!empty($_SESSION['usuario_id'])) {
+    header('Location: ../index.php');
+    exit;
+}
+
+$nomeProjeto = 'CANZALA LDA,';
 $pageTitle = 'Cadastro - ' . $nomeProjeto;
 
 $erros = [];
@@ -16,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $senha  = $_POST['senha'] ?? '';
     $senha2 = $_POST['senha2'] ?? '';
 
+    // Validações
     if ($nome === '' || $email === '' || $senha === '' || $senha2 === '') {
         $erros[] = 'Preencha todos os campos.';
     }
@@ -34,11 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($erros)) {
         try {
+            // Verifica se email já existe
             $stmt = $pdo->prepare('SELECT id FROM usuarios WHERE email = ? LIMIT 1');
             $stmt->execute([$email]);
 
             if ($stmt->fetch()) {
-                $erros[] = 'Este e-mail já está em uso.';
+                $erros[] = 'Este e-mail já está cadastrado.';
             } else {
                 $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
@@ -48,68 +54,122 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ");
                 $stmt->execute([$nome, $email, $senhaHash]);
 
-                $sucesso = 'Cadastro realizado com sucesso! Já pode iniciar sessão.';
+                $sucesso = 'Cadastro realizado com sucesso! Redirecionando para login...';
+                
+                // Redireciona automaticamente após 4 segundos (opcional)
+                header('Refresh: 4; URL=login.php');
             }
         } catch (PDOException $e) {
-            $erros[] = 'Erro ao cadastrar utilizador.';
+            $erros[] = 'Erro ao cadastrar utilizador. Tente novamente.';
         }
     }
 }
-
-require __DIR__ . '/../includes/header.php';
-require __DIR__ . '/../includes/navbar.php';
 ?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><?php echo htmlspecialchars($pageTitle); ?></title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+    
+    <!-- CSS específico do cadastro -->
+    <link rel="stylesheet" href="../assets/css/cadastro.css" />
+</head>
+<body>
+    <div class="card">
+        <div class="hero">
+            <div class="bg"></div>
+        </div>
+        
+        <form method="POST" action="cadastro.php" novalidate>
+            <img src="../assets/img/logo-canzala.png" class="logo" alt="Canzala" />
+            
+            <h3>Criar conta</h3>
 
-<main>
-    <section class="section">
-        <h1>Cadastro</h1>
+            <!-- Mensagens de erro/sucesso -->
+            <?php if (!empty($erros)): ?>
+                <div class="alert alert-erro">
+                    <?php if (count($erros) === 1): ?>
+                        <?php echo htmlspecialchars($erros[0]); ?>
+                    <?php else: ?>
+                        <ul>
+                            <?php foreach ($erros as $erro): ?>
+                                <li><?php echo htmlspecialchars($erro); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
 
-        <?php if (!empty($erros)): ?>
-            <div class="alert alert-erro">
-                <ul>
-                    <?php foreach ($erros as $erro): ?>
-                        <li><?php echo htmlspecialchars($erro); ?></li>
-                    <?php endforeach; ?>
-                </ul>
+            <?php if ($sucesso): ?>
+                <div class="alert alert-sucesso">
+                    <?php echo htmlspecialchars($sucesso); ?>
+                </div>
+            <?php endif; ?>
+
+            <!-- Campos do formulário -->
+            <div class="form-group">
+                <input 
+                    type="text" 
+                    name="nome" 
+                    placeholder="Nome completo" 
+                    value="<?php echo htmlspecialchars($_POST['nome'] ?? ''); ?>" 
+                    required 
+                    autocomplete="name"
+                />
             </div>
-        <?php endif; ?>
 
-        <?php if ($sucesso): ?>
-            <div class="alert alert-sucesso">
-                <?php echo htmlspecialchars($sucesso); ?>
+            <div class="form-group">
+                <input 
+                    type="email" 
+                    name="email" 
+                    placeholder="E-mail" 
+                    value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" 
+                    required 
+                    autocomplete="email"
+                />
             </div>
-        <?php endif; ?>
 
-        <form method="POST" action="cadastro.php">
-            <label>
-                Nome:
-                <input type="text" name="nome" value="<?php echo htmlspecialchars($_POST['nome'] ?? ''); ?>" required>
-            </label>
-            <br><br>
+            <div class="form-group">
+                <input 
+                    type="password" 
+                    name="senha" 
+                    placeholder="Senha (mín. 6 caracteres)" 
+                    required 
+                    autocomplete="new-password"
+                    minlength="6"
+                />
+            </div>
 
-            <label>
-                E-mail:
-                <input type="email" name="email" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required>
-            </label>
-            <br><br>
-
-            <label>
-                Senha:
-                <input type="password" name="senha" required>
-            </label>
-            <br><br>
-
-            <label>
-                Confirmar senha:
-                <input type="password" name="senha2" required>
-            </label>
-            <br><br>
+            <div class="form-group">
+                <input 
+                    type="password" 
+                    name="senha2" 
+                    placeholder="Confirmar senha" 
+                    required 
+                    autocomplete="new-password"
+                />
+            </div>
 
             <button type="submit">Cadastrar</button>
+            
+            <div class="login-link">
+                Já tem conta? <a href="login.php">Entrar</a>
+            </div>
         </form>
+    </div>
 
-        <p>Já tem conta? <a href="login.php">Entrar</a></p>
-    </section>
-</main>
-
-<?php require __DIR__ . '/../includes/footer.php'; ?>
+    <!-- Opcional: JS para validação visual antes de enviar -->
+    <script src="../assets/js/cadastro.js"></script>
+        <!-- Three.js para o efeito de background -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="../assets/js/cadastro.js"></script>
+</body>
+</body>
+</html>
