@@ -54,10 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ");
                 $stmt->execute([$nome, $email, $senhaHash]);
 
-                $sucesso = 'Cadastro realizado com sucesso! Redirecionando para login...';
+                $sucesso = 'Cadastro realizado com sucesso! Você será redirecionado automaticamente em breve...';
                 
                 // Redireciona automaticamente após 4 segundos (opcional)
-                header('Refresh: 4; URL=login.php');
+                header('Refresh: 4; URL=index.php');
             }
         } catch (PDOException $e) {
             $erros[] = 'Erro ao cadastrar utilizador. Tente novamente.';
