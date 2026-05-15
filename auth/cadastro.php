@@ -2,7 +2,6 @@
 session_start();
 require __DIR__ . '/../config/db.php';
 
-// Se já estiver logado, vai para home
 if (!empty($_SESSION['usuario_id'])) {
     header('Location: ../index.php');
     exit;
@@ -20,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $senha  = $_POST['senha'] ?? '';
     $senha2 = $_POST['senha2'] ?? '';
 
-    // Validações
     if ($nome === '' || $email === '' || $senha === '' || $senha2 === '') {
         $erros[] = 'Preencha todos os campos.';
     }
@@ -39,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($erros)) {
         try {
-            // Verifica se email já existe
             $stmt = $pdo->prepare('SELECT id FROM usuarios WHERE email = ? LIMIT 1');
             $stmt->execute([$email]);
 
@@ -47,20 +44,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $erros[] = 'Este e-mail já está cadastrado.';
             } else {
                 $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
-
-                $stmt = $pdo->prepare("
-                    INSERT INTO usuarios (nome, email, senha_hash)
-                    VALUES (?, ?, ?)
-                ");
+                $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha_hash) VALUES (?, ?, ?)");
                 $stmt->execute([$nome, $email, $senhaHash]);
 
-                $sucesso = 'Cadastro realizado com sucesso! Você será redirecionado automaticamente em breve...';
-                
-                // Redireciona automaticamente após 4 segundos (opcional)
-                header('Refresh: 4; URL=index.php');
+                $sucesso = 'Cadastro realizado! Redirecionando...';
+                header('Refresh: 2; URL=login.php');
             }
         } catch (PDOException $e) {
-            $erros[] = 'Erro ao cadastrar utilizador. Tente novamente.';
+            $erros[] = 'Erro ao cadastrar. Tente novamente.';
         }
     }
 }
@@ -73,12 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
     
-    <!-- CSS específico do cadastro -->
     <link rel="stylesheet" href="../assets/css/cadastro.css" />
 </head>
 <body>
@@ -87,89 +76,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="bg"></div>
         </div>
         
-        <form method="POST" action="cadastro.php" novalidate>
+        <form method="POST" action="cadastro.php">
             <img src="../assets/img/logo-canzala.png" class="logo" alt="Canzala" />
             
             <h3>Criar conta</h3>
 
-            <!-- Mensagens de erro/sucesso -->
             <?php if (!empty($erros)): ?>
-                <div class="alert alert-erro">
-                    <?php if (count($erros) === 1): ?>
-                        <?php echo htmlspecialchars($erros[0]); ?>
-                    <?php else: ?>
-                        <ul>
-                            <?php foreach ($erros as $erro): ?>
-                                <li><?php echo htmlspecialchars($erro); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php endif; ?>
+                <div style="background: rgba(255, 0, 0, 0.1); border: 1px solid #ff4444; color: #ff6666; padding: 12px; border-radius: 10px; font-size: 14px; text-align: center;">
+                    <?php foreach ($erros as $erro): ?>
+                        <div><?php echo htmlspecialchars($erro); ?></div>
+                    <?php endforeach; ?>
                 </div>
             <?php endif; ?>
 
             <?php if ($sucesso): ?>
-                <div class="alert alert-sucesso">
+                <div style="background: rgba(0, 255, 0, 0.1); border: 1px solid #00ff00; color: #66ff66; padding: 12px; border-radius: 10px; font-size: 14px; text-align: center;">
                     <?php echo htmlspecialchars($sucesso); ?>
                 </div>
             <?php endif; ?>
 
-            <!-- Campos do formulário -->
-            <div class="form-group">
-                <input 
-                    type="text" 
-                    name="nome" 
-                    placeholder="Nome completo" 
-                    value="<?php echo htmlspecialchars($_POST['nome'] ?? ''); ?>" 
-                    required 
-                    autocomplete="name"
-                />
-            </div>
-
-            <div class="form-group">
-                <input 
-                    type="email" 
-                    name="email" 
-                    placeholder="E-mail" 
-                    value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" 
-                    required 
-                    autocomplete="email"
-                />
-            </div>
-
-            <div class="form-group">
-                <input 
-                    type="password" 
-                    name="senha" 
-                    placeholder="Senha (mín. 6 caracteres)" 
-                    required 
-                    autocomplete="new-password"
-                    minlength="6"
-                />
-            </div>
-
-            <div class="form-group">
-                <input 
-                    type="password" 
-                    name="senha2" 
-                    placeholder="Confirmar senha" 
-                    required 
-                    autocomplete="new-password"
-                />
-            </div>
+            <input type="text" name="nome" placeholder="Nome completo" value="<?php echo htmlspecialchars($_POST['nome'] ?? ''); ?>" required autocomplete="name" />
+            
+            <input type="email" name="email" placeholder="E-mail" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required autocomplete="email" />
+            
+            <input type="password" name="senha" placeholder="Senha (mín. 6 caracteres)" required autocomplete="new-password" minlength="6" />
+            
+            <input type="password" name="senha2" placeholder="Confirmar senha" required autocomplete="new-password" />
 
             <button type="submit">Cadastrar</button>
-            
-            <div class="login-link">
-                Já tem conta? <a href="login.php">Entrar</a>
-            </div>
+
+            <p style="text-align: center; margin-top: 16px; font-size: 14px;">
+                Já tem conta? <a href="login.php" style="color: #f0a927; text-decoration: none;">Entrar</a>
+            </p>
         </form>
     </div>
 
-    <!-- Opcional: JS para validação visual antes de enviar -->
-    <script src="../assets/js/cadastro.js"></script>
-        <!-- Three.js para o efeito de background -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
     <script src="../assets/js/cadastro.js"></script>
-</body>
 </body>
 </html>

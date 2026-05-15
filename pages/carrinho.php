@@ -1,21 +1,28 @@
 <?php
 session_start();
-require __DIR__ . '/../config/db.php';
 
 $nomeProjeto = 'CANZALA, LDA.';
-$navbarMode = 'simple';
-$baseUrl = '../';
-require __DIR__ . '/../includes/header.php';
-require __DIR__ . '/../includes/navbar.php';
+$navbarMode  = 'simple';
+$baseUrl     = '../';
+$pageTitle   = 'Carrinho - ' . $nomeProjeto;
 
-// clean cart
+// =========================
+// AÇÕES DO CARRINHO (ANTES DE QUALQUER OUTPUT)
+// =========================
+
+// Garantir que o carrinho é um array
+if (!isset($_SESSION['carrinho']) || !is_array($_SESSION['carrinho'])) {
+    $_SESSION['carrinho'] = [];
+}
+
+// Limpar carrinho
 if (isset($_GET['limpar'])) {
     unset($_SESSION['carrinho']);
     header('Location: carrinho.php');
     exit;
 }
 
-// item remove
+// Remover item
 if (isset($_GET['remover'])) {
     $idRemover = (int) $_GET['remover'];
 
@@ -27,7 +34,7 @@ if (isset($_GET['remover'])) {
     exit;
 }
 
-// item add quantity
+// Aumentar quantidade
 if (isset($_GET['aumentar'])) {
     $idAumentar = (int) $_GET['aumentar'];
 
@@ -39,7 +46,7 @@ if (isset($_GET['aumentar'])) {
     exit;
 }
 
-// item down quantity
+// Diminuir quantidade
 if (isset($_GET['diminuir'])) {
     $idDiminuir = (int) $_GET['diminuir'];
 
@@ -55,13 +62,17 @@ if (isset($_GET['diminuir'])) {
     exit;
 }
 
-// Cart process
+// =========================
+// MONTAR DADOS DO CARRINHO
+// =========================
 $carrinho = $_SESSION['carrinho'] ?? [];
 
-if (empty($carrinho)) {
-    $produtosCarrinho = [];
-    $totalGeral = 0;
-} else {
+$produtosCarrinho = [];
+$totalGeral = 0;
+
+if (!empty($carrinho)) {
+    require __DIR__ . '/../config/db.php';
+
     $ids = array_keys($carrinho);
     $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
@@ -74,15 +85,14 @@ if (empty($carrinho)) {
         $produtosPorId[$p['id']] = $p;
     }
 
-    $produtosCarrinho = [];
-    $totalGeral = 0;
-
     foreach ($carrinho as $idProduto => $quantidade) {
         if (!isset($produtosPorId[$idProduto])) {
             continue;
         }
 
         $p = $produtosPorId[$idProduto];
+        $quantidade = (int)$quantidade;
+
         $subtotal = $p['preco'] * $quantidade;
         $totalGeral += $subtotal;
 
@@ -96,87 +106,82 @@ if (empty($carrinho)) {
     }
 }
 
+// =========================
+// RENDER
+// =========================
+require __DIR__ . '/../includes/header.php';
+require __DIR__ . '/../includes/navbar.php';
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrinho - <?php echo htmlspecialchars($nomeProjeto); ?></title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-<body>
 
 <main>
-    <section class="section">
-        <h1>Carrinho de compras</h1>
+  <section class="section">
+    <h1>Carrinho de compras</h1>
 
-        <?php if (empty($produtosCarrinho)): ?>
-            <p>O seu carrinho está vazio.</p>
-            <p>
-                <a href="../produtos.php">Ver produtos</a> |
-                <a href="../index.php">Página Inicial</a>
-            </p>
+    <?php if (empty($produtosCarrinho)): ?>
+      <p>O seu carrinho está vazio.</p>
+      <p>
+        <a href="../produtos.php">Ver produtos</a> |
+        <a href="../index.php">Página Inicial</a>
+      </p>
+    <?php else: ?>
 
-        <?php else: ?>
+      <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Preço unitário</th>
+            <th>Quantidade</th>
+            <th>Subtotal</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($produtosCarrinho as $item): ?>
+            <tr>
+              <td><?= htmlspecialchars($item['nome']) ?></td>
+              <td><?= number_format($item['preco'], 2, ',', '.') ?> Kz</td>
+              <td>
+                <a href="carrinho.php?diminuir=<?= (int)$item['id'] ?>">-</a>
+                <?= (int)$item['quantidade'] ?>
+                <a href="carrinho.php?aumentar=<?= (int)$item['id'] ?>">+</a>
+              </td>
+              <td><?= number_format($item['subtotal'], 2, ',', '.') ?> Kz</td>
+              <td>
+                <a href="carrinho.php?remover=<?= (int)$item['id'] ?>">Remover</a>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
 
-            <table border="1" cellpadding="8" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Preço unitário</th>
-                        <th>Quantidade</th>
-                        <th>Subtotal</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($produtosCarrinho as $item): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($item['nome']); ?></td>
-                            <td><?php echo number_format($item['preco'], 2, ',', '.'); ?> Kz</td>
-                            <td>
-                                <a href="carrinho.php?diminuir=<?php echo (int) $item['id']; ?>">➖</a>
-                                <?php echo (int) $item['quantidade']; ?>
-                                <a href="carrinho.php?aumentar=<?php echo (int) $item['id']; ?>">➕</a>
-                            </td>
-                            <td><?php echo number_format($item['subtotal'], 2, ',', '.'); ?> Kz</td>
-                            <td>
-                                <a href="carrinho.php?remover=<?php echo (int) $item['id']; ?>">🗑️ Remover</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+      <h2>Total: <?= number_format($totalGeral, 2, ',', '.') ?> Kz</h2>
 
-            <h2>Total: <?php echo number_format($totalGeral, 2, ',', '.'); ?> Kz</h2>
+      <p>
+        <a
+          href="carrinho.php?limpar=1"
+          onclick="return confirm('Tem certeza que deseja limpar o carrinho?')"
+        >
+          Limpar carrinho
+        </a>
+      </p>
 
-            <p>
-                <a href="carrinho.php?limpar=1"
-                   onclick="return confirm('Tem certeza que deseja limpar o carrinho?')">
-                    🗑️ Limpar carrinho
-                </a>
-            </p>
+      <p><a href="../produtos.php">Continuar comprando</a></p>
 
-            <p><a href="../produtos.php">Continuar comprando</a></p>
+      <?php if (!empty($_SESSION['usuario_id'])): ?>
+        <p><a href="checkout.php">Finalizar compra</a></p>
+      <?php else: ?>
+        <p>
+          <a
+            href="/PA-E-COMMERCE/auth/login.php?from=checkout"
+            onclick="return confirm('Precisa iniciar sessão para finalizar a compra. Deseja continuar?')"
+          >
+            Finalizar compra
+          </a>
+        </p>
+      <?php endif; ?>
 
-            <?php if (!empty($_SESSION['usuario_id'])): ?>
-                <p><a href="checkout.php">Finalizar compra</a></p>
-            <?php else: ?>
-                <p>
-                    <a href="/PA-E-COMMERCE/auth/login.php?from=checkout"
-   onclick="return confirm('Precisa iniciar sessão para finalizar a compra. Deseja continuar?');">
-    Finalizar compra
-</a>
-                </p>
-            <?php endif; ?>
-
-        <?php endif; ?>
-    </section>
+    <?php endif; ?>
+  </section>
 </main>
-
-<script src="../assets/js/main.js"></script>
-</body>
-</html>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>
