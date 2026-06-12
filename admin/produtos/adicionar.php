@@ -19,6 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = trim($_POST['nome'] ?? '');
     $descricao = trim($_POST['descricao'] ?? '');
     $preco = $_POST['preco'] ?? '';
+    $estoque = (int) ($_POST['estoque'] ?? 0);
+    $categoria_id = !empty($_POST['categoria_id']) 
+    ? (int) $_POST['categoria_id'] 
+    : null;
 
     if ($nome === '' || $preco === '') {
         $errors[] = 'Nome e preço são obrigatórios.';
@@ -49,15 +53,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // 🔹 Inserir no banco
             $stmt = $pdo->prepare("
-                INSERT INTO produtos (nome, descricao, preco, imagem)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO produtos 
+                (nome, descricao, preco, imagem, estoque, categoria_id)
+                VALUES (?, ?, ?, ?, ?, ?)
             ");
 
             $stmt->execute([
                 $nome,
                 $descricao,
                 $preco,
-                $caminhoBanco
+                $caminhoBanco,
+                $estoque,
+                $categoria_id
             ]);
 
             header('Location: listar.php');
@@ -68,6 +75,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+$stmt = $pdo->query("SELECT * FROM categorias ORDER BY nome ASC");
+$categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 require_once __DIR__ . '/../../includes/header.php';
 ?>
@@ -111,6 +121,29 @@ require_once __DIR__ . '/../../includes/header.php';
                 <input type="file" name="imagem" accept="image/*" required>
             </label>
             <br><br>
+
+            <label>
+                Estoque:
+            <input type="number" name="estoque" min="0" required>
+            </label>
+            <br>
+
+            <label>
+                Categoria:
+            <select name="categoria_id">
+                <option value="">Sem categoria</option>
+
+            <?php foreach ($categorias as $cat): ?>
+                <option value="<?= $cat['id'] ?>">
+                    <?= htmlspecialchars($cat['nome']) ?>
+                </option>
+            <?php endforeach; ?>
+
+            </select>
+            </label>
+            <br><br>
+
+            
 
             <button type="submit">Salvar Produto</button>
         </form>

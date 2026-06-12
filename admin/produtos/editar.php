@@ -70,8 +70,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt = $pdo->prepare("
             UPDATE produtos
-            SET nome = ?, descricao = ?, preco = ?, imagem = ?
-            WHERE id = ?
+SET nome=?, descricao=?, preco=?, imagem=?, estoque=?
+WHERE id=?
         ");
 
         $stmt->execute([
@@ -133,6 +133,11 @@ require_once __DIR__ . '/../../includes/header.php';
         <label>
             Trocar imagem:
             <input type="file" name="imagem" accept="image/*">
+        </label>
+        <br><br>
+        <label>
+            Estoque:
+            <input type="number" name="estoque" value="<?= $produto['estoque'] ?>" min="0" required>
         </label>
         <br><br>
 

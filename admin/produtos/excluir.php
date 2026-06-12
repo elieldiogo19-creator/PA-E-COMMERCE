@@ -15,6 +15,20 @@ if ($id <= 0) {
     exit;
 }
 
+// Verificar se já foi vendido
+$stmt = $pdo->prepare("
+    SELECT COUNT(*) 
+    FROM itens_pedido 
+    WHERE produto_id = ?
+");
+$stmt->execute([$id]);
+$totalVendido = $stmt->fetchColumn();
+
+if ($totalVendido > 0) {
+    header('Location: listar.php?erro=vendido');
+    exit;
+}
+
 // Buscar imagem antes de apagar
 $stmt = $pdo->prepare("SELECT imagem FROM produtos WHERE id = ?");
 $stmt->execute([$id]);

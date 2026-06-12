@@ -14,10 +14,13 @@ $baseUrl = '../../';
 
 try {
     $stmt = $pdo->query("
-        SELECT id, nome, preco, imagem, criado_em
-        FROM produtos
-        ORDER BY id DESC
-    ");
+    SELECT p.*, 
+           COALESCE(SUM(ip.quantidade), 0) as total_vendido
+    FROM produtos p
+    LEFT JOIN itens_pedido ip ON ip.produto_id = p.id
+    GROUP BY p.id
+    ORDER BY p.id DESC
+");
 
     $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -40,6 +43,14 @@ require_once __DIR__ . '/../../includes/header.php';
             <p>Nenhum produto encontrado.</p>
         <?php else: ?>
 
+            
+        <?php if (isset($_GET['erro']) && $_GET['erro'] === 'vendido'): ?>
+    <div class="alert alert-erro">
+        Produto não pode ser excluído porque já possui vendas.
+    </div>
+<?php endif; ?>
+
+
             <table border="1" cellpadding="8" width="100%">
                 <thead>
                     <tr>
@@ -49,6 +60,8 @@ require_once __DIR__ . '/../../includes/header.php';
                         <th>Preço</th>
                         <th>Criado em</th>
                         <th>Ações</th>
+                        <th>Estoque</th>
+                        <th>Vendidos</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,6 +97,9 @@ require_once __DIR__ . '/../../includes/header.php';
                                    Excluir
                                 </a>
                             </td>
+
+                            <td><?= $produto['estoque'] ?></td>
+<td><?= $produto['total_vendido'] ?></td>
                         </tr>
 
                     <?php endforeach; ?>
@@ -92,6 +108,7 @@ require_once __DIR__ . '/../../includes/header.php';
             </table>
 
         <?php endif; ?>
+
     </section>
 </main>
 
