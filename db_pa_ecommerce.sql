@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 05/05/2026 às 15:15
+-- Tempo de geração: 18/06/2026 às 11:33
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.0.30
 
@@ -46,6 +46,28 @@ INSERT INTO `admins` (`id`, `nome`, `email`, `senha_hash`, `criado_em`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estrutura para tabela `categorias`
+--
+
+CREATE TABLE `categorias` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `criado_em` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `categorias`
+--
+
+INSERT INTO `categorias` (`id`, `nome`, `criado_em`) VALUES
+(1, 'Computação e Hardware', '2026-06-13 18:08:02'),
+(2, 'Redes e Infraestrutura', '2026-06-13 18:08:17'),
+(3, 'Armazenamento e Periféricos', '2026-06-13 18:08:27'),
+(4, 'Segurança e Vigilância', '2026-06-13 18:08:40');
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura para tabela `itens_pedido`
 --
 
@@ -56,15 +78,6 @@ CREATE TABLE `itens_pedido` (
   `quantidade` int(10) UNSIGNED NOT NULL,
   `preco_unitario` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `itens_pedido`
---
-
-INSERT INTO `itens_pedido` (`id`, `pedido_id`, `produto_id`, `quantidade`, `preco_unitario`) VALUES
-(4, 4, 19, 1, 68249.99),
-(5, 4, 18, 1, 78249.99),
-(6, 4, 16, 1, 90144.99);
 
 -- --------------------------------------------------------
 
@@ -83,13 +96,6 @@ CREATE TABLE `pedidos` (
   `status` varchar(50) NOT NULL DEFAULT 'pendente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Despejando dados para a tabela `pedidos`
---
-
-INSERT INTO `pedidos` (`id`, `usuario_id`, `nome_cliente`, `email_cliente`, `endereco`, `total`, `criado_em`, `status`) VALUES
-(4, 1, 'DaHoodie', 'dahoodiewrld@gmail.com', 'Zango-1, Viana, Luanda, Angola', 236644.97, '2026-05-01 11:31:55', 'Confirmado');
-
 -- --------------------------------------------------------
 
 --
@@ -102,24 +108,20 @@ CREATE TABLE `produtos` (
   `descricao` text DEFAULT NULL,
   `preco` decimal(10,2) NOT NULL,
   `imagem` varchar(255) DEFAULT NULL,
-  `criado_em` timestamp NOT NULL DEFAULT current_timestamp()
+  `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
+  `estoque` int(11) NOT NULL DEFAULT 0,
+  `categoria_id` int(10) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Despejando dados para a tabela `produtos`
 --
 
-INSERT INTO `produtos` (`id`, `nome`, `descricao`, `preco`, `imagem`, `criado_em`) VALUES
-(10, 'Laptop Work Pro v2', 'Intel i7 12ª Ger, 16GB DDR4, SSD 512GB NVMe.\r\n\r\nPortátil Profissional 15.6\r\n\r\nChassis em magnésio leve e teclado retroiluminado.', 1007249.99, 'assets/img/prod_69f26092b8f8d1.66634706.png', '2026-04-29 19:48:34'),
-(11, 'Ultra Monitor 27', 'Monitor Profissional 4K IPS.\r\n\r\nResolução 3840x2160, 99% sRGB, Delta E < 2. Inclinação e rotação 90º (Pivot). Ideal para design.', 168199.99, 'assets/img/prod_69f2611c3d77f1.73563924.png', '2026-04-29 19:50:52'),
-(12, 'Desk Mini PC Pro', 'Processador Ryzen 5, 8GB RAM, Gráficos Vega integrados.\r\n\r\nEstação de Trabalho Ultra-Compacta\r\n\r\nSuporte VESA para montar atrás do monitor.', 344099.99, 'assets/img/prod_69f261c341b7b2.70007953.jpg', '2026-04-29 19:53:39'),
-(13, 'ErgoBoard Mechanical', 'Teclado Mecânico Silencioso.\r\n\r\nSwitch Brown (tátil e silencioso), layout PT, retroiluminação branca ajustável. Conexão USB-C.', 27499.99, 'assets/img/prod_69f2623c2dba05.65931435.jpg', '2026-04-29 19:55:40'),
-(14, 'Precision Mouse MX', 'Rato Wireless de Alta Precisão\r\n\r\nSensor laser de 4000 DPI, funciona em vidro. Scroll de velocidade infinita e botões laterais.', 20249.99, 'assets/img/prod_69f264123e2a11.89753196.jpg', '2026-04-29 20:03:30'),
-(15, 'GPU Render X8', 'Placa Gráfica dedicada 8GB.\r\n\r\nArquitetura de última geração para processamento de vídeo 4K, IA e modelação 3D profissional.', 299999.99, 'assets/img/prod_69f264d6b44926.84843469.jpg', '2026-04-29 20:04:46'),
-(16, 'RAM Boost 32GB', 'Kit Memória DDR5 (2x16GB)	\r\n\r\nFrequência de 5200MHz com dissipador de calor em alumínio. Otimizado para Intel e AMD.', 90144.99, 'assets/img/prod_69f264cc8aa628.70400217.jpg', '2026-04-29 20:06:36'),
-(17, 'Tablet Draw Plus', 'Tablet Digitalizador 12\"\r\n\r\nEcrã laminado anti-reflexo, 8192 níveis de pressão na caneta. Compatível com Windows e MacOS.', 260349.99, 'assets/img/prod_69f2655fb31900.39977753.jpg', '2026-04-29 20:09:03'),
-(18, 'Cadeira ErgoTech', 'Cadeira de Escritório Ergonómica	\r\n\r\nSuporte lombar dinâmico, malha respirável (mesh) e apoios de braço 4D. Base em aço.', 78249.99, 'assets/img/prod_69f265a8d84156.35703025.jpg', '2026-04-29 20:10:16'),
-(19, 'Power Station UPS', 'Nobreak (UPS) 1500VA	\r\n\r\nProteção contra picos e quedas. Autonomia de 20 min para fecho seguro de projetos.', 68249.99, 'assets/img/prod_69f26645c5d5f6.74229531.png', '2026-04-29 20:12:53');
+INSERT INTO `produtos` (`id`, `nome`, `descricao`, `preco`, `imagem`, `criado_em`, `estoque`, `categoria_id`) VALUES
+(20, 'Laptop Work Pro', 'Portátil Profissional 15.6\"\r\n\r\nProcessador Intel i7 12ª Ger, 16GB RAM DDR4 e SSD de 512GB. Inclui Windows 11 Pro e chassis reforçado em magnésio para alta mobilidade.', 1129867.00, 'assets/img/prod_6a2d9f12957a73.94910614.jpg', '2026-06-13 18:18:58', 2, 1),
+(21, 'Desk Mini PC', 'Micro Computador Office\r\n\r\nUnidade ultra-compacta com CPU Ryzen 5, 8GB RAM e 256GB SSD. Ideal para poupar espaço na secretária sem sacrificar o desempenho administrativo.', 517003.00, 'assets/img/prod_6a2da4d58408c4.43903237.jpg', '2026-06-13 18:43:33', 2, 1),
+(22, 'GigaRouter AX', 'Router Wi-Fi 6 AX3000\r\n\r\nTecnologia Wi-Fi de nova geração com Dual-Band, Beamforming e suporte para mais de 100 dispositivos em simultâneo através de OFDMA.', 102324.00, 'assets/img/prod_6a2da6285d0fc6.07415436.jpg', '2026-06-13 18:49:12', 2, 2),
+(23, 'Switch 24p L2', 'Switch Gerível 24 Portas\r\n\r\nSwitch Gigabit profissional com 24 portas RJ45 e 4 slots SFP para fibra. Gestão avançada via interface web (VLAN, QoS e IGMP).', 231574.00, 'assets/img/prod_6a2da741aadfd9.51168137.jpg', '2026-06-13 18:53:53', 2, 2);
 
 -- --------------------------------------------------------
 
@@ -156,6 +158,12 @@ ALTER TABLE `admins`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Índices de tabela `categorias`
+--
+ALTER TABLE `categorias`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Índices de tabela `itens_pedido`
 --
 ALTER TABLE `itens_pedido`
@@ -174,7 +182,8 @@ ALTER TABLE `pedidos`
 -- Índices de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_categoria` (`categoria_id`);
 
 --
 -- Índices de tabela `usuarios`
@@ -196,6 +205,12 @@ ALTER TABLE `admins`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT de tabela `categorias`
+--
+ALTER TABLE `categorias`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT de tabela `itens_pedido`
 --
 ALTER TABLE `itens_pedido`
@@ -211,7 +226,7 @@ ALTER TABLE `pedidos`
 -- AUTO_INCREMENT de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
@@ -235,6 +250,12 @@ ALTER TABLE `itens_pedido`
 --
 ALTER TABLE `pedidos`
   ADD CONSTRAINT `fk_pedidos_usuarios` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
+--
+-- Restrições para tabelas `produtos`
+--
+ALTER TABLE `produtos`
+  ADD CONSTRAINT `fk_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

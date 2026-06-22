@@ -80,6 +80,7 @@ $stmt = $pdo->query("SELECT * FROM categorias ORDER BY nome ASC");
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/admin_sidebar.php';
 ?>
 
 <main>

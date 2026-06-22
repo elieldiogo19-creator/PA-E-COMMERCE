@@ -8,19 +8,22 @@ if (empty($_SESSION['admin_id'])) {
 
 require_once __DIR__ . '/../../config/db.php';
 
-$nomeProjeto = 'CANZALA, LDA.';
+$nomeProjeto = 'CANZALA LDA.';
 $pageTitle = 'Gerir Produtos - ' . $nomeProjeto;
 $baseUrl = '../../';
 
 try {
     $stmt = $pdo->query("
-    SELECT p.*, 
-           COALESCE(SUM(ip.quantidade), 0) as total_vendido
-    FROM produtos p
-    LEFT JOIN itens_pedido ip ON ip.produto_id = p.id
-    GROUP BY p.id
-    ORDER BY p.id DESC
-");
+        SELECT 
+            p.*,
+            c.nome AS categoria_nome,
+            COALESCE(SUM(ip.quantidade), 0) AS total_vendido
+        FROM produtos p
+        LEFT JOIN categorias c ON c.id = p.categoria_id
+        LEFT JOIN itens_pedido ip ON ip.produto_id = p.id
+        GROUP BY p.id
+        ORDER BY p.id DESC
+    ");
 
     $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -29,87 +32,92 @@ try {
 }
 
 require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/admin_sidebar.php';
 ?>
 
 <main>
-    <section class="section">
-        <h1>Gerir Produtos</h1>
+<section class="section">
 
-        <p>
-            <a href="adicionar.php">➕ Adicionar novo produto</a>
-        </p>
+    <h1>Gerir Produtos</h1>
 
-        <?php if (empty($produtos)): ?>
-            <p>Nenhum produto encontrado.</p>
-        <?php else: ?>
+    <p>
+        <a href="adicionar.php">➕ Adicionar novo produto</a>
+    </p>
 
-            
-        <?php if (isset($_GET['erro']) && $_GET['erro'] === 'vendido'): ?>
-    <div class="alert alert-erro">
-        Produto não pode ser excluído porque já possui vendas.
-    </div>
-<?php endif; ?>
+    <?php if (isset($_GET['erro']) && $_GET['erro'] === 'vendido'): ?>
+        <div class="alert alert-erro">
+            Produto não pode ser excluído porque já possui vendas.
+        </div>
+    <?php endif; ?>
 
+    <?php if (empty($produtos)): ?>
+        <p>Nenhum produto encontrado.</p>
+    <?php else: ?>
 
-            <table border="1" cellpadding="8" width="100%">
-                <thead>
+        <table border="1" cellpadding="8" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Imagem</th>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                    <th>Vendidos</th>
+                    <th>Criado em</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <?php foreach ($produtos as $produto): ?>
                     <tr>
-                        <th>ID</th>
-                        <th>Imagem</th>
-                        <th>Nome</th>
-                        <th>Preço</th>
-                        <th>Criado em</th>
-                        <th>Ações</th>
-                        <th>Estoque</th>
-                        <th>Vendidos</th>
+                        <td><?= $produto['id'] ?></td>
+
+                        <td>
+                            <?php if (!empty($produto['imagem'])): ?>
+                                <img src="/PA-E-COMMERCE/<?= htmlspecialchars($produto['imagem']) ?>" width="60">
+                            <?php else: ?>
+                                —
+                            <?php endif; ?>
+                        </td>
+
+                        <td><?= htmlspecialchars($produto['nome']) ?></td>
+
+                        <td>
+                            <?= $produto['categoria_nome'] 
+                                ? htmlspecialchars($produto['categoria_nome']) 
+                                : '—' ?>
+                        </td>
+
+                        <td>
+                            <?= number_format($produto['preco'], 2, ',', '.') ?> Kz
+                        </td>
+
+                        <td><?= $produto['estoque'] ?></td>
+
+                        <td><?= $produto['total_vendido'] ?></td>
+
+                        <td>
+                            <?= date('d/m/Y H:i', strtotime($produto['criado_em'])) ?>
+                        </td>
+
+                        <td>
+                            <a href="editar.php?id=<?= $produto['id'] ?>">Editar</a> |
+                            <a href="excluir.php?id=<?= $produto['id'] ?>"
+                               onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+                               Excluir
+                            </a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
+                <?php endforeach; ?>
 
-                    <?php foreach ($produtos as $produto): ?>
+            </tbody>
+        </table>
 
-                        <tr>
-                            <td><?= $produto['id'] ?></td>
+    <?php endif; ?>
 
-                            <td>
-                                <?php if (!empty($produto['imagem'])): ?>
-                                    <img src="/PA-E-COMMERCE/<?= htmlspecialchars($produto['imagem']) ?>"
-                                         width="60">
-                                <?php else: ?>
-                                    —
-                                <?php endif; ?>
-                            </td>
-
-                            <td><?= htmlspecialchars($produto['nome']) ?></td>
-
-                            <td>
-                                <?= number_format($produto['preco'], 2, ',', '.') ?> Kz
-                            </td>
-
-                            <td>
-                                <?= date('d/m/Y H:i', strtotime($produto['criado_em'])) ?>
-                            </td>
-
-                            <td>
-                                <a href="editar.php?id=<?= $produto['id'] ?>">Editar</a> |
-                                <a href="excluir.php?id=<?= $produto['id'] ?>"
-                                   onclick="return confirm('Tem certeza que deseja excluir este produto?');">
-                                   Excluir
-                                </a>
-                            </td>
-
-                            <td><?= $produto['estoque'] ?></td>
-<td><?= $produto['total_vendido'] ?></td>
-                        </tr>
-
-                    <?php endforeach; ?>
-
-                </tbody>
-            </table>
-
-        <?php endif; ?>
-
-    </section>
+</section>
 </main>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>

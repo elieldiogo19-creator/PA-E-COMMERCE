@@ -35,10 +35,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($admin && password_verify($senha, $admin['senha_hash'])) {
                 session_regenerate_id(true);
+                $stmtUpdate = $pdo->prepare("
+                    UPDATE admins
+                    SET ultimo_acesso = NOW()
+                    WHERE id = ?
+                ");
+                $stmtUpdate->execute([$admin['id']]);
 
                 $_SESSION['admin_id'] = $admin['id'];
                 $_SESSION['admin_nome'] = $admin['nome'];
                 $_SESSION['admin_email'] = $admin['email'];
+                $_SESSION['admin_ultimo_acesso'] = $admin['ultimo_acesso'];
 
                 header('Location: /PA-E-COMMERCE/admin/dashboard.php');
                 exit;

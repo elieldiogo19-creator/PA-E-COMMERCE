@@ -20,6 +20,10 @@ $stmt = $pdo->prepare("SELECT * FROM produtos WHERE id = ?");
 $stmt->execute([$id]);
 $produto = $stmt->fetch(PDO::FETCH_ASSOC);
 
+//Buscar categorias 
+$stmtCat = $pdo->query("SELECT * FROM categorias ORDER BY nome ASC");
+$categorias = $stmtCat->fetchAll(PDO::FETCH_ASSOC);
+
 if (!$produto) {
     header('Location: listar.php');
     exit;
@@ -32,6 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = trim($_POST['nome'] ?? '');
     $descricao = trim($_POST['descricao'] ?? '');
     $preco = $_POST['preco'] ?? '';
+    $estoque = (int) ($_POST['estoque'] ?? 0);
+    $categoria_id = !empty($_POST['categoria_id'])
+    ? (int) $_POST['categoria_id']
+    : null;
 
     if ($nome === '' || $preco === '') {
         $errors[] = 'Nome e preço são obrigatórios.';
@@ -69,18 +77,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
 
         $stmt = $pdo->prepare("
-            UPDATE produtos
-SET nome=?, descricao=?, preco=?, imagem=?, estoque=?
-WHERE id=?
-        ");
+    UPDATE produtos
+    SET nome=?, descricao=?, preco=?, imagem=?, estoque=?, categoria_id=?
+    WHERE id=?
+");
 
         $stmt->execute([
-            $nome,
-            $descricao,
-            $preco,
-            $imagemBanco,
-            $id
-        ]);
+    $nome,
+    $descricao,
+    $preco,
+    $imagemBanco,
+    $estoque,
+    $categoria_id,
+    $id
+]);
 
         header('Location: listar.php');
         exit;
@@ -88,6 +98,7 @@ WHERE id=?
 }
 
 require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/admin_sidebar.php';
 ?>
 
 <main>
@@ -140,6 +151,21 @@ require_once __DIR__ . '/../../includes/header.php';
             <input type="number" name="estoque" value="<?= $produto['estoque'] ?>" min="0" required>
         </label>
         <br><br>
+        <label>
+    Categoria:
+    <select name="categoria_id">
+        <option value="">Sem categoria</option>
+
+        <?php foreach ($categorias as $cat): ?>
+            <option value="<?= $cat['id'] ?>"
+                <?= $produto['categoria_id'] == $cat['id'] ? 'selected' : '' ?>>
+                <?= htmlspecialchars($cat['nome']) ?>
+            </option>
+        <?php endforeach; ?>
+
+    </select>
+</label>
+<br><br>
 
         <button type="submit">Atualizar Produto</button>
     </form>
