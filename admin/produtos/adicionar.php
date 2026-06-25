@@ -6,6 +6,7 @@ if (empty($_SESSION['admin_id'])) {
     exit;
 }
 
+require_once __DIR__ . '/../../includes/flash.php';
 require_once __DIR__ . '/../../config/db.php';
 
 $nomeProjeto = 'CANZALA, LDA.';
@@ -67,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $categoria_id
             ]);
 
+            setFlash('sucesso', 'Produto adicionado com sucesso.');
             header('Location: listar.php');
             exit;
 
@@ -84,6 +86,8 @@ require_once __DIR__ . '/../../includes/admin_sidebar.php';
 ?>
 
 <main>
+    <?php require __DIR__ . '/../../includes/flash_render.php'; ?>
+
     <section class="section">
         <h1>Adicionar Produto</h1>
 

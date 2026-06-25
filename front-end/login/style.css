@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Google Sans", sans-serif;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   min-height: 100vh;
+   background:url('./img/image.png');
+   background-size: cover;
+   background-position: center;
+}
+
+.container{
+    width: 420px;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 15px;
+    color: white;
+    padding: 30px 40px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;;
+    backdrop-filter: blur(10px);
+}
+
+.container h1{
+    font-size: 36px;
+    text-align: center;
+}
+
+.input-box{
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+
+.input-box input{
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 40px;
+    outline: none;
+    font-size: 16px;
+    color: white;
+    padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder{
+    color: white;
+}
+
+.remember{
+    display: flex;
+    justify-content: space-between;
+    margin: -15px 0 15px;
+    
+}
+
+.remember label input{
+    accent-color: transparent;
+    margin-right: 5px;
+    
+}
+
+.remember a{
+    text-decoration: none;
+    color: blue;
+}
+.remember a:hover{
+    text-decoration: underline;
+    
+}
+ 
+button{
+    width: 100%;
+    height: 50px;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 40px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+button:hover{
+    transition: 0.5s;
+    background-color:white;
+    color: rgb(31, 28, 28);
+
+}
+
+.register-link{
+font-size: 15,5px;
+text-align: center;
+margin: 20px 0 15px;
+
+}
+.register-link a{
+   color: blue;
+   font-weight: 700;
+}
+.register-link a:hover{
+    text-decoration: underline;
+    
+}

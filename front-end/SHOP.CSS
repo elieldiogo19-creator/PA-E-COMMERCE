@@ -24,10 +24,6 @@
        
         
     }
-        .mucanza{
-        width: 110px;
-        
-    }
     .logo{
         color: whitesmoke;
         font-size: 27px;
@@ -49,6 +45,7 @@
         color: #948b8b;
         font-weight: 400;
     }
+    
     .nav-links a:hover{
         color:#e94f57;
         transition: 0.2s;
@@ -149,6 +146,14 @@ margin-top: -6%;
     filter: brightness(0) invert(1);
 
 }
+.desktop img{
+    width: 170px;
+    filter: brightness(0) invert(1);
+    
+    
+
+
+}
 h1{
     font-size: 45px;
 font-weight: bold;
@@ -159,6 +164,8 @@ margin-bottom: 55px;
     font-weight: bold;
     font-size: 23px;
     color: white;
+    margin-top: 20px;
+    
 
 }
 .arnaldo{
@@ -282,6 +289,44 @@ span{
 .revelar.show {
     opacity: 1;
     transform: translateY(0) scale(1) rotateX(0deg);
+}
+
+.banner2{
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color:rgb(80, 172, 80); 
+  width: 91%;
+  height: 360px;
+  margin: 0 71px;
+  border-radius: 30px;
+  position: relative;
+  font-family: 'Arial', sans-serif;
+  color: white;
+  overflow: visible; 
+  margin-top: 10%;
+  background-color: #24b45c; 
+  box-shadow: 0 0 20px 10px rgba(36, 180, 92, 0.7);
+  
+}
+.btn-shop2{
+    color:rgb(80, 172, 80); 
+    padding: 10px 30px;
+     border-radius: 35px;
+    text-decoration: none;
+    width: 100px;
+    background-color:white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 23px;
+     font-size: 16px;
+   font-weight: bold;
+}
+.btn-shop2:hover{
+     transform: scale(1) translateY(-5px);
+     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
+    cursor: pointer;
 }
 
 /* Efeito Cascata: o segundo e o terceiro demoram um pouquinho mais */

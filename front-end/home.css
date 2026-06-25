@@ -3,6 +3,11 @@
     box-sizing: border-box;
     font-family: 'Segoe UI', sans-serif;}
 
+    
+   
+
+   
+
 
     .main-header{
         display: flex;
@@ -10,10 +15,6 @@
         align-items: center;
         
         padding: 13px 4%;
-        background: hsl(0, 0%, 100%);
-        margin-top: 30px;
-        border-radius: 45px;
-        
         margin: 20px 25px;
     }
     
@@ -39,6 +40,7 @@
         gap: 50px;
 
     }
+    
     .nav-links a{
         text-decoration: none;
         color: #948b8b;
@@ -47,10 +49,45 @@
     .nav-links a:hover{
         color:#e94f57;
         transition: 0.2s;
-         text-decoration: underline;
          font-weight: 400;
          font-weight: bold;
     }
+    .shop-menu {
+    display: none;
+    list-style: none;
+    padding-left: 15px;
+    background: #fff;
+    border-left: 2px solid #ff4d6d; /* Uma linha fina para estilo premium */
+}
+
+/* O sub-menu que aparece abaixo de Electrónicos */
+.products-submenu {
+    display: none;
+    list-style: none;
+    padding-left: 20px; /* Recuo para parecer uma sub-categoria */
+    background: #f4f4f4;    
+}
+a.subtitulo:hover{
+     color:#948b8b
+}
+
+/* Classe que o JS vai adicionar para mostrar */
+.active-menu {
+    display: block !important;
+}
+
+/* Ajuste nos links para ficarem um abaixo do outro */
+.nav-links li {
+    display: block; 
+}
+a.titulo{
+    color: black;
+}
+
+   
+
+
+
 
     .header-right {
     display: flex;
@@ -78,6 +115,7 @@
     font-size: 14px;
     transition: 0.3s;
     width: 150px; 
+    background-color: #fff;
     
 }
 .search-box input:focus {
@@ -136,28 +174,60 @@
 .hero{
     display: flex;
     justify-content: space-between;
+    overflow-x: auto;               /* Permite rolar/arrastar para o lado */
+  scroll-snap-type: x mandatory;  /* O segredo: força o efeito de "ímã" ao arrastar */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
     align-items: flex-start;
     margin: 0 45px;
     background: #e7e2e2;
     height: 700px;
     font-family: sans-serif;
-    overflow: hidden;
     border-radius: 45px;
     margin-bottom: 3%;
+    cursor: grab;
+    scrollbar-width: none;          
+  -ms-overflow-style: none;
+    
+    
    
 }
 
 
+
+
+.carrosel {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 40px;
+}
+.carrosel.cor1{
+    background-color: #e94f57;
+}
+
+
+
+
 .content{
- margin-top: 150px;
+ margin-top: 90px;
  margin-left: 60px; 
 }
 .brand-name{
     
     font-weight: bold;
     display: block;
-    margin-bottom: 8px;
-    font-size: 24px;  
+
+    font-size: 24px; 
+    margin-left: 30px; 
 } 
 h1{
     font-size: 5rem;
@@ -172,6 +242,7 @@ position: absolute;
      pointer-events: none;
      display: block;
      margin-top: -30px;
+     white-space: nowrap;
     
 }
 .btn-shop{
@@ -196,12 +267,13 @@ position: absolute;
     cursor: pointer;
 }
 .hero-images .image{
-    width: 470px; 
-    height: auto;
+     width: 100%;      
+  height: 590px;     
+  object-fit: contain; 
     position: relative;
     margin-left: 170px;
     margin-top: 75px;
-    margin-right: 150px;
+    margin-right: 370px;
 }
 
 
@@ -251,6 +323,7 @@ h3 {
 }
 
 
+
 .card img{
  position: absolute;
   right: -36px;       
@@ -261,17 +334,26 @@ h3 {
 }
 
 .watch img{
-    width: 350px;
-    top: -4px;
-    right: -70px;
+    width: 100%;      
+  height: 220px;     
+  object-fit: contain; 
+  bottom: 70px;
+  left: 70px;
     
+}
+.phone{
+     width: 100%;      
+  height: 190px;     
+  object-fit: contain; 
 }
 .laptop img{
    position: relative;
     left: 36px;
-    margin-top: -9px;
-    width: 350px;
-    margin-right: 56px;
+    margin-top: -17px;
+    width: 100%;      
+  height: 340px;     
+  object-fit: contain; 
+    margin-right: 76px;
     
 }
 .btn{
@@ -323,25 +405,22 @@ h3 {
 } 
 
 .console img{
-    width: 128x;
-    padding: 29px;
-    right: 1%;
-    top: -38px;
-    width: 285px;
-    left: 70px;
+     width: 100%;      
+  height: 240px;     
+  object-fit: contain; 
+  bottom: 60px;
     
 }
 .oculus img{
-    top: 40px;
-    position: relative;
-    z-index: 1; 
-    right: 44px;
+     width: 100%;      
+  height: 250px;     
+  object-fit: contain; 
 }
-.speakers img{
-    width: 320px;
-    top: -60px;
-    right: 25px;
-
+.speakers img{  
+ width: 100%;      
+  height: 350px;     
+  object-fit: contain; 
+  bottom: 30px;
 }
 .card-green .btn{
     position: relative;
@@ -588,6 +667,16 @@ position: absolute;
 /* Efeito Cascata: o segundo e o terceiro demoram um pouquinho mais */
 .revelar:nth-child(2) { transition-delay: 0.2s; }
 .revelar:nth-child(3) { transition-delay: 0.4s; }
+
+
+.footer{
+    background-color:#040a57;
+    height: 250px;
+    margin-top: 70px;
+}
+.logoimg img{
+    width: 153px;
+}
 
 
 
