@@ -22,21 +22,21 @@ body {
   width: 100%;
   height: 100%;
   background: #101010;
-  overflow: hidden; /* Garante que o shader não vaze */
 }
 
 .logo {
   display: block;
-  width: 200px;
-  height: auto;
-  max-width: 90%;
-  margin: 10px auto 5px auto;
+  width: 200px;           /* aumentei de 200px para 260px */
+  height: auto;           /* mantém proporção */
+  max-width: 90%;         /* não estoura o card em telas pequenas */
+  margin: 10px auto 5px auto;  /* espaço em cima e embaixo */
   object-fit: contain;
-  filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0,0,0,0.3)); /* brilho e sombra suave */
 }
 
 canvas {
   position: absolute;
+  z-index: 100;
   z-index: -2;
 }
 
@@ -89,10 +89,6 @@ form > h3 {
   margin-bottom: 12px;
 }
 
-/* ============================================
-   EFEITOS NOS INPUTS E BOTÕES (ATUALIZADO)
-   ============================================ */
-
 button,
 input {
   height: 48px;
@@ -102,19 +98,11 @@ input {
   font-family: inherit;
   font-size: 16px;
   width: 100%;
-  transition: all 0.3s ease; /* EFEITO: Transição suave */
 }
 
 input {
   border: 1px solid var(--color-border);
   padding: 0 2.5vw;
-}
-
-/* EFEITO: Foco dourado no input */
-input:focus {
-  outline: none;
-  border-color: #f0a927;
-  box-shadow: 0 0 0 3px rgba(240, 169, 39, 0.15);
 }
 
 input::placeholder {
@@ -138,14 +126,6 @@ input::placeholder {
   background: #1c1c1b;
   border-color: transparent;
   font-size: 15px;
-  cursor: pointer;
-  transition: all 0.2s ease; /* EFEITO: Transição suave */
-}
-
-/* EFEITO: Hover nos botões sociais */
-.social-btn:hover {
-  background: #252525;
-  border-color: rgba(240, 169, 39, 0.3);
 }
 
 .social-btn > img {
@@ -166,21 +146,6 @@ form > button[type="submit"] {
   border: 0;
   background: #f0a927d0;
   font-size: 17px;
-  cursor: pointer;
-  transition: all 0.2s ease; /* Garante transição no botão principal */
-}
-
-/* EFEITO: Hover no botão Entrar (levitar + brilho) */
-form > button[type="submit"]:hover {
-  background: #f0a927;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(240, 169, 39, 0.4);
-}
-
-/* EFEITO: Clique no botão (afundar) */
-form > button[type="submit"]:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 10px rgba(240, 169, 39, 0.3);
 }
 
 .or {
@@ -255,7 +220,4 @@ form > button[type="submit"]:active {
   form {
     padding: 30px;
   }
-}
-body {
-  background: red !important;
 }

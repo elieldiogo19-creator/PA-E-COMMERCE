@@ -1,0 +1,703 @@
+/* ============================================
+   HOME - CANZALA E-COMMERCE (CORRIGIDO)
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    overflow-x: hidden;
+}
+
+.main-content {
+    margin-top: 0;
+    padding-top: 20px;
+    width: 100%;
+}
+
+/* ============================================
+   HERO SLIDER (CORRIGIDO)
+   ============================================ */
+.hero {
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    align-items: center;
+    margin: 20px auto;
+    width: calc(100% - 40px);
+    max-width: 1400px;
+    background: #e7e2e2;
+    height: 600px;
+    border-radius: 45px;
+    margin-bottom: 3%;
+    cursor: grab;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    position: relative;
+}
+
+.hero::-webkit-scrollbar {
+    display: none;
+}
+
+.carrosel {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 100%;
+    height: 100%;
+    scroll-snap-align: start;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.carrosel.cor1 {
+    background: linear-gradient(135deg, #e94f57 0%, #c73e45 100%);
+    color: white;
+}
+
+.carrosel.cor2 {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+}
+
+.carrosel.cor3 {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+}
+
+.content {
+    flex: 1;
+    max-width: 50%;
+    z-index: 2;
+    position: relative;
+    margin: 0;
+}
+
+.brand-name {
+    font-weight: bold;
+    display: block;
+    font-size: clamp(18px, 2vw, 24px);
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 5vw, 5rem);
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 10px;
+}
+
+.bg-text {
+    position: absolute;
+    font-size: clamp(4rem, 10vw, 10rem);
+    color: rgba(255, 255, 255, 0.15);
+    font-weight: 700;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+}
+
+.btn-shop {
+    display: inline-block;
+    margin-top: 30px;
+    background-color: #ff0000;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    min-width: 200px;
+    text-align: center;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn-shop:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.hero-images {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-images .image {
+    max-width: 100%;
+    max-height: 450px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.3));
+    margin: 0;
+}
+
+/* ============================================
+   CATEGORIAS GRID (6 CARDS) - CORRIGIDO
+   ============================================ */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.card {
+    height: 280px;
+    border-radius: 35px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    padding: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card-black { background-color: #1a1a1a; color: white; }
+.card-yellow { background-color: #fcc300; color: white; }
+.card-red { background-color: #f42c37; color: white; }
+.card-silver { background-color: #c0c0c0; color: #333; }
+.card-green { background-color: #2ecc71; color: white; }
+.card-blue { background-color: #3498db; color: white; }
+
+.text {
+    flex: 1;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card span {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card h3 {
+    font-size: clamp(2rem, 3vw, 3.5rem);
+    font-weight: 700;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: lowercase;
+    line-height: 1;
+}
+
+.card img {
+    position: absolute;
+    right: -20px;
+    bottom: -20px;
+    width: 60%;
+    max-width: 250px;
+    height: auto;
+    object-fit: contain;
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.card:hover img {
+    transform: scale(1.05) rotate(-5deg);
+}
+
+/* Cores dos botões */
+.card-black .btn { color: white; background-color: #f42c37; }
+.card-yellow .btn { color: #fcc300; background-color: white; }
+.card-red .btn { color: #f42c37; background-color: white; }
+.card-silver .btn { color: #333; background-color: white; }
+.card-green .btn { color: #2ecc71; background-color: white; }
+.card-blue .btn { color: #3498db; background-color: white; }
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 20px;
+    text-decoration: none;
+    width: fit-content;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   BANNERS PROMOCIONAIS (CORRIGIDO)
+   ============================================ */
+.banner, .banner2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: calc(100% - 80px);
+    max-width: 1200px;
+    min-height: 400px;
+    margin: 60px auto;
+    border-radius: 30px;
+    position: relative;
+    color: white;
+    overflow: hidden;
+    padding: 40px;
+    gap: 40px;
+}
+
+.banner {
+    background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+    box-shadow: 0 10px 40px rgba(255, 0, 0, 0.3);
+}
+
+.banner2 {
+    background: linear-gradient(135deg, #24b45c 0%, #1a8f47 100%);
+    box-shadow: 0 10px 40px rgba(36, 180, 92, 0.3);
+}
+
+.left-content {
+    flex: 1;
+    z-index: 2;
+}
+
+.left-content .txt {
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.left-content h1 {
+    font-size: clamp(3rem, 6vw, 5rem);
+    margin: 0;
+    line-height: 0.9;
+    font-weight: 800;
+}
+
+.left-content .txt2 {
+    display: block;
+    margin-top: 10px;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.phones2 {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.phones2 img {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    max-height: 350px;
+    object-fit: contain;
+    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.3));
+    margin: 0;
+}
+
+.right-content {
+    flex: 1;
+    text-align: right;
+    z-index: 2;
+}
+
+.right-content p {
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.right-content h2 {
+    font-weight: bold;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    margin: 0 0 10px 0;
+}
+
+.right-content .dure {
+    display: block;
+    margin: 10px 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.btn-shop1, .btn-shop2 {
+    display: inline-block;
+    padding: 12px 35px;
+    border-radius: 35px;
+    text-decoration: none;
+    background-color: white;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-shop1 { color: #f42c37; }
+.btn-shop2 { color: #24b45c; }
+
+.btn-shop1:hover, .btn-shop2:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   BEST SELLER (VITRINE) - CORRIGIDO
+   ============================================ */
+.vitrine {
+    margin: 80px auto;
+    padding: 0 20px;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.osmay {
+    text-align: center;
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 50px;
+    color: #333;
+    font-weight: 700;
+}
+
+.vitrine .produtos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    padding: 0;
+    max-width: 100%;
+}
+
+.produto-card {
+    text-align: center;
+    border: 1px solid #eee;
+    padding: 20px;
+    transition: all 0.3s ease;
+    height: auto;
+    min-height: 350px;
+    background-color: #e7e2e2;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.produto-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.image-container {
+    position: relative;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.image-container img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.produto-card:hover .image-container img {
+    transform: scale(1.05);
+}
+
+.add-to-cart {
+    background-color: #ff0000;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    cursor: pointer;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.produto-card:hover .add-to-cart {
+    opacity: 1;
+}
+
+.add-to-cart:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+.vamos {
+    color: black;
+    font-size: 1.1rem;
+    margin-top: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.preco {
+    font-size: 1.2rem;
+    color: #e94f57;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* ============================================
+   ANIMAÇÕES SCROLL (REVELAR)
+   ============================================ */
+.revelar {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.revelar.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================
+   RESPONSIVIDADE (MEDIA QUERIES CORRIGIDAS)
+   ============================================ */
+
+/* Tablets grandes e laptops */
+@media (max-width: 1024px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .vitrine .produtos-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .banner, .banner2 {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px;
+        gap: 20px;
+    }
+    
+    .phones2 {
+        order: -1;
+    }
+    
+    .phones2 img {
+        max-height: 200px;
+    }
+    
+    .right-content {
+        text-align: center;
+    }
+    
+    .left-content h1 {
+        font-size: 3rem;
+    }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+    .hero {
+        height: 500px;
+        border-radius: 25px;
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+    
+    .carrosel {
+        flex-direction: column;
+        padding: 30px;
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .content {
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .hero-images {
+        height: 50%;
+    }
+    
+    .hero-images .image {
+        max-height: 200px;
+    }
+    
+    .bg-text {
+        display: none;
+    }
+    
+    .btn-shop {
+        margin-top: 20px;
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .card {
+        height: 220px;
+    }
+    
+    .card h3 {
+        font-size: 2rem;
+    }
+    
+    .card img {
+        width: 40%;
+        right: -10px;
+    }
+    
+    .vitrine .produtos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .banner, .banner2 {
+        width: calc(100% - 40px);
+        margin: 40px auto;
+        min-height: auto;
+        padding: 30px 20px;
+    }
+    
+    .left-content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .phones2 img {
+        max-height: 180px;
+    }
+}
+
+/* Celulares */
+@media (max-width: 480px) {
+    .hero {
+        height: 450px;
+    }
+    
+    .carrosel {
+        padding: 20px;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .content {
+        margin: 0;
+    }
+    
+    .card {
+        height: 200px;
+        padding: 20px;
+    }
+    
+    .card h3 {
+        font-size: 1.5rem;
+    }
+    
+    .vitrine .produtos-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .produto-card {
+        min-height: 300px;
+    }
+    
+    .osmay {
+        font-size: 1.8rem;
+    }
+    
+    .left-content h1 {
+        font-size: 2rem;
+    }
+    
+    .right-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .btn-shop1, .btn-shop2 {
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
+/* Telas muito grandes */
+@media (min-width: 1400px) {
+    .hero {
+        height: 700px;
+    }
+    
+    .hero-images .image {
+        max-height: 550px;
+    }
+    
+    .products-grid {
+        gap: 40px;
+    }
+    
+    .card {
+        height: 320px;
+    }
+}

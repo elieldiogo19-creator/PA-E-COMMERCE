@@ -43,10 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nomeImagem = uniqid('prod_', true) . '.' . strtolower($extensao);
 
             // 🔹 Caminho físico
-            $caminhoFisico = __DIR__ . '/../../assets/img/' . $nomeImagem;
+            $caminhoFisico = __DIR__ . '/../../assets/img/prods/' . $nomeImagem;
 
             // 🔹 Caminho que vai para o banco
-            $caminhoBanco = 'assets/img/' . $nomeImagem;
+            $caminhoBanco = 'assets/img/prods/' . $nomeImagem;
 
             if (!move_uploaded_file($_FILES['imagem']['tmp_name'], $caminhoFisico)) {
                 throw new Exception('Erro ao salvar imagem.');
