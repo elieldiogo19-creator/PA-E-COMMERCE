@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
     
     <!-- Seu CSS renomeado -->
-    <link rel="stylesheet" href="../assets/css/login.css" />
+    <link rel="stylesheet" href="../assets/css/cadastro.css" />
 </head>
 <body>
     <div class="card">
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Logo (ajuste o nome do arquivo conforme sua imagem) -->
             <img src="../assets/img/logo-canzala.png" class="logo" alt="Logo" />
             
-            <h3>Login na sua conta</h3>
+            <h3>Faça login na Canzala, LDA.</h3>
             
             <!-- Mensagens de erro/sucesso do PHP -->
             <?php if (!empty($mensagem)): ?>

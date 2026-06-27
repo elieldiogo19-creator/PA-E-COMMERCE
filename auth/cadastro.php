@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="POST" action="cadastro.php">
             <img src="../assets/img/logo-canzala.png" class="logo" alt="Canzala" />
             
-            <h3>Criar conta</h3>
+            <h3>Cria uma conta na Canzala, LDA.</h3>
 
             <?php if (!empty($erros)): ?>
                 <div style="background: rgba(255, 0, 0, 0.1); border: 1px solid #ff4444; color: #ff6666; padding: 12px; border-radius: 10px; font-size: 14px; text-align: center;">
@@ -99,6 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <input type="email" name="email" placeholder="E-mail" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required autocomplete="email" />
             
+            <span class="or"></span>
+
             <input type="password" name="senha" placeholder="Senha (mín. 6 caracteres)" required autocomplete="new-password" minlength="6" />
             
             <input type="password" name="senha2" placeholder="Confirmar senha" required autocomplete="new-password" />
