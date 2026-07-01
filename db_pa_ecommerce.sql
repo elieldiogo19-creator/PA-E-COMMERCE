@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 18/06/2026 às 11:33
+-- Tempo de geração: 01/07/2026 às 19:21
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.0.30
 
@@ -118,10 +118,10 @@ CREATE TABLE `produtos` (
 --
 
 INSERT INTO `produtos` (`id`, `nome`, `descricao`, `preco`, `imagem`, `criado_em`, `estoque`, `categoria_id`) VALUES
-(20, 'Laptop Work Pro', 'Portátil Profissional 15.6\"\r\n\r\nProcessador Intel i7 12ª Ger, 16GB RAM DDR4 e SSD de 512GB. Inclui Windows 11 Pro e chassis reforçado em magnésio para alta mobilidade.', 1129867.00, 'assets/img/prod_6a2d9f12957a73.94910614.jpg', '2026-06-13 18:18:58', 2, 1),
-(21, 'Desk Mini PC', 'Micro Computador Office\r\n\r\nUnidade ultra-compacta com CPU Ryzen 5, 8GB RAM e 256GB SSD. Ideal para poupar espaço na secretária sem sacrificar o desempenho administrativo.', 517003.00, 'assets/img/prod_6a2da4d58408c4.43903237.jpg', '2026-06-13 18:43:33', 2, 1),
-(22, 'GigaRouter AX', 'Router Wi-Fi 6 AX3000\r\n\r\nTecnologia Wi-Fi de nova geração com Dual-Band, Beamforming e suporte para mais de 100 dispositivos em simultâneo através de OFDMA.', 102324.00, 'assets/img/prod_6a2da6285d0fc6.07415436.jpg', '2026-06-13 18:49:12', 2, 2),
-(23, 'Switch 24p L2', 'Switch Gerível 24 Portas\r\n\r\nSwitch Gigabit profissional com 24 portas RJ45 e 4 slots SFP para fibra. Gestão avançada via interface web (VLAN, QoS e IGMP).', 231574.00, 'assets/img/prod_6a2da741aadfd9.51168137.jpg', '2026-06-13 18:53:53', 2, 2);
+(20, 'Laptop Work Pro', 'Portátil Profissional 15.6\"\r\n\r\nProcessador Intel i7 12ª Ger, 16GB RAM DDR4 e SSD de 512GB. Inclui Windows 11 Pro e chassis reforçado em magnésio para alta mobilidade.', 1129867.00, 'assets/img/prods/prod_6a2d9f12957a73.94910614.jpg', '2026-06-13 18:18:58', 2, 1),
+(21, 'Desk Mini PC', 'Micro Computador Office\r\n\r\nUnidade ultra-compacta com CPU Ryzen 5, 8GB RAM e 256GB SSD. Ideal para poupar espaço na secretária sem sacrificar o desempenho administrativo.', 517003.00, 'assets/img/prods/prod_6a2da4d58408c4.43903237.jpg', '2026-06-13 18:43:33', 2, 1),
+(22, 'GigaRouter AX', 'Router Wi-Fi 6 AX3000\r\n\r\nTecnologia Wi-Fi de nova geração com Dual-Band, Beamforming e suporte para mais de 100 dispositivos em simultâneo através de OFDMA.', 102324.00, 'assets/img/prods/prod_6a2da6285d0fc6.07415436.jpg', '2026-06-13 18:49:12', 2, 2),
+(23, 'Switch 24p L2', 'Switch Gerível 24 Portas\r\n\r\nSwitch Gigabit profissional com 24 portas RJ45 e 4 slots SFP para fibra. Gestão avançada via interface web (VLAN, QoS e IGMP).', 231574.00, 'assets/img/prods/prod_6a2da741aadfd9.51168137.jpg', '2026-06-13 18:53:53', 2, 2);
 
 -- --------------------------------------------------------
 

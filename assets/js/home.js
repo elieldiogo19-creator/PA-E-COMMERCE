@@ -1,73 +1,65 @@
 // ============================================
-// CAROSSEL INFINITO AUTOMÁTICO (HERO)
+// HOME.JS - Versão Estável e Segura
 // ============================================
-const initInfiniteTracker = () => {
-    const hero = document.querySelector('.hero');
-    if (!hero) return;
 
-    let slides = hero.querySelectorAll('.carrosel');
-    if (slides.length <= 1) return;
+document.addEventListener('DOMContentLoaded', function() {
+    
+    console.log('✅ home.js carregado com sucesso');
 
-    let index = 0;
-    const intervalTime = 4000; // Tempo de rotação (4 segundos)
-    let autoSlideInterval;
-
-    const startAutoSlide = () => {
-        autoSlideInterval = setInterval(() => {
-            index++;
-            if (index >= slides.length) {
-                index = 0; // Volta ao início de forma infinita
+    // ============================================
+    // SCROLL REVEAL (Animação ao rolar)
+    // ============================================
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
             }
-            hero.scrollTo({
-                left: hero.offsetWidth * index,
-                behavior: 'smooth'
-            });
-        }, intervalTime);
-    };
+        });
+    }, { threshold: 0.1 });
 
-    const stopAutoSlide = () => {
-        clearInterval(autoSlideInterval);
-    };
-
-    // Inicia o autoplay
-    startAutoSlide();
-
-    // Pausa o carrossel se o usuário arrastar manualmente
-    hero.addEventListener('touchstart', stopAutoSlide);
-    hero.addEventListener('mousedown', stopAutoSlide);
-    hero.addEventListener('touchend', startAutoSlide);
-    hero.addEventListener('mouseup', startAutoSlide);
-};
-
-// ============================================
-// ANIMAÇÕES DE SCROLL (REVEAL)
-// ============================================
-const observador = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('show');
-        } else {
-            entry.target.classList.remove('show');
-        }
+    document.querySelectorAll('.revelar').forEach(el => {
+        observer.observe(el);
     });
-}, {
-    threshold: 0.1
+
+    // ============================================
+    // CARROSSEL INFINITO NO HERO
+    // ============================================
+    const hero = document.querySelector('.hero');
+    if (hero) {
+        let current = 0;
+        const slides = hero.querySelectorAll('.carrosel');
+        
+        if (slides.length > 1) {
+            const slideWidth = hero.clientWidth;
+
+            const nextSlide = () => {
+                current = (current + 1) % slides.length;
+                hero.scrollTo({
+                    left: slideWidth * current,
+                    behavior: 'smooth'
+                });
+            };
+
+            let interval = setInterval(nextSlide, 5000);
+
+            hero.addEventListener('mouseenter', () => clearInterval(interval));
+            hero.addEventListener('mouseleave', () => {
+                interval = setInterval(nextSlide, 5000);
+            });
+
+            console.log(`✅ Carrossel com ${slides.length} slides iniciado`);
+        }
+    }
+
+    // Função para ir para detalhes
+    window.irParaDetalhes = function(id) {
+        if (id && id !== '#') {
+            window.location.href = `pages/detalhes.php?id=${id}`;
+        }
+    };
+
+    console.log('✅ Todos os scripts da Home inicializados com sucesso');
 });
-
-const aplicarRevelar = () => {
-    const elementos = document.querySelectorAll('.revelar');
-    elementos.forEach((el) => observador.observe(el));
-};
-
-// Inicialização Geral
-window.addEventListener('load', () => {
-    initInfiniteTracker();
-    aplicarRevelar();
-});
-
-function irParaDetalhes(id) {
-    window.location.href = `pages/detalhes.php?id=${id}`;
-}
 
 // ============================================
 // CORES DINÂMICAS NOS CARDS (Análise de Imagem)

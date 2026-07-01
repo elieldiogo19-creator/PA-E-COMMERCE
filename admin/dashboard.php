@@ -56,7 +56,7 @@ require_once __DIR__ . '/../includes/admin_sidebar.php';
         <h1>Painel do Administrador</h1>
 
         <p>
-            Bem-vindo,
+            Bem-vindo, 
             <strong><?= htmlspecialchars($_SESSION['admin_nome'], ENT_QUOTES, 'UTF-8') ?></strong>.
         </p>
 
@@ -66,7 +66,7 @@ require_once __DIR__ . '/../includes/admin_sidebar.php';
                 <?= date('d/m/Y H:i', strtotime($_SESSION['admin_ultimo_acesso'])) ?>
             </p>
         <?php else: ?>
-            <p>Este é o seu primeiro acesso.</p>
+            <p>Primeiro acesso ao painel.</p>
         <?php endif; ?>
 
     </section>
