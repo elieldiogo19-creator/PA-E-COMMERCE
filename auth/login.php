@@ -118,8 +118,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </button>
             </div>
             
-            <span class="or"></span>
-            
             <!-- Inputs adaptados para o PHP -->
             <input type="text" name="login" placeholder="E-mail ou nome" value="<?php echo htmlspecialchars($_POST['login'] ?? ''); ?>" required />
             <input type="password" name="senha" placeholder="Senha" required />

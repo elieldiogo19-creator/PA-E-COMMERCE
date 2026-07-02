@@ -99,8 +99,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <input type="email" name="email" placeholder="E-mail" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required autocomplete="email" />
             
-            <span class="or"></span>
-
             <input type="password" name="senha" placeholder="Senha (mín. 6 caracteres)" required autocomplete="new-password" minlength="6" />
             
             <input type="password" name="senha2" placeholder="Confirmar senha" required autocomplete="new-password" />

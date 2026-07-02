@@ -1,19 +1,7 @@
 /* ============================================
-   HOME - CANZALA E-COMMERCE (CORRIGIDO)
+   HOME.CSS - Estilos exclusivos da página inicial
+   (Hero, Cards, Banners, Vitrine)
    ============================================ */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
-}
-
-body {
-    background-color: #f5f5f5;
-    color: #333;
-    overflow-x: hidden;
-}
 
 .main-content {
     margin-top: 0;
@@ -22,7 +10,7 @@ body {
 }
 
 /* ============================================
-   HERO SLIDER (CORRIGIDO - ESPAÇAMENTO)
+   HERO SLIDER
    ============================================ */
 .hero {
     display: flex;
@@ -84,18 +72,18 @@ body {
     z-index: 2;
     position: relative;
     margin: 0;
-    padding-top: 20px; /* Adicionado para dar espaço no topo */
+    padding-top: 20px;
 }
 
 .brand-name {
     font-weight: bold;
     display: block;
     font-size: clamp(16px, 2vw, 20px);
-    margin-bottom: 25px; /* Aumentado de 10px para 25px - mais espaço abaixo */
+    margin-bottom: 25px;
     letter-spacing: 3px;
     text-transform: uppercase;
     opacity: 0.9;
-    margin-top: -40px; /* Sobe um pouco o "Canzala Series" */
+    margin-top: -40px;
 }
 
 .hero h1 {
@@ -105,7 +93,7 @@ body {
     line-height: 1.1;
     margin-bottom: 15px;
     position: relative;
-    z-index: 3; /* Garante que fique acima do bg-text */
+    z-index: 3;
 }
 
 .bg-text {
@@ -116,9 +104,9 @@ body {
     pointer-events: none;
     white-space: nowrap;
     z-index: 1;
-    top: 25%; /* Alterado de 50% para 25% - sobe o "WIRELESS" */
+    top: 25%;
     left: 50%;
-    transform: translate(-50%, 0); /* Removido o translateY para alinhar ao top */
+    transform: translate(-50%, 0);
     width: 100%;
     text-align: center;
     line-height: 1;
@@ -126,7 +114,7 @@ body {
 
 .btn-shop {
     display: inline-block;
-    margin-top: 40px; /* Aumentado de 30px para 40px */
+    margin-top: 40px;
     background-color: #ff0000;
     color: white;
     padding: 15px 30px;
@@ -141,7 +129,7 @@ body {
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     position: relative;
-    z-index: 4; /* Acima de tudo */
+    z-index: 4;
 }
 
 .btn-shop:hover {
@@ -170,7 +158,7 @@ body {
 }
 
 /* ============================================
-   CATEGORIAS GRID (6 CARDS) - CORRIGIDO
+   CATEGORIAS GRID (6 CARDS)
    ============================================ */
 .products-grid {
     display: grid;
@@ -246,7 +234,6 @@ body {
     transform: scale(1.05) rotate(-5deg);
 }
 
-/* Cores dos botões */
 .card-black .btn { color: white; background-color: #f42c37; }
 .card-yellow .btn { color: #fcc300; background-color: white; }
 .card-red .btn { color: #f42c37; background-color: white; }
@@ -276,7 +263,7 @@ body {
 }
 
 /* ============================================
-   BANNERS PROMOCIONAIS (CORRIGIDO)
+   BANNERS PROMOCIONAIS
    ============================================ */
 .banner, .banner2 {
     display: flex;
@@ -402,7 +389,7 @@ body {
 }
 
 /* ============================================
-   BEST SELLER (VITRINE) - CORRIGIDO
+   BEST SELLER (VITRINE)
    ============================================ */
 .vitrine {
     margin: 80px auto;
@@ -524,10 +511,8 @@ body {
 }
 
 /* ============================================
-   RESPONSIVIDADE (MEDIA QUERIES CORRIGIDAS)
+   RESPONSIVIDADE HOME
    ============================================ */
-
-/* Tablets grandes e laptops */
 @media (max-width: 1024px) {
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -555,13 +540,8 @@ body {
     .right-content {
         text-align: center;
     }
-    
-    .left-content h1 {
-        font-size: 3rem;
-    }
 }
 
-/* Tablets */
 @media (max-width: 768px) {
     .hero {
         height: 500px;
@@ -580,14 +560,6 @@ body {
     .content {
         max-width: 100%;
         margin-bottom: 20px;
-    }
-    
-    .hero-images {
-        height: 50%;
-    }
-    
-    .hero-images .image {
-        max-height: 200px;
     }
     
     .bg-text {
@@ -609,10 +581,6 @@ body {
         height: 220px;
     }
     
-    .card h3 {
-        font-size: 2rem;
-    }
-    
     .card img {
         width: 40%;
         right: -10px;
@@ -628,41 +596,15 @@ body {
         min-height: auto;
         padding: 30px 20px;
     }
-    
-    .left-content h1 {
-        font-size: 2.5rem;
-    }
-    
-    .phones2 img {
-        max-height: 180px;
-    }
 }
 
-/* Celulares */
 @media (max-width: 480px) {
     .hero {
         height: 450px;
     }
     
-    .carrosel {
-        padding: 20px;
-    }
-    
     .hero h1 {
         font-size: 2rem;
-    }
-    
-    .content {
-        margin: 0;
-    }
-    
-    .card {
-        height: 200px;
-        padding: 20px;
-    }
-    
-    .card h3 {
-        font-size: 1.5rem;
     }
     
     .vitrine .produtos-grid {
@@ -676,22 +618,8 @@ body {
     .osmay {
         font-size: 1.8rem;
     }
-    
-    .left-content h1 {
-        font-size: 2rem;
-    }
-    
-    .right-content h2 {
-        font-size: 1.8rem;
-    }
-    
-    .btn-shop1, .btn-shop2 {
-        width: 100%;
-        max-width: 200px;
-    }
 }
 
-/* Telas muito grandes */
 @media (min-width: 1400px) {
     .hero {
         height: 700px;
@@ -699,10 +627,6 @@ body {
     
     .hero-images .image {
         max-height: 550px;
-    }
-    
-    .products-grid {
-        gap: 40px;
     }
     
     .card {

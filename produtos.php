@@ -6,7 +6,8 @@ $nomeProjeto = 'CANZALA, LDA.';
 $pageTitle = 'Produtos - ' . $nomeProjeto;
 $navbarMode = 'full';
 $baseUrl = '';
-
+$pageCSS = 'produtos'; // Se tiver CSS específico
+// ou não define se não tiver CSS extra além do global
 require __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/navbar.php';
 

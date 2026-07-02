@@ -96,7 +96,7 @@ for ($i = 0; $i < 4; $i++) {
         ];
     }
 }
-
+$pageCSS = 'home'; // Carrega home.css depois do global
 require __DIR__ . '/includes/header.php';
 ?>
 
