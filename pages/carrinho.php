@@ -115,7 +115,7 @@ require __DIR__ . '/../includes/navbar.php';
 
 <main>
   <section class="section">
-    <h1>Carrinho de compras</h1>
+    <h1>Shopping Cart / Carrinho</h1>
 
     <?php if (empty($produtosCarrinho)): ?>
       <p>O seu carrinho está vazio.</p>

@@ -8,6 +8,10 @@ if (empty($_SESSION['admin_id'])) {
 
 require_once __DIR__ . '/../../config/db.php';
 
+$nomeProjeto = 'CANZALA LDA.';
+$pageTitle = 'Gerir Categorias - ' . $nomeProjeto;
+$baseUrl = '../../';
+
 $stmt = $pdo->query("
     SELECT c.*, 
            COUNT(p.id) as total_produtos
@@ -20,7 +24,7 @@ $stmt = $pdo->query("
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 require_once __DIR__ . '/../../includes/header.php';
-require_once __DIR__ . '/../../includes/admin_sidebar.php';
+require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
 ?>
 
 <main>
@@ -62,4 +66,4 @@ require_once __DIR__ . '/../../includes/admin_sidebar.php';
 </section>
 </main>
 
-<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../admin/includes/admin_footer.php'; ?>

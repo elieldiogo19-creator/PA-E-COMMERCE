@@ -51,7 +51,7 @@ $stmt->execute([$id]);
 $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 require_once __DIR__ . '/../../includes/header.php';
-require_once __DIR__ . '/../../includes/admin_sidebar.php';
+require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
 ?>
 
 <main>
@@ -109,4 +109,4 @@ require_once __DIR__ . '/../../includes/admin_sidebar.php';
     </section>
 </main>
 
-<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../admin/includes/admin_footer.php'; ?>

@@ -8,6 +8,10 @@ if (empty($_SESSION['admin_id'])) {
 
 require_once __DIR__ . '/../../config/db.php';
 
+$nomeProjeto = 'CANZALA LDA.';
+$pageTitle = 'Gerir Categorias - ' . $nomeProjeto;
+$baseUrl = '../../';
+
 $id = (int) ($_GET['id'] ?? 0);
 
 $stmt = $pdo->prepare("SELECT * FROM categorias WHERE id = ?");
@@ -36,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 require_once __DIR__ . '/../../includes/header.php';
-require_once __DIR__ . '/../../includes/admin_sidebar.php';
+require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
 ?>
 
 <main>
@@ -61,4 +65,4 @@ require_once __DIR__ . '/../../includes/admin_sidebar.php';
 </section>
 </main>
 
-<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../admin/includes/admin_footer.php'; ?>

@@ -47,7 +47,7 @@ try {
 }
 
 require_once __DIR__ . '/../includes/header.php';
-require_once __DIR__ . '/../includes/admin_sidebar.php';
+require_once __DIR__ . '/../admin/includes/admin_sidebar.php';
 ?>
 
 <main class="admin-dashboard">
@@ -162,4 +162,4 @@ require_once __DIR__ . '/../includes/admin_sidebar.php';
 
 </main>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../admin/includes/admin_footer.php'; ?>

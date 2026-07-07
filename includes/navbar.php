@@ -51,7 +51,7 @@ $categoriasNav = getNavbarCategorias($pdo ?? null);
                 </li>
 
                 <li class="dropdown">
-                    <a href="<?php echo $baseUrl; ?>produtos.php" class="dropdown-toggle">
+                    <a href="<?php echo $baseUrl; ?>produtos.php" class="dropdown-toggle, <?php echo basename($_SERVER['PHP_SELF']) == 'produtos.php' ? 'active' : ''; ?>">
                         Shop <span class="arrow">▼</span>
                     </a>
                     <ul class="dropdown-menu">
@@ -69,9 +69,9 @@ $categoriasNav = getNavbarCategorias($pdo ?? null);
                     </ul>
                 </li>
 
-                <li><a href="<?php echo $baseUrl; ?>servicos.php">Services</a></li>
-                <li><a href="<?php echo $baseUrl; ?>sobre.php">About</a></li>
-                <li><a href="<?php echo $baseUrl; ?>blog.php">Blogs</a></li>
+                <li><a href="<?php echo $baseUrl; ?>servicos.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'servicos.php' ? 'active' : ''; ?>">Services</a></li>
+                <li><a href="<?php echo $baseUrl; ?>sobre.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'sobre.php' ? 'active' : ''; ?>">About</a></li>
+                <li><a href="<?php echo $baseUrl; ?>blog.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'blog.php' ? 'active' : ''; ?>">Blogs</a></li>
             </ul>
         </nav>
     </div>

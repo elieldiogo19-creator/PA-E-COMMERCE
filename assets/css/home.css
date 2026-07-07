@@ -519,7 +519,8 @@
     }
     
     .vitrine .produtos-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr); /* Mudei de 3 para 2 */
+        gap: 25px; /* Gap menor para caber melhor */
     }
     
     .banner, .banner2 {
@@ -542,60 +543,63 @@
     }
 }
 
+/* Tablets / Mobile */
 @media (max-width: 768px) {
-    .hero {
-        height: 500px;
-        border-radius: 25px;
-        margin: 10px;
-        width: calc(100% - 20px);
-    }
-    
-    .carrosel {
-        flex-direction: column;
-        padding: 30px;
-        justify-content: center;
-        text-align: center;
-    }
-    
-    .content {
-        max-width: 100%;
-        margin-bottom: 20px;
-    }
-    
-    .bg-text {
-        display: none;
-    }
-    
-    .btn-shop {
-        margin-top: 20px;
-        width: 100%;
-        max-width: 250px;
-    }
-    
-    .products-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .card {
-        height: 220px;
-    }
-    
-    .card img {
-        width: 40%;
-        right: -10px;
-    }
-    
-    .vitrine .produtos-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .banner, .banner2 {
-        width: calc(100% - 40px);
-        margin: 40px auto;
-        min-height: auto;
-        padding: 30px 20px;
-    }
+  .carrosel {
+    padding: 25px 18px;       /* reduz “altura” ocupada e respiro */
+  }
+
+  .content {
+    max-width: 100%;
+    margin-bottom: 20px;
+    padding-top: 0;          /* evita empurrar pra baixo/esconder */
+  }
+
+  /* CORREÇÃO PRINCIPAL: remove o margin-top negativo do título */
+  .brand-name {
+    margin-top: 0 !important;
+    margin-bottom: 14px;
+    letter-spacing: 2px;
+  }
+
+  .hero h1 {
+    font-size: 2.4rem;       /* ajusta pra caber */
+    margin-bottom: 12px;
+  }
+
+  .btn-shop {
+    margin-top: 20px;       /* antes era 40px no desktop */
+    min-width: 180px;
+  }
+
+  /* Se quiser manter o bg-text escondido no mobile */
+  .bg-text {
+    display: none;
+  }
+}
+
+/* Celulares pequenos */
+@media (max-width: 480px) {
+  .hero {
+    height: 480px;          /* dá mais espaço pra títulos */
+  }
+
+  .carrosel {
+    padding: 20px 14px;
+  }
+
+  .hero h1 {
+    font-size: 1.9rem;
+  }
+
+  .brand-name {
+    margin-bottom: 10px;
+  }
+
+  .btn-shop {
+    margin-top: 16px;
+    min-width: 160px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -611,8 +615,9 @@
         grid-template-columns: 1fr;
     }
     
+    /* Ajuste os cards para não ficarem gigantes */
     .produto-card {
-        min-height: 300px;
+        min-height: 320px;
     }
     
     .osmay {
@@ -631,5 +636,32 @@
     
     .card {
         height: 320px;
+    }
+}
+
+@media (max-width: 600px) {
+    .vitrine .produtos-grid {
+        grid-template-columns: repeat(2, 1fr); /* Mantém 2 em telas médias */
+        gap: 15px;
+    }
+    
+    .produto-card {
+        min-height: 280px;
+        padding: 15px;
+    }
+    
+    .image-container {
+        height: 180px;
+    }
+    
+    .vamos {
+        font-size: 1rem;
+    }
+}
+
+/* Telas muito pequenas - 1 coluna */
+@media (max-width: 400px) {
+    .vitrine .produtos-grid {
+        grid-template-columns: 1fr; /* Só 1 em celulares pequenos */
     }
 }

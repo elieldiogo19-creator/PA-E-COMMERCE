@@ -6,7 +6,7 @@ if (empty($_SESSION['admin_id'])) {
     exit;
 }
 
-require_once __DIR__ . '/../../includes/flash.php';
+require_once __DIR__ . '/../../admin/includes/admin_flash.php';
 require_once __DIR__ . '/../../config/db.php';
 
 $nomeProjeto = 'CANZALA, LDA.';
@@ -82,11 +82,11 @@ $stmt = $pdo->query("SELECT * FROM categorias ORDER BY nome ASC");
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 require_once __DIR__ . '/../../includes/header.php';
-require_once __DIR__ . '/../../includes/admin_sidebar.php';
+require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
 ?>
 
 <main>
-    <?php require __DIR__ . '/../../includes/flash_render.php'; ?>
+    <?php require __DIR__ . '/../../admin/includes/admin_flash_render.php'; ?>
 
     <section class="section">
         <h1>Adicionar Produto</h1>
@@ -160,4 +160,4 @@ require_once __DIR__ . '/../../includes/admin_sidebar.php';
     </section>
 </main>
 
-<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../admin/includes/admin_footer.php'; ?>

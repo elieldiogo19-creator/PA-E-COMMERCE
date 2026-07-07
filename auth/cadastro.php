@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([$nome, $email, $senhaHash]);
 
                 $sucesso = 'Cadastro realizado! Redirecionando...';
-                header('Refresh: 2; URL=login.php');
+                header('Refresh: 7; URL=login.php');
             }
         } catch (PDOException $e) {
             $erros[] = 'Erro ao cadastrar. Tente novamente.';

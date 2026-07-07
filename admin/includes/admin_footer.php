@@ -4,6 +4,9 @@
             <img src="<?php echo $baseUrl; ?>assets/img/logo-canzala-2.png" alt="Canzala" class="footer-logo">
             <p class="footer-desc">Plataforma de e-commerce para compra de produtos e solicitação de serviços. Qualidade
                 e confiança em cada transação.</p>
+        </div>
+
+        <div class="footersection">
             <div class="social-links">
                 <a href="#" title="Facebook"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -32,26 +35,6 @@
                         </path>
                     </svg></a>
             </div>
-        </div>
-
-        <div class="footer-section">
-            <h4>Links Rápidos</h4>
-            <ul>
-                <li><a href="<?php echo $baseUrl; ?>index.php">Home</a></li>
-                <li><a href="<?php echo $baseUrl; ?>produtos.php">Shop</a></li>
-                <li><a href="<?php echo $baseUrl; ?>sobre.php">Sobre Nós</a></li>
-                <li><a href="<?php echo $baseUrl; ?>blog.php">Blog</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-section">
-            <h4>Suporte</h4>
-            <ul>
-                <li><a href="#">Contacto</a></li>
-                <li><a href="#">FAQ</a></li>
-                <li><a href="#">Política de Privacidade</a></li>
-                <li><a href="#">Termos de Uso</a></li>
-            </ul>
         </div>
 
         <div class="footer-section">

@@ -31,7 +31,6 @@ try {
     if (!$produto) {
         die('Produto não encontrado.');
     }
-
 } catch (PDOException $e) {
     die('Erro ao carregar o produto.');
 }
@@ -43,76 +42,82 @@ require __DIR__ . '/../includes/header.php';
 require __DIR__ . '/../includes/navbar.php';
 ?>
 
-<main>
-    <section class="section">
+<!-- CSS específico da página de detalhes (estilo do teu colega) -->
+<link rel="stylesheet" href="<?php echo $baseUrl; ?>assets/css/detalhes.css">
 
-        <p>
-            <a href="../produtos.php">Voltar para a loja</a>
-        </p>
+<main class="detalhes-main">
+    <div class="container-producto">
 
-        <div class="product-detail">
+        <!-- Coluna 1: Imagem (Card cinza) -->
+        <div class="card">
+            <button class="btn-voltar" onclick="history.back()">
+                ← Voltar
+            </button>
 
-            <div class="product-detail-image">
+            <div class="bloco-image">
                 <?php if (!empty($produto['imagem'])): ?>
-                    <img
-                        src="../<?= htmlspecialchars($produto['imagem']) ?>"
-                        alt="<?= htmlspecialchars($produto['nome']) ?>"
-                        class="product-image"
-                    >
+                <img id="foto-dinamica" src="<?php echo $baseUrl . htmlspecialchars($produto['imagem']); ?>"
+                    alt="<?php echo htmlspecialchars($produto['nome']); ?>">
+                <?php else: ?>
+                <img id="foto-dinamica" src="<?php echo $baseUrl; ?>assets/img/produto-sem-imagem.png" alt="Sem imagem">
                 <?php endif; ?>
             </div>
-
-            <div class="product-detail-info">
-
-                <h1><?= htmlspecialchars($produto['nome']) ?></h1>
-
-                <?php if (!empty($produto['categoria_nome'])): ?>
-                    <p class="product-categoria">
-                        Categoria:
-                        <a href="../produtos.php?categoria=<?= (int) $produto['categoria_id'] ?>">
-                            <?= htmlspecialchars($produto['categoria_nome']) ?>
-                        </a>
-                    </p>
-                <?php endif; ?>
-
-                <div class="product-description">
-                    <p>
-                        <?= nl2br(htmlspecialchars($produto['descricao'] ?? '')) ?>
-                    </p>
-                </div>
-
-                <p class="product-price">
-                    <?= number_format($produto['preco'], 2, ',', '.') ?> Kz
-                </p>
-
-                <p class="product-estoque">
-                    <?php if ($produto['estoque'] > 0): ?>
-                        Em estoque (<?= (int) $produto['estoque'] ?> disponíveis)
-                    <?php else: ?>
-                        Produto esgotado
-                    <?php endif; ?>
-                </p>
-
-                <div class="product-actions">
-
-                    <?php if ($produto['estoque'] > 0): ?>
-                        <a href="../actions/adicionar_ao_carrinho.php?id=<?= (int) $produto['id'] ?>"
-                           class="btn btn-primary">
-                            Adicionar ao carrinho
-                        </a>
-                    <?php else: ?>
-                        <button class="btn btn-disabled" disabled>
-                            Indisponível
-                        </button>
-                    <?php endif; ?>
-
-                </div>
-
-            </div>
-
         </div>
 
-    </section>
+        <!-- Coluna 2: Informações -->
+        <div class="bloco-info">
+            <h1 id="nome-dinamico"><?php echo htmlspecialchars($produto['nome']); ?></h1>
+
+            <p class="preco" id="preco-dinamico">
+                <?php echo number_format($produto['preco'], 2, ',', '.'); ?> Kz
+            </p>
+
+            <div class="descricao-container">
+                <strong>Descrição:</strong>
+                <p id="descricao-dinamica">
+                    <?php echo nl2br(htmlspecialchars($produto['descricao'] ?? 'Sem descrição disponível.')); ?>
+                </p>
+            </div>
+
+            <!-- Estoque -->
+            <p class="product-estoque" style="margin-top: 20px; font-size: 14px; color: #666;">
+                <?php if ($produto['estoque'] > 0): ?>
+                Em estoque (<?php echo (int) $produto['estoque']; ?> disponíveis)
+                <?php else: ?>
+                <span style="color: #e94f57; font-weight: bold;">Produto esgotado</span>
+                <?php endif; ?>
+            </p>
+        </div>
+
+        <!-- Coluna 3: Botões de Ação -->
+        <div class="click">
+            <hr class="linha-separadora">
+
+            <?php if ($produto['estoque'] > 0): ?>
+            <a href="<?php echo $baseUrl; ?>actions/adicionar_ao_carrinho.php?id=<?php echo (int) $produto['id']; ?>"
+                class="btn-carrinho">
+                <i class="fas fa-shopping-cart"></i> Adicionar ao carrinho
+            </a>
+
+            <!-- SEPARADOR "OU" -->
+            <div class="ou-separador">
+                <span>Ou</span>
+            </div>
+
+            <button class="btn-comprar"
+                onclick="window.location.href='<?php echo $baseUrl; ?>pages/checkout.php?produto=<?php echo (int) $produto['id']; ?>'">
+                Comprar Agora
+            </button>
+            <?php else: ?>
+            <button class="btn-carrinho" disabled style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fas fa-times-circle"></i> Indisponível
+            </button>
+            <?php endif; ?>
+
+            <hr class="linha-separadora">
+        </div>
+
+    </div>
 </main>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>
