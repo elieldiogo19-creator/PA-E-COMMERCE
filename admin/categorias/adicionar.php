@@ -5,8 +5,12 @@ if (empty($_SESSION['admin_id'])) {
     header('Location: /PA-E-COMMERCE/admin/login.php');
     exit;
 }
-
+require_once __DIR__ . '/../includes/admin_flash.php';
 require_once __DIR__ . '/../../config/db.php';
+
+$nomeProjeto = 'CANZALA LDA.';
+$pageTitle = 'Gerir Categorias - ' . $nomeProjeto;
+$baseUrl = '../../';
 
 $errors = [];
 
@@ -23,13 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("INSERT INTO categorias (nome) VALUES (?)");
         $stmt->execute([$nome]);
 
+        setFlash('sucesso', 'Categoria criada com sucesso.');
         header('Location: listar.php');
         exit;
     }
 }
 
 require_once __DIR__ . '/../../includes/header.php';
-require_once __DIR__ . '/../../includes/admin_sidebar.php';
+require_once __DIR__ . '/../includes/admin_sidebar.php';
 ?>
 
 <main>

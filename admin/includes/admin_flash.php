@@ -13,7 +13,3 @@ function getFlash(string $tipo): array {
     unset($_SESSION['flash'][$tipo]);
     return $msgs;
 }
-
-function hasFlash(): bool {
-    return !empty($_SESSION['flash']);
-}

@@ -5,7 +5,7 @@ if (empty($_SESSION['admin_id'])) {
     header('Location: /PA-E-COMMERCE/admin/login.php');
     exit;
 }
-
+require_once __DIR__ . '/../includes/admin_flash.php';
 require_once __DIR__ . '/../../config/db.php';
 
 $nomeProjeto = 'CANZALA, LDA.';
@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt->execute([$novoStatus, $id]);
 
+        setFlash('sucesso', 'Status do pedido atualizado.');
         header("Location: visualizar.php?id=" . $id);
         exit;
     }
@@ -71,7 +72,7 @@ require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
 
 <main>
 <section class="section">
-
+    <?php require __DIR__ . '/../includes/admin_flash_render.php'; ?>
     <h1>Pedido #<?= $pedido['id'] ?></h1>
 
     <h3>Dados do Cliente</h3>

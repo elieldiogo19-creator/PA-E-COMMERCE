@@ -5,7 +5,7 @@ if (empty($_SESSION['admin_id'])) {
     header('Location: /PA-E-COMMERCE/admin/login.php');
     exit;
 }
-
+require_once __DIR__ . '/../includes/admin_flash.php';
 require_once __DIR__ . '/../../config/db.php';
 
 $id = (int) ($_GET['id'] ?? 0);
@@ -25,7 +25,8 @@ $stmt->execute([$id]);
 $totalVendido = $stmt->fetchColumn();
 
 if ($totalVendido > 0) {
-    header('Location: listar.php?erro=vendido');
+    setFlash('erro', 'Produto não pode ser excluído porque já possui vendas.');
+    header('Location: listar.php');
     exit;
 }
 
@@ -48,5 +49,6 @@ if ($produto) {
     $stmt->execute([$id]);
 }
 
+setFlash('sucesso', 'Produto excluído com sucesso.');
 header('Location: listar.php');
-exit;
+    exit;

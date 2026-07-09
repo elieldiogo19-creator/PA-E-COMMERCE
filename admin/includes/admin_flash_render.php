@@ -1,7 +1,9 @@
 <?php
+require_once __DIR__ . '/admin_flash.php';
+
 $sucessos = getFlash('sucesso');
-$erros = getFlash('erro');
-$infos = getFlash('info');
+$erros    = getFlash('erro');
+$infos    = getFlash('info');
 ?>
 
 <?php if (!empty($sucessos)): ?>

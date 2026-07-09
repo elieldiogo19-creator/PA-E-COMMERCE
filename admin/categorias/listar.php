@@ -28,42 +28,42 @@ require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
 ?>
 
 <main>
-<section class="section">
+    <section class="section">
+        <?php require __DIR__ . '/../includes/admin_flash_render.php'; ?>
 
-<h1>Categorias</h1>
+        <h1>Categorias</h1>
 
-<p><a href="adicionar.php">➕ Nova Categoria</a></p>
+        <p><a href="adicionar.php">➕ Nova Categoria</a></p>
 
-<table border="1" cellpadding="8" width="100%">
-<thead>
-<tr>
-    <th>ID</th>
-    <th>Nome</th>
-    <th>Produtos</th>
-    <th>Ações</th>
-</tr>
-</thead>
-<tbody>
+        <table border="1" cellpadding="8" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Produtos</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
 
-<?php foreach ($categorias as $cat): ?>
-<tr>
-    <td><?= $cat['id'] ?></td>
-    <td><?= htmlspecialchars($cat['nome']) ?></td>
-    <td><?= $cat['total_produtos'] ?></td>
-    <td>
-        <a href="editar.php?id=<?= $cat['id'] ?>">Editar</a> |
-        <a href="excluir.php?id=<?= $cat['id'] ?>"
-           onclick="return confirm('Excluir categoria?');">
-           Excluir
-        </a>
-    </td>
-</tr>
-<?php endforeach; ?>
+                <?php foreach ($categorias as $cat): ?>
+                <tr>
+                    <td><?= $cat['id'] ?></td>
+                    <td><?= htmlspecialchars($cat['nome']) ?></td>
+                    <td><?= $cat['total_produtos'] ?></td>
+                    <td>
+                        <a href="editar.php?id=<?= $cat['id'] ?>">Editar</a> |
+                        <a href="excluir.php?id=<?= $cat['id'] ?>" onclick="return confirm('Excluir categoria?');">
+                            Excluir
+                        </a>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
 
-</tbody>
-</table>
+            </tbody>
+        </table>
 
-</section>
+    </section>
 </main>
 
 <?php require_once __DIR__ . '/../../admin/includes/admin_footer.php'; ?>

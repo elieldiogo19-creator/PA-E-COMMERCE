@@ -5,7 +5,7 @@ if (empty($_SESSION['admin_id'])) {
     header('Location: /PA-E-COMMERCE/admin/login.php');
     exit;
 }
-
+require_once __DIR__ . '/../includes/admin_flash.php';
 require_once __DIR__ . '/../../config/db.php';
 
 $nomeProjeto = 'CANZALA, LDA.';
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $categoria_id,
     $id
 ]);
-
+        setFlash('sucesso', 'Produto atualizado com sucesso.');
         header('Location: listar.php');
         exit;
     }
@@ -103,80 +103,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require_once __DIR__ . '/../../includes/header.php';
 require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
+
 ?>
 
 <main>
-<section class="section">
-    <h1>Editar Produto</h1>
+    <section class="section">
+        <h1>Editar Produto</h1>
 
-    <?php if (!empty($errors)): ?>
+        <?php if (!empty($errors)): ?>
         <div class="alert alert-erro">
             <ul>
                 <?php foreach ($errors as $erro): ?>
-                    <li><?= htmlspecialchars($erro) ?></li>
+                <li><?= htmlspecialchars($erro) ?></li>
                 <?php endforeach; ?>
             </ul>
         </div>
-    <?php endif; ?>
+        <?php endif; ?>
 
-    <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data">
 
-        <label>
-            Nome:
-            <input type="text" name="nome"
-                value="<?= htmlspecialchars($produto['nome']) ?>" required>
-        </label>
-        <br><br>
+            <label>
+                Nome:
+                <input type="text" name="nome" value="<?= htmlspecialchars($produto['nome']) ?>" required>
+            </label>
+            <br><br>
 
-        <label>
-            Descrição:
-            <textarea name="descricao" rows="4"><?= htmlspecialchars($produto['descricao']) ?></textarea>
-        </label>
-        <br><br>
+            <label>
+                Descrição:
+                <textarea name="descricao" rows="4"><?= htmlspecialchars($produto['descricao']) ?></textarea>
+            </label>
+            <br><br>
 
-        <label>
-            Preço:
-            <input type="number" step="0.01" name="preco"
-                value="<?= $produto['preco'] ?>" required>
-        </label>
-        <br><br>
+            <label>
+                Preço:
+                <input type="number" step="0.01" name="preco" value="<?= $produto['preco'] ?>" required>
+            </label>
+            <br><br>
 
-        <p>Imagem atual:</p>
-        <img src="/PA-E-COMMERCE/<?= htmlspecialchars($produto['imagem']) ?>" width="120">
-        <br><br>
+            <p>Imagem atual:</p>
+            <img src="/PA-E-COMMERCE/<?= htmlspecialchars($produto['imagem']) ?>" width="120">
+            <br><br>
 
-        <label>
-            Trocar imagem:
-            <input type="file" name="imagem" accept="image/*">
-        </label>
-        <br><br>
-        <label>
-            Estoque:
-            <input type="number" name="estoque" value="<?= $produto['estoque'] ?>" min="0" required>
-        </label>
-        <br><br>
-        <label>
-    Categoria:
-    <select name="categoria_id">
-        <option value="">Sem categoria</option>
+            <label>
+                Trocar imagem:
+                <input type="file" name="imagem" accept="image/*">
+            </label>
+            <br><br>
+            <label>
+                Estoque:
+                <input type="number" name="estoque" value="<?= $produto['estoque'] ?>" min="0" required>
+            </label>
+            <br><br>
+            <label>
+                Categoria:
+                <select name="categoria_id">
+                    <option value="">Sem categoria</option>
 
-        <?php foreach ($categorias as $cat): ?>
-            <option value="<?= $cat['id'] ?>"
-                <?= $produto['categoria_id'] == $cat['id'] ? 'selected' : '' ?>>
-                <?= htmlspecialchars($cat['nome']) ?>
-            </option>
-        <?php endforeach; ?>
+                    <?php foreach ($categorias as $cat): ?>
+                    <option value="<?= $cat['id'] ?>" <?= $produto['categoria_id'] == $cat['id'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($cat['nome']) ?>
+                    </option>
+                    <?php endforeach; ?>
 
-    </select>
-</label>
-<br><br>
+                </select>
+            </label>
+            <br><br>
 
-        <button type="submit">Atualizar Produto</button>
-    </form>
+            <button type="submit">Atualizar Produto</button>
+        </form>
 
-    <p><a href="listar.php">← Voltar</a></p>
+        <p><a href="listar.php">← Voltar</a></p>
 
-</section>
+    </section>
 </main>
 
 <?php require_once __DIR__ . '/../../admin/includes/admin_footer.php'; ?>

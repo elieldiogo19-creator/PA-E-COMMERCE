@@ -5,7 +5,7 @@ if (empty($_SESSION['admin_id'])) {
     header('Location: /PA-E-COMMERCE/admin/login.php');
     exit;
 }
-
+require_once __DIR__ . '/../includes/admin_flash.php';
 require_once __DIR__ . '/../../config/db.php';
 
 $nomeProjeto = 'CANZALA LDA.';
@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->execute([$nome, $id]);
 
+    setFlash('sucesso', 'Categoria atualizada com sucesso.');
     header('Location: listar.php');
     exit;
 }

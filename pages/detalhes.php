@@ -94,8 +94,8 @@ require __DIR__ . '/../includes/navbar.php';
             <hr class="linha-separadora">
 
             <?php if ($produto['estoque'] > 0): ?>
-            <a href="<?php echo $baseUrl; ?>actions/adicionar_ao_carrinho.php?id=<?php echo (int) $produto['id']; ?>"
-                class="btn-carrinho">
+            <a href="#" class="btn-carrinho btn-adicionar-detalhes" data-id="<?php echo (int) $produto['id']; ?>"
+                data-nome="<?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?>">
                 <i class="fas fa-shopping-cart"></i> Adicionar ao carrinho
             </a>
 

@@ -36,23 +36,23 @@ require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
 ?>
 
 <main>
-<section class="section">
+    <section class="section">
+        <?php require __DIR__ . '/../includes/admin_flash_render.php'; ?>
+        <h1>Gerir Produtos</h1>
 
-    <h1>Gerir Produtos</h1>
+        <p>
+            <a href="adicionar.php">➕ Adicionar novo produto</a>
+        </p>
 
-    <p>
-        <a href="adicionar.php">➕ Adicionar novo produto</a>
-    </p>
-
-    <?php if (isset($_GET['erro']) && $_GET['erro'] === 'vendido'): ?>
+        <?php if (isset($_GET['erro']) && $_GET['erro'] === 'vendido'): ?>
         <div class="alert alert-erro">
             Produto não pode ser excluído porque já possui vendas.
         </div>
-    <?php endif; ?>
+        <?php endif; ?>
 
-    <?php if (empty($produtos)): ?>
+        <?php if (empty($produtos)): ?>
         <p>Nenhum produto encontrado.</p>
-    <?php else: ?>
+        <?php else: ?>
 
         <table border="1" cellpadding="8" width="100%">
             <thead>
@@ -71,53 +71,53 @@ require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
             <tbody>
 
                 <?php foreach ($produtos as $produto): ?>
-                    <tr>
-                        <td><?= $produto['id'] ?></td>
+                <tr>
+                    <td><?= $produto['id'] ?></td>
 
-                        <td>
-                            <?php if (!empty($produto['imagem'])): ?>
-                                <img src="/PA-E-COMMERCE/<?= htmlspecialchars($produto['imagem']) ?>" width="60">
-                            <?php else: ?>
-                                —
-                            <?php endif; ?>
-                        </td>
+                    <td>
+                        <?php if (!empty($produto['imagem'])): ?>
+                        <img src="/PA-E-COMMERCE/<?= htmlspecialchars($produto['imagem']) ?>" width="60">
+                        <?php else: ?>
+                        —
+                        <?php endif; ?>
+                    </td>
 
-                        <td><?= htmlspecialchars($produto['nome']) ?></td>
+                    <td><?= htmlspecialchars($produto['nome']) ?></td>
 
-                        <td>
-                            <?= $produto['categoria_nome'] 
+                    <td>
+                        <?= $produto['categoria_nome'] 
                                 ? htmlspecialchars($produto['categoria_nome']) 
                                 : '—' ?>
-                        </td>
+                    </td>
 
-                        <td>
-                            <?= number_format($produto['preco'], 2, ',', '.') ?> Kz
-                        </td>
+                    <td>
+                        <?= number_format($produto['preco'], 2, ',', '.') ?> Kz
+                    </td>
 
-                        <td><?= $produto['estoque'] ?></td>
+                    <td><?= $produto['estoque'] ?></td>
 
-                        <td><?= $produto['total_vendido'] ?></td>
+                    <td><?= $produto['total_vendido'] ?></td>
 
-                        <td>
-                            <?= date('d/m/Y H:i', strtotime($produto['criado_em'])) ?>
-                        </td>
+                    <td>
+                        <?= date('d/m/Y H:i', strtotime($produto['criado_em'])) ?>
+                    </td>
 
-                        <td>
-                            <a href="editar.php?id=<?= $produto['id'] ?>">Editar</a> |
-                            <a href="excluir.php?id=<?= $produto['id'] ?>"
-                               onclick="return confirm('Tem certeza que deseja excluir este produto?');">
-                               Excluir
-                            </a>
-                        </td>
-                    </tr>
+                    <td>
+                        <a href="editar.php?id=<?= $produto['id'] ?>">Editar</a> |
+                        <a href="excluir.php?id=<?= $produto['id'] ?>"
+                            onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+                            Excluir
+                        </a>
+                    </td>
+                </tr>
                 <?php endforeach; ?>
 
             </tbody>
         </table>
 
-    <?php endif; ?>
+        <?php endif; ?>
 
-</section>
+    </section>
 </main>
 
 <?php require_once __DIR__ . '/../../admin/includes/admin_footer.php'; ?>

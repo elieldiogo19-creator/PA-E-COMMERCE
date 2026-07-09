@@ -82,7 +82,7 @@
         <p class="developer">Desenvolvido pelo grupo INFO (PA-06)</p>
     </div>
 </footer>
-
+<script src="<?php echo $baseUrl; ?>assets/js/carrinho-toast.js"></script>
 </body>
 
 </html>

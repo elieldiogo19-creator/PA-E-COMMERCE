@@ -66,68 +66,64 @@ try {
 
         <!-- 🔹 Filtro de categorias -->
         <nav class="categorias-filtro">
-            <a href="produtos.php" 
-               class="<?= $categoria_id === 0 ? 'ativo' : '' ?>">
-               Todos
+            <a href="produtos.php" class="<?= $categoria_id === 0 ? 'ativo' : '' ?>">
+                Todos
             </a>
 
             <?php foreach ($categorias as $cat): ?>
-                <a href="produtos.php?categoria=<?= (int) $cat['id'] ?>"
-                   class="<?= $categoria_id === (int) $cat['id'] ? 'ativo' : '' ?>">
-                   <?= htmlspecialchars($cat['nome']) ?>
-                </a>
+            <a href="produtos.php?categoria=<?= (int) $cat['id'] ?>"
+                class="<?= $categoria_id === (int) $cat['id'] ? 'ativo' : '' ?>">
+                <?= htmlspecialchars($cat['nome']) ?>
+            </a>
             <?php endforeach; ?>
         </nav>
 
         <?php if (empty($produtos)): ?>
-            <p>Nenhum produto encontrado nesta categoria.</p>
+        <p>Nenhum produto encontrado nesta categoria.</p>
         <?php else: ?>
 
-            <div class="products-grid">
+        <div class="products-grid">
 
-                <?php foreach ($produtos as $produto): ?>
+            <?php foreach ($produtos as $produto): ?>
 
-                    <article class="product-card">
+            <article class="product-card">
 
-                        <?php if (!empty($produto['imagem'])): ?>
-                            <img
-                                src="<?= htmlspecialchars($produto['imagem']) ?>"
-                                alt="<?= htmlspecialchars($produto['nome']) ?>"
-                                class="product-image"
-                            >
-                        <?php endif; ?>
+                <?php if (!empty($produto['imagem'])): ?>
+                <img src="<?= htmlspecialchars($produto['imagem']) ?>" alt="<?= htmlspecialchars($produto['nome']) ?>"
+                    class="product-image">
+                <?php endif; ?>
 
-                        <h3><?= htmlspecialchars($produto['nome']) ?></h3>
+                <h3><?= htmlspecialchars($produto['nome']) ?></h3>
 
-                        <?php if (!empty($produto['categoria_nome'])): ?>
-                            <p class="product-categoria">
-                                <?= htmlspecialchars($produto['categoria_nome']) ?>
-                            </p>
-                        <?php endif; ?>
+                <?php if (!empty($produto['categoria_nome'])): ?>
+                <p class="product-categoria">
+                    <?= htmlspecialchars($produto['categoria_nome']) ?>
+                </p>
+                <?php endif; ?>
 
-                        <p class="product-desc">
-                            <?= nl2br(htmlspecialchars(mb_strimwidth($produto['descricao'] ?? '', 0, 120, '...'))) ?>
-                        </p>
+                <p class="product-desc">
+                    <?= nl2br(htmlspecialchars(mb_strimwidth($produto['descricao'] ?? '', 0, 120, '...'))) ?>
+                </p>
 
-                        <p class="product-price">
-                            <?= number_format($produto['preco'], 2, ',', '.') ?> Kz
-                        </p>
+                <p class="product-price">
+                    <?= number_format($produto['preco'], 2, ',', '.') ?> Kz
+                </p>
 
-                        <div class="product-actions">
-                            <a href="pages/detalhes.php?id=<?= (int) $produto['id'] ?>" class="btn">
-                                Saber mais
-                            </a>
+                <div class="product-actions">
+                    <a href="pages/detalhes.php?id=<?php echo (int) $produto['id']; ?>" class="btn">
+                        Saber mais
+                    </a>
 
-                            <a href="actions/adicionar_ao_carrinho.php?id=<?= (int) $produto['id'] ?>" class="btn btn-primary">
-                                Adicionar ao carrinho
-                            </a>
-                        </div>
+                    <a href="#" class="btn btn-adicionar" data-id="<?php echo (int) $produto['id']; ?>"
+                        data-nome="<?php echo htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?>">
+                        Adicionar ao carrinho
+                    </a>
+                </div>
+            </article>
 
-                    </article>
+            <?php endforeach; ?>
 
-                <?php endforeach; ?>
-
-            </div>
+        </div>
 
         <?php endif; ?>
 

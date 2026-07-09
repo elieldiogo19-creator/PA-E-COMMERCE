@@ -6,7 +6,7 @@ if (empty($_SESSION['admin_id'])) {
     exit;
 }
 
-require_once __DIR__ . '/../../admin/includes/admin_flash.php';
+require_once __DIR__ . '/../includes/admin_flash.php';
 require_once __DIR__ . '/../../config/db.php';
 
 $nomeProjeto = 'CANZALA, LDA.';
@@ -86,19 +86,18 @@ require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
 ?>
 
 <main>
-    <?php require __DIR__ . '/../../admin/includes/admin_flash_render.php'; ?>
 
     <section class="section">
         <h1>Adicionar Produto</h1>
 
         <?php if (!empty($errors)): ?>
-            <div class="alert alert-erro">
-                <ul>
-                    <?php foreach ($errors as $erro): ?>
-                        <li><?= htmlspecialchars($erro) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
+        <div class="alert alert-erro">
+            <ul>
+                <?php foreach ($errors as $erro): ?>
+                <li><?= htmlspecialchars($erro) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
         <?php endif; ?>
 
         <form method="POST" enctype="multipart/form-data">
@@ -129,26 +128,26 @@ require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
 
             <label>
                 Estoque:
-            <input type="number" name="estoque" min="0" required>
+                <input type="number" name="estoque" min="0" required>
             </label>
             <br>
 
             <label>
                 Categoria:
-            <select name="categoria_id">
-                <option value="">Sem categoria</option>
+                <select name="categoria_id">
+                    <option value="">Sem categoria</option>
 
-            <?php foreach ($categorias as $cat): ?>
-                <option value="<?= $cat['id'] ?>">
-                    <?= htmlspecialchars($cat['nome']) ?>
-                </option>
-            <?php endforeach; ?>
+                    <?php foreach ($categorias as $cat): ?>
+                    <option value="<?= $cat['id'] ?>">
+                        <?= htmlspecialchars($cat['nome']) ?>
+                    </option>
+                    <?php endforeach; ?>
 
-            </select>
+                </select>
             </label>
             <br><br>
 
-            
+
 
             <button type="submit">Salvar Produto</button>
         </form>

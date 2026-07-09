@@ -30,13 +30,14 @@ require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
 ?>
 
 <main>
-<section class="section">
+    <section class="section">
+        <?php require __DIR__ . '/../includes/admin_flash_render.php'; ?>
 
-    <h1>Pedidos</h1>
+        <h1>Pedidos</h1>
 
-    <?php if (empty($pedidos)): ?>
+        <?php if (empty($pedidos)): ?>
         <p>Nenhum pedido encontrado.</p>
-    <?php else: ?>
+        <?php else: ?>
 
         <table border="1" cellpadding="8" width="100%">
             <thead>
@@ -53,27 +54,27 @@ require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
             <tbody>
 
                 <?php foreach ($pedidos as $pedido): ?>
-                    <tr>
-                        <td><?= $pedido['id'] ?></td>
-                        <td><?= htmlspecialchars($pedido['nome_cliente']) ?></td>
-                        <td><?= htmlspecialchars($pedido['email_cliente']) ?></td>
-                        <td><?= number_format($pedido['total'], 2, ',', '.') ?> Kz</td>
-                        <td><?= date('d/m/Y H:i', strtotime($pedido['criado_em'])) ?></td>
-                        <td><?= htmlspecialchars($pedido['status']) ?></td>
-                        <td>
-                            <a href="visualizar.php?id=<?= $pedido['id'] ?>">
-                                Ver
-                            </a>
-                        </td>
-                    </tr>
+                <tr>
+                    <td><?= $pedido['id'] ?></td>
+                    <td><?= htmlspecialchars($pedido['nome_cliente']) ?></td>
+                    <td><?= htmlspecialchars($pedido['email_cliente']) ?></td>
+                    <td><?= number_format($pedido['total'], 2, ',', '.') ?> Kz</td>
+                    <td><?= date('d/m/Y H:i', strtotime($pedido['criado_em'])) ?></td>
+                    <td><?= htmlspecialchars($pedido['status']) ?></td>
+                    <td>
+                        <a href="visualizar.php?id=<?= $pedido['id'] ?>">
+                            Ver
+                        </a>
+                    </td>
+                </tr>
                 <?php endforeach; ?>
 
             </tbody>
         </table>
 
-    <?php endif; ?>
+        <?php endif; ?>
 
-</section>
+    </section>
 </main>
 
 <?php require_once __DIR__ . '/../../admin/includes/admin_footer.php'; ?>
