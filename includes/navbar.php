@@ -11,14 +11,13 @@ $usuarioId = $_SESSION['usuario_id'] ?? null;
 
 // Só busca do banco se $pdo existir (evita erro em páginas sem conexão)
 if (isset($pdo) && !empty($usuarioId)) {
-    try {
-        $stmt = $pdo->prepare("SELECT SUM(quantidade) as total FROM carrinho WHERE usuario_id = ?");
-        $stmt->execute([$usuarioId]);
-        $result = $stmt->fetch();
-        $qtdCarrinho = $result['total'] ?? 0;
-    } catch (PDOException $e) {
-        $qtdCarrinho = 0;
+    // Quantidade do carrinho (funciona logado ou não - usa sessão)
+$qtdCarrinho = 0;
+if (isset($_SESSION['carrinho']) && is_array($_SESSION['carrinho'])) {
+    foreach ($_SESSION['carrinho'] as $qtd) {
+        $qtdCarrinho += (int)$qtd;
     }
+}
 }
 
 // Função auxiliar para buscar categorias só se tiver conexão
@@ -51,7 +50,8 @@ $categoriasNav = getNavbarCategorias($pdo ?? null);
                 </li>
 
                 <li class="dropdown">
-                    <a href="<?php echo $baseUrl; ?>produtos.php" class="dropdown-toggle, <?php echo basename($_SERVER['PHP_SELF']) == 'produtos.php' ? 'active' : ''; ?>">
+                    <a href="<?php echo $baseUrl; ?>produtos.php"
+                        class="dropdown-toggle, <?php echo basename($_SERVER['PHP_SELF']) == 'produtos.php' ? 'active' : ''; ?>">
                         Shop <span class="arrow">▼</span>
                     </a>
                     <ul class="dropdown-menu">
@@ -69,9 +69,15 @@ $categoriasNav = getNavbarCategorias($pdo ?? null);
                     </ul>
                 </li>
 
-                <li><a href="<?php echo $baseUrl; ?>servicos.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'servicos.php' ? 'active' : ''; ?>">Services</a></li>
-                <li><a href="<?php echo $baseUrl; ?>sobre.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'sobre.php' ? 'active' : ''; ?>">About</a></li>
-                <li><a href="<?php echo $baseUrl; ?>blog.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'blog.php' ? 'active' : ''; ?>">Blogs</a></li>
+                <li><a href="<?php echo $baseUrl; ?>servicos.php"
+                        class="<?php echo basename($_SERVER['PHP_SELF']) == 'servicos.php' ? 'active' : ''; ?>">Services</a>
+                </li>
+                <li><a href="<?php echo $baseUrl; ?>sobre.php"
+                        class="<?php echo basename($_SERVER['PHP_SELF']) == 'sobre.php' ? 'active' : ''; ?>">About</a>
+                </li>
+                <li><a href="<?php echo $baseUrl; ?>blog.php"
+                        class="<?php echo basename($_SERVER['PHP_SELF']) == 'blog.php' ? 'active' : ''; ?>">Blogs</a>
+                </li>
             </ul>
         </nav>
     </div>
