@@ -1,66 +1,133 @@
 <?php
+ob_start();
 session_start();
+require __DIR__ . '/../config/db.php';
 
 $nomeProjeto = 'CANZALA, LDA.';
 $navbarMode  = 'simple';
 $baseUrl     = '../';
 $pageTitle   = 'Carrinho - ' . $nomeProjeto;
 
-// =========================
+// ============================
+// DETECTAR AJAX
+// ============================
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) 
+    && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+// ============================
 // AÇÕES DO CARRINHO (ANTES DE QUALQUER OUTPUT)
-// =========================
+// ============================
 
 // Garantir que o carrinho é um array
 if (!isset($_SESSION['carrinho']) || !is_array($_SESSION['carrinho'])) {
     $_SESSION['carrinho'] = [];
 }
 
+/**
+ * Calcula totais e responde JSON (se AJAX) ou redireciona (se normal)
+ */
+function responderCarrinho($extras = []) {
+    global $isAjax, $pdo;
+    
+    if (!$isAjax) {
+        header('Location: carrinho.php');
+        exit;
+    }
+    
+    // Calcular totais
+    $totalItens = 0;
+    $totalGeral = 0;
+    $novoSubtotalItem = 0;
+    
+    if (!empty($_SESSION['carrinho'])) {
+        try {
+            $ids = array_keys($_SESSION['carrinho']);
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            
+            $stmt = $pdo->prepare("SELECT id, preco FROM produtos WHERE id IN ($placeholders)");
+            $stmt->execute($ids);
+            $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            foreach ($produtos as $p) {
+                $qtd = (int) $_SESSION['carrinho'][$p['id']];
+                $subtotal = $p['preco'] * $qtd;
+                $totalGeral += $subtotal;
+                $totalItens += $qtd;
+                
+                if (isset($extras['id']) && $p['id'] == $extras['id']) {
+                    $novoSubtotalItem = $subtotal;
+                }
+            }
+        } catch (Exception $e) {
+            // Silencia erros
+        }
+    }
+    
+    if (ob_get_length()) ob_clean();
+    
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(array_merge([
+        'sucesso' => true,
+        'total_itens' => $totalItens,
+        'total_geral' => number_format($totalGeral, 2, ',', '.'),
+        'novo_subtotal' => number_format($novoSubtotalItem, 2, ',', '.'),
+        'carrinho_vazio' => empty($_SESSION['carrinho'])
+    ], $extras));
+    exit;
+}
+
 // Limpar carrinho
 if (isset($_GET['limpar'])) {
     unset($_SESSION['carrinho']);
-    header('Location: carrinho.php');
-    exit;
+    responderCarrinho(['acao' => 'limpar']);
 }
 
 // Remover item
 if (isset($_GET['remover'])) {
     $idRemover = (int) $_GET['remover'];
-
     if (isset($_SESSION['carrinho'][$idRemover])) {
         unset($_SESSION['carrinho'][$idRemover]);
     }
-
-    header('Location: carrinho.php');
-    exit;
+    responderCarrinho(['acao' => 'remover', 'id' => $idRemover]);
 }
 
 // Aumentar quantidade
 if (isset($_GET['aumentar'])) {
     $idAumentar = (int) $_GET['aumentar'];
-
     if (isset($_SESSION['carrinho'][$idAumentar])) {
         $_SESSION['carrinho'][$idAumentar]++;
     }
-
-    header('Location: carrinho.php');
-    exit;
+    responderCarrinho([
+        'acao' => 'aumentar', 
+        'id' => $idAumentar,
+        'nova_quantidade' => $_SESSION['carrinho'][$idAumentar] ?? 0
+    ]);
 }
 
 // Diminuir quantidade
 if (isset($_GET['diminuir'])) {
     $idDiminuir = (int) $_GET['diminuir'];
-
+    $removido = false;
+    
     if (isset($_SESSION['carrinho'][$idDiminuir])) {
         $_SESSION['carrinho'][$idDiminuir]--;
-
         if ($_SESSION['carrinho'][$idDiminuir] <= 0) {
             unset($_SESSION['carrinho'][$idDiminuir]);
+            $removido = true;
         }
     }
-
-    header('Location: carrinho.php');
-    exit;
+    
+    responderCarrinho([
+        'acao' => 'diminuir',
+        'id' => $idDiminuir,
+        'nova_quantidade' => $removido ? 0 : ($_SESSION['carrinho'][$idDiminuir] ?? 0),
+        'removido' => $removido
+    ]);
 }
+
+// ============================
+// SE CHEGOU AQUI = REQUISIÇÃO NORMAL (render da página)
+// ============================
 
 // =========================
 // MONTAR DADOS DO CARRINHO
@@ -181,7 +248,8 @@ require __DIR__ . '/../includes/navbar.php';
 
                         <!-- Controles de quantidade -->
                         <div class="quantidade-controle">
-                            <a href="carrinho.php?remover=<?php echo (int)$item['id']; ?>" class="btn-lixeira"
+                            <a href="#" class="btn-lixeira btn-carrinho-acao" data-acao="remover"
+                                data-id="<?php echo (int)$item['id']; ?>"
                                 onclick="return confirm('Remover este produto?')" title="Remover">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2">
@@ -192,9 +260,15 @@ require __DIR__ . '/../includes/navbar.php';
                                 </svg>
                             </a>
 
-                            <a href="carrinho.php?diminuir=<?php echo (int)$item['id']; ?>" class="btn-qty">−</a>
-                            <span class="qty-numero"><?php echo (int)$item['quantidade']; ?></span>
-                            <a href="carrinho.php?aumentar=<?php echo (int)$item['id']; ?>" class="btn-qty">+</a>
+                            <a href="#" class="btn-qty btn-carrinho-acao" data-acao="diminuir"
+                                data-id="<?php echo (int)$item['id']; ?>">−</a>
+
+                            <span class="qty-numero" data-id="<?php echo (int)$item['id']; ?>">
+                                <?php echo (int)$item['quantidade']; ?>
+                            </span>
+
+                            <a href="#" class="btn-qty btn-carrinho-acao" data-acao="aumentar"
+                                data-id="<?php echo (int)$item['id']; ?>">+</a>
                         </div>
 
                     </div>
@@ -204,7 +278,7 @@ require __DIR__ . '/../includes/navbar.php';
 
                 <!-- Botão limpar carrinho -->
                 <div class="carrinho-acoes-extras">
-                    <a href="carrinho.php?limpar=1" class="btn-limpar"
+                    <a href="#" class="btn-limpar btn-carrinho-acao" data-acao="limpar"
                         onclick="return confirm('Tem certeza que deseja limpar todo o carrinho?')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2">

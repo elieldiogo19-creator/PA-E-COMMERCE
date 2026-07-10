@@ -173,3 +173,108 @@ document.addEventListener('click', function(e) {
         botao.style.opacity = '';
     });
 });
+
+// ============================================
+// AJAX DENTRO DO CARRINHO (aumentar/diminuir/remover/limpar)
+// ============================================
+document.addEventListener('click', function(e) {
+    const botao = e.target.closest('.btn-carrinho-acao');
+    if (!botao) return;
+    
+    e.preventDefault();
+    
+    const acao = botao.dataset.acao;
+    const produtoId = botao.dataset.id || 0;
+    
+    if (!acao) return;
+    
+    // Monta URL da ação
+    let url = 'carrinho.php?';
+    if (acao === 'limpar') {
+        url += 'limpar=1';
+    } else {
+        url += acao + '=' + produtoId;
+    }
+    
+    fetch(url, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.sucesso) return;
+        
+        // Atualiza badge do navbar
+        atualizarBadgeCarrinho(data.total_itens);
+        
+        // Atualiza totais na página
+        const totalValor = document.querySelector('.total-valor');
+        const mobileTotalValor = document.querySelector('.mobile-total-valor');
+        
+        if (totalValor) totalValor.textContent = data.total_geral + ' Kz';
+        if (mobileTotalValor) mobileTotalValor.textContent = data.total_geral + ' Kz';
+        
+        // Atualiza subtotal na linha de resumo
+        const resumoLinhas = document.querySelectorAll('.resumo-linha');
+        if (resumoLinhas.length > 0) {
+            const subtotalSpan = resumoLinhas[0].querySelector('span:last-child');
+            if (subtotalSpan) subtotalSpan.textContent = data.total_geral + ' Kz';
+        }
+        
+        // Se carrinho ficou vazio, recarrega
+        if (data.carrinho_vazio) {
+            location.reload();
+            return;
+        }
+        
+        // Ação de LIMPAR - recarrega
+        if (data.acao === 'limpar') {
+            location.reload();
+            return;
+        }
+        
+        // Encontra o card do produto
+        const produtoItem = botao.closest('.produto-item');
+        if (!produtoItem) return;
+        
+        if (data.acao === 'remover' || (data.acao === 'diminuir' && data.removido)) {
+            // Anima remoção do item
+            produtoItem.style.transition = 'all 0.4s ease';
+            produtoItem.style.opacity = '0';
+            produtoItem.style.transform = 'translateX(-30px)';
+            produtoItem.style.maxHeight = produtoItem.offsetHeight + 'px';
+            
+            setTimeout(() => {
+                produtoItem.style.maxHeight = '0';
+                produtoItem.style.padding = '0';
+                produtoItem.style.margin = '0';
+                produtoItem.style.overflow = 'hidden';
+            }, 200);
+            
+            setTimeout(() => produtoItem.remove(), 600);
+            
+            // Toast de remoção
+            mostrarToast('Produto removido do carrinho');
+        } else {
+            // Atualiza quantidade
+            const qtyNumero = produtoItem.querySelector('.qty-numero');
+            const subtotalEl = produtoItem.querySelector('.produto-subtotal');
+            
+            if (qtyNumero) {
+                qtyNumero.textContent = data.nova_quantidade;
+                qtyNumero.style.transform = 'scale(1.3)';
+                qtyNumero.style.transition = 'transform 0.2s ease';
+                setTimeout(() => qtyNumero.style.transform = 'scale(1)', 200);
+            }
+            
+            if (subtotalEl) {
+                subtotalEl.textContent = data.novo_subtotal + ' Kz';
+            }
+        }
+    })
+    .catch(err => {
+        console.error('Erro:', err);
+        mostrarToast('Erro', 'Falha ao processar ação');
+    });
+});

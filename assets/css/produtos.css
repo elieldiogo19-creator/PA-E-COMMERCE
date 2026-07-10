@@ -1,0 +1,480 @@
+/* ============================================
+   PRODUTOS.CSS - CANZALA (Compacto / Casa do Papel)
+   ============================================ */
+
+/* ============================================
+   1. LAYOUT PRINCIPAL
+   ============================================ */
+.produtos-main {
+    background: #f5f5f5;
+    min-height: 100vh;
+    padding: 25px 3% 50px;
+}
+
+.produtos-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 25px;
+    align-items: start;
+}
+
+/* ============================================
+   2. SIDEBAR COMPACTA
+   ============================================ */
+.produtos-sidebar {
+    background: white;
+    border-radius: 12px;
+    padding: 20px 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    height: fit-content;
+}
+
+.sidebar-titulo {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #d4af37;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sidebar-item {
+    display: block;
+    padding: 9px 12px;
+    color: #555;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.sidebar-item:hover {
+    background: rgba(212, 175, 55, 0.1);
+    color: #d4af37;
+    padding-left: 16px;
+}
+
+.sidebar-item.active {
+    background: linear-gradient(135deg, #d4af37 0%, #f39c12 100%);
+    color: white;
+    font-weight: 600;
+}
+
+/* ============================================
+   3. CABEÇALHO COMPACTO
+   ============================================ */
+.produtos-content {
+    min-width: 0;
+}
+
+.produtos-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    flex-wrap: wrap;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.produtos-cabecalho::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #d4af37 0%, #f39c12 100%);
+}
+
+.produtos-titulo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+    padding-left: 8px;
+}
+
+.highlight {
+    color: #d4af37;
+}
+
+.produtos-count {
+    color: #666;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: rgba(212, 175, 55, 0.08);
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin: 0;
+}
+
+/* ============================================
+   4. GRID - 4 CARDS POR LINHA
+   ============================================ */
+.vitrine {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+/* ============================================
+   5. CARD COMPACTO
+   ============================================ */
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* Badge de estoque pequeno */
+.badge-estoque {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.3px;
+    z-index: 3;
+}
+
+.badge-estoque.em-estoque {
+    background: rgba(46, 204, 113, 0.15);
+    color: #27ae60;
+}
+
+.badge-estoque.sem-estoque {
+    background: rgba(231, 76, 60, 0.15);
+    color: #c0392b;
+}
+
+/* Imagem pequena */
+.image-produto {
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+    background: #fafafa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.image-produto a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.image-produto img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.card:hover .image-produto img {
+    transform: scale(1.05);
+}
+
+/* Info compacta */
+.infor-produto {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+    flex: 1;
+}
+
+.infor-produto .titulo {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    line-height: 1.3;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.1em;
+}
+
+/* Descrição escondida por padrão (mostra só no hover se quiseres) */
+.descri {
+    font-size: 0.75rem;
+    color: #888;
+    line-height: 1.4;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Máximo 2 linhas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.1em;
+}
+
+/* Preço pequeno */
+.preco {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #d4af37;
+    margin: 4px 0 0 0;
+    line-height: 1;
+}
+
+.preco::after {
+    content: ' Kz';
+    font-size: 0.7rem;
+    color: #999;
+    font-weight: 600;
+}
+
+/* ============================================
+   6. BOTÕES (só "Adicionar" visível, compacto)
+   ============================================ */
+.produtos-accao {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: auto;
+}
+
+/* Botão Adicionar - compacto */
+.btn-1 {
+    background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+    color: white;
+    padding: 9px 10px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn-1:hover {
+    background: linear-gradient(135deg, #b8941f 0%, #9a7a1a 100%);
+    transform: translateY(-1px);
+}
+
+.btn-1 svg {
+    width: 13px;
+    height: 13px;
+}
+
+/* Botão Saber mais - link discreto */
+.btn {
+    background: transparent;
+    color: #666;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s ease;
+    border: 1px solid #e0e0e0;
+    display: block;
+}
+
+.btn:hover {
+    background: #1a1a1a;
+    color: white;
+    border-color: #1a1a1a;
+}
+
+/* ============================================
+   7. ESTADO VAZIO
+   ============================================ */
+.produtos-vazio {
+    background: white;
+    border-radius: 12px;
+    padding: 60px 30px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.produtos-vazio svg {
+    color: #d4af37;
+    opacity: 0.5;
+    margin-bottom: 15px;
+}
+
+.produtos-vazio h2 {
+    font-size: 1.2rem;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.produtos-vazio p {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.btn-voltar-produtos {
+    display: inline-block;
+    padding: 10px 25px;
+    background: #d4af37;
+    color: white;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-voltar-produtos:hover {
+    background: #b8941f;
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   8. LOADING STATE
+   ============================================ */
+.produtos-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #666;
+    gap: 15px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f5f5f5;
+    border-top-color: #d4af37;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.produtos-loading p {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+/* ============================================
+   9. RESPONSIVIDADE
+   ============================================ */
+
+/* Desktop menor - 3 cards */
+@media (max-width: 1200px) {
+    .vitrine {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Tablet - 2 cards + sidebar em cima */
+@media (max-width: 900px) {
+    .produtos-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .produtos-sidebar {
+        order: -1;
+    }
+    
+    .sidebar-lista {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    
+    .sidebar-item {
+        padding: 7px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .sidebar-item:hover {
+        padding-left: 12px;
+    }
+    
+    .vitrine {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile - 2 cards pequenos */
+@media (max-width: 600px) {
+    .produtos-main {
+        padding: 15px 10px;
+    }
+    
+    .produtos-titulo {
+        font-size: 1.1rem;
+    }
+    
+    .image-produto {
+        height: 120px;
+    }
+    
+    .infor-produto .titulo {
+        font-size: 0.75rem;
+    }
+    
+    .preco {
+        font-size: 0.9rem;
+    }
+    
+    .btn-1 {
+        font-size: 0.65rem;
+        padding: 8px;
+    }
+}
+
+/* Mobile pequeno - 1 card */
+@media (max-width: 400px) {
+    .vitrine {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,7 +1,11 @@
 *{margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', sans-serif;}
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;}
+
+    
+   
 
    
 
@@ -12,11 +16,6 @@
         align-items: center;
         
         padding: 13px 4%;
-        background: hsl(0, 0%, 100%);
-        margin-top: 30px;
-        border-radius: 45px;
-        
-        
         margin: 20px 25px;
     }
     
@@ -51,44 +50,50 @@
     .nav-links a:hover{
         color:#e94f57;
         transition: 0.2s;
-         text-decoration: underline;
          font-weight: 400;
          font-weight: bold;
     }
-
     .shop-menu {
     display: none;
     list-style: none;
     padding-left: 15px;
     background: #fff;
-    border-left: 2px solid #ff4d6d;
+    border-left: 2px solid #ff4d6d; /* Uma linha fina para estilo premium */
 }
 
-
+/* O sub-menu que aparece abaixo de Electrónicos */
 .products-submenu {
     display: none;
     list-style: none;
-    padding-left: 20px;
+    padding-left: 20px; /* Recuo para parecer uma sub-categoria */
     background: #f4f4f4;    
 }
 a.subtitulo:hover{
      color:#948b8b
 }
 
-
+/* Classe que o JS vai adicionar para mostrar */
 .active-menu {
     display: block !important;
 }
 
-
+/* Ajuste nos links para ficarem um abaixo do outro */
 .nav-links li {
     display: block; 
 }
+a.titulo{
+    color: black;
+}
+
+   
+
+
+
 
     .header-right {
     display: flex;
     align-items: center;
-    gap: 200px;
+    gap: 30px;
     
     
 }
@@ -111,6 +116,7 @@ a.subtitulo:hover{
     font-size: 14px;
     transition: 0.3s;
     width: 150px; 
+    background-color: #fff;
     
 }
 .search-box input:focus {
@@ -138,174 +144,112 @@ a.subtitulo:hover{
     color: #1a1a1a;
     
 }
-@media (max-width: 768px) {
-    .main-header{
-        flex-direction: column;
-    }
-}
-@media (max-width: 768px) {
-    .nav-links{
-        flex-direction: column;
-    }
-}
-@media (max-width: 480px) {
-    .nav-links{
-        flex-direction: column;
-    }
-}
-@media (max-width: 768px) {
-    .hero{
-        flex-direction: column;
-        align-items: center;
-        background-color: #1a1a1a;
-    }
-    .bg-text{
-        font-size: 129px;
-    }
-}
+
 .hero{
-    background-color:  #e7e2e2;
-
-    
-    margin: 0 45px;
-    border-radius: 45px;
-}
-.bubas{
-    margin-left: 42%;
-    transform: translateY(20px);
-}
-.controls{
-    transform: translateY(90px);
-    display: flex;
-    justify-content: space-between;
+    background-color: #1a1a1a;
+    height: auto;
+    padding: 40px 20px;
+    margin: 0 22px;
+    border-radius: 17px;
+    background-color: #e7e2e2;
     
 }
-.sorta{
-    margin-left: 40px;
-}
-.items{
-    padding: 5px 20px;
-    align-items: center;
-    font-size: 14px;
-    border-radius: 5px;
-    font-family:  Sans-serif;
-    border: none;
-    margin-left: 5px;
-}
-.action-buttons{
-    margin-right:40px ;
-    display: flex;
-    gap: 17px;
-}
-.btn-outline{
-padding: 8px 12px;
-border-radius: 5px;
-border: none;
-background-color: white;
-}
-.btn-primary{
-    padding: 6px 14px;
-    font-family:Sans-serif ;
-    border-radius: 5px;
-    border: none;
-    color: white;
-    background-color: #f0424b;
-     box-shadow: 
-    0 0 11px rgba(255, 0, 0, 0.9), 
-    inset 0 0 30px rgba(255, 255, 255, 0.2)
-}
-
-.btn-primary:hover{
-    transform: scale(1) translateY(-5px);
-    cursor: pointer;
-}
-
 .vitrine{
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    margin: 0 20px;
-    border-radius: 20px;
-    justify-content: center;
-    margin-top: 70px;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 15px;
+    justify-items: center;
 }
-
 .card{
-    background-color:white;
-    margin-top: 50px;
-    margin-left: 20px;
-    width: 320px;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
-    border-radius: 13px;
-    overflow: hidden;
+    background-color: white;
+    border-radius: 16px;
+    padding: 10px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
     
+    
+
 }
 
-.titulo{
-    font-size: 17px;
-    margin-left:5px ;
-    margin-top: 5px;
-        
-}
-.subt{
-     margin-top: 28px;
-      font-weight: 700;
-      margin-left: 400px;
-}
-
-.image-product img{
-    width: 100%;      
-  height: 190px;     
-  object-fit: contain; 
-  padding: 5px;
-   display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.preco{
-    margin-left: 100px;
-    margin-top: 16px;
-    font-weight: bold;
-    font-size: 18px;
-    margin-bottom: 5px;
-}
-.click{
+.produtos-accao{
     display: flex;
     flex-direction: column;
-    margin: 0 20px;
-    margin-bottom: 15px;
-    gap: 10px;
-    margin-top: 10px;
-    
-    
+    border-radius: 15px;
+    gap: 7px;
+    margin-top: 1px;
+    width: 200px;
+    margin-top: 12px;
 }
-.image-product{
-    background-color:rgb(184, 184, 184);
-    height: 200px;
+.linhar{
+    display: flex;
+    justify-content: center;
+     gap: 10px;                              
 }
-.btn-carrinho{
-    padding: 10px 20px;
+.fa-heart{
+    margin-top: 4%;
+    align-items: center;
+}
+.btn{
+    background-color: #1a1a1a;
+    padding: 8px 1px;
     border-radius: 20px;
-     background-color:#fad400;
-    border: none;
-    color: white;
     font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    background-color:  #e7e2e2;
+    width: 170px;
+    color: black;
+    text-align: center;
+}
+.btn-1{
+    background-color: #f42c37;
+     padding: 8px 1px;
+    border-radius: 20px;
+    font-weight: 640;
+    font-size: 13px;
+    text-decoration: none;
+    background-color: #1a1a1a;
+    width: 170px;
+    color: white;
+    text-align: center;
 
 }
-.btn-comprar{
-    padding: 10px 20px;
-    border-radius: 30px;
-     background-color: white;
-    border: 2px solid #fad400;
-    color: #fad400;
-    font-size: 15px;
-}
-.btn-carrinho:hover{
-     transform: scale(1) translateY(-5px);
+.btn-1:hover{
+    transform: scale(1) translateY(-5px);
     cursor: pointer;
 }
-.btn-comprar:hover{
+.btn:hover{
     transform: scale(1) translateY(-5px);
     cursor: pointer;
 }
 
- 
+.descri{
+    font-size: 13px;
+     margin-top: 2%;
+     font-weight: 500;
+
+    
+}
+.preco{
+    font-size: 16px;
+    margin-top: 2%;
+    font-weight: 700;
+}
+
+.image-produto img{
+   width: 100%;      
+  height: 170px;     
+  object-fit: contain;
+}
+.image-produto img:hover{
+    transform: scale(1) translateY(-9px);
+    cursor: pointer;
+}
+.card:hover{
+    transform: scale(1) translateY(-5px);
+    cursor: pointer;
+}
+.preco.preco:hover{
+color:red;
+transform: scale(1) translateX(-5px);
+}
+
