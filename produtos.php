@@ -4,10 +4,29 @@ session_start();
 require __DIR__ . '/config/db.php';
 
 // Detectar se é AJAX
-$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) 
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
     && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
+// Filtros via GET
 $categoria_id = isset($_GET['categoria']) ? (int) $_GET['categoria'] : 0;
+$ordem        = isset($_GET['ordem']) ? trim($_GET['ordem']) : 'recentes';
+
+// Whitelist de ordenações (protege contra SQL injection)
+$ordensPermitidas = [
+    'recentes'  => 'p.criado_em DESC',
+    'antigos'   => 'p.criado_em ASC',
+    'preco_asc' => 'p.preco ASC',
+    'preco_desc'=> 'p.preco DESC',
+    'nome_asc'  => 'p.nome ASC',
+    'nome_desc' => 'p.nome DESC',
+];
+
+// Se veio ordem inválida, cai no padrão
+if (!array_key_exists($ordem, $ordensPermitidas)) {
+    $ordem = 'recentes';
+}
+
+$orderBy = $ordensPermitidas[$ordem];
 
 try {
     // Buscar todas categorias
@@ -18,26 +37,31 @@ try {
     ");
     $categorias = $stmtCat->fetchAll(PDO::FETCH_ASSOC);
 
-    // Buscar produtos (com ou sem filtro)
+    // Campos comuns
+    $campos = "
+        p.id, p.nome, p.descricao_curta, p.preco, p.imagem, p.estoque,
+        c.nome AS categoria_nome
+    ";
+
+    // Buscar produtos (com ou sem filtro de categoria)
     if ($categoria_id > 0) {
         $stmt = $pdo->prepare("
-            SELECT p.id, p.nome, p.descricao, p.preco, p.imagem,
-                   c.nome AS categoria_nome
+            SELECT $campos
             FROM produtos p
             LEFT JOIN categorias c ON c.id = p.categoria_id
             WHERE p.categoria_id = ?
-            ORDER BY p.criado_em DESC
+            ORDER BY $orderBy
         ");
         $stmt->execute([$categoria_id]);
     } else {
         $stmt = $pdo->query("
-            SELECT p.id, p.nome, p.descricao, p.preco, p.imagem, p.estoque,
-                c.nome AS categoria_nome
+            SELECT $campos
             FROM produtos p
             LEFT JOIN categorias c ON c.id = p.categoria_id
-            ORDER BY p.criado_em DESC
+            ORDER BY $orderBy
         ");
     }
+
     $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
@@ -46,58 +70,97 @@ try {
 }
 
 // ============================
-// SE FOR AJAX, RETORNA APENAS O HTML DOS PRODUTOS
+// FUNÇÃO PARA RENDERIZAR UM CARD
+// ============================
+function renderCard(array $produto): string {
+    $img = !empty($produto['imagem'])
+        ? htmlspecialchars($produto['imagem'])
+        : 'assets/img/produto-sem-imagem.png';
+
+    $nome     = htmlspecialchars($produto['nome']);
+    $nomeAttr = htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8');
+    $desc     = htmlspecialchars($produto['descricao_curta'] ?? 'Sem descrição.');
+    $preco    = number_format($produto['preco'], 2, ',', '.');
+    $id       = (int) $produto['id'];
+    $estoque  = (int) $produto['estoque'];
+
+    $badge = $estoque > 0
+        ? '<span class="badge-estoque em-estoque">EM ESTOQUE</span>'
+        : '<span class="badge-estoque sem-estoque">ESGOTADO</span>';
+
+    return <<<HTML
+    <div class="card">
+        {$badge}
+
+        <div class="image-produto">
+            <a href="pages/detalhes.php?id={$id}">
+                <img src="{$img}" alt="{$nome}">
+            </a>
+        </div>
+
+        <div class="infor-produto">
+            <h3 class="titulo">{$nome}</h3>
+            <p class="descri">{$desc}</p>
+            <p class="preco">Kz {$preco}</p>
+        </div>
+
+        <div class="produtos-accao">
+            <a href="#" class="btn-1 btn-adicionar" data-id="{$id}" data-nome="{$nomeAttr}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                Add To Cart
+            </a>
+
+            <a href="pages/detalhes.php?id={$id}" class="btn">
+                Saiba mais...
+            </a>
+        </div>
+    </div>
+    HTML;
+}
+
+// ============================
+// SE FOR AJAX, RETORNA APENAS OS CARDS
 // ============================
 if ($isAjax) {
     if (ob_get_length()) ob_clean();
-    
     header('Content-Type: text/html; charset=utf-8');
-    
+
+    if (empty($produtos)) {
+        echo '<div class="produtos-vazio"><p>Nenhum produto encontrado.</p></div>';
+    } else {
+        echo '<div class="vitrine">';
+        foreach ($produtos as $produto) {
+            echo renderCard($produto);
+        }
+        echo '</div>';
+    }
+
+    echo '<span id="count-produtos" style="display:none">' . count($produtos) . '</span>';
+    exit;
+}
+
+// ============================
+// SE FOR AJAX, RETORNA APENAS OS CARDS
+// ============================
+if ($isAjax) {
+    if (ob_get_length()) ob_clean();
+    header('Content-Type: text/html; charset=utf-8');
+
     if (empty($produtos)) {
         echo '<div class="produtos-vazio"><p>Nenhum produto encontrado nesta categoria.</p></div>';
     } else {
         echo '<div class="vitrine">';
         foreach ($produtos as $produto) {
-            $img = !empty($produto['imagem']) 
-                ? htmlspecialchars($produto['imagem']) 
-                : 'assets/img/produto-sem-imagem.png';
-            $nome = htmlspecialchars($produto['nome']);
-            $nomeAttr = htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8');
-            $desc = htmlspecialchars(mb_strimwidth($produto['descricao'] ?? 'Sem descrição.', 0, 100, '...'));
-            $preco = number_format($produto['preco'], 2, ',', '.');
-            $id = (int) $produto['id'];
-            
-            echo <<<HTML
-            <div class="card">
-                
-                <div class="image-produto">
-                    <a href="pages/detalhes.php?id={$id}">
-                        <img src="{$img}" alt="{$nome}">
-                    </a>
-                </div>
-                <div class="infor-produto">
-                    <h3 class="titulo">{$nome}</h3>
-                    <p class="descri">{$desc}</p>
-                    <p class="preco">Kz {$preco}</p>
-                </div>
-                <div class="produtos-accao">
-                    <a href="#" class="btn-1 btn-adicionar" data-id="{$id}" data-nome="{$nomeAttr}">
-                        Adicionar ao carrinho
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="9" cy="21" r="1"></circle>
-                            <circle cx="20" cy="21" r="1"></circle>
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                        </svg>
-                    </a>
-                    <a href="pages/detalhes.php?id={$id}" class="btn">Saiba mais...</a>
-                </div>
-            </div>
-            HTML;
+            echo renderCard($produto);
         }
         echo '</div>';
     }
-    
-    // Também envia o contador
+
     echo '<span id="count-produtos" style="display:none">' . count($produtos) . '</span>';
     exit;
 }
@@ -105,7 +168,6 @@ if ($isAjax) {
 // ============================
 // RENDER NORMAL (não AJAX)
 // ============================
-
 $nomeProjeto = 'CANZALA, LDA.';
 $pageTitle = 'Produtos - ' . $nomeProjeto;
 $navbarMode = 'full';
@@ -148,9 +210,32 @@ require __DIR__ . '/includes/navbar.php';
 
                 <div class="produtos-cabecalho">
                     <h1 class="produtos-titulo">Shop / Loja</h1>
-                    <p class="produtos-count">
-                        <?= count($produtos) ?> <?= count($produtos) === 1 ? 'produto' : 'produtos' ?>
-                    </p>
+
+                    <div class="produtos-cabecalho-direita">
+                        <p class="produtos-count">
+                            <?= count($produtos) ?>
+                            <?= count($produtos) === 1 ? 'produto' : 'produtos' ?>
+                        </p>
+
+                        <div class="produtos-ordenar">
+                            <label for="ordenar-select">Ordenar:</label>
+                            <select id="ordenar-select" class="select-ordem"
+                                data-ordem-atual="<?= htmlspecialchars($ordem) ?>">
+                                <option value="recentes" <?= $ordem === 'recentes'   ? 'selected' : '' ?>>Mais recentes
+                                </option>
+                                <option value="antigos" <?= $ordem === 'antigos'    ? 'selected' : '' ?>>Mais antigos
+                                </option>
+                                <option value="preco_asc" <?= $ordem === 'preco_asc'  ? 'selected' : '' ?>>Preço: menor
+                                    para maior</option>
+                                <option value="preco_desc" <?= $ordem === 'preco_desc' ? 'selected' : '' ?>>Preço: maior
+                                    para menor</option>
+                                <option value="nome_asc" <?= $ordem === 'nome_asc'   ? 'selected' : '' ?>>Nome: A-Z
+                                </option>
+                                <option value="nome_desc" <?= $ordem === 'nome_desc'  ? 'selected' : '' ?>>Nome: Z-A
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <?php if (empty($produtos)): ?>
@@ -160,56 +245,7 @@ require __DIR__ . '/includes/navbar.php';
                 <?php else: ?>
                 <div class="vitrine">
                     <?php foreach ($produtos as $produto): ?>
-                    <div class="card">
-
-                        <?php if ($produto['estoque'] > 0): ?>
-                        <span class="badge-estoque em-estoque">EM ESTOQUE</span>
-                        <?php else: ?>
-                        <span class="badge-estoque sem-estoque">ESGOTADO</span>
-                        <?php endif; ?>
-
-                        <!-- Imagem -->
-                        <div class="image-produto">
-                            <a href="pages/detalhes.php?id=<?= (int) $produto['id'] ?>">
-                                <?php if (!empty($produto['imagem'])): ?>
-                                <img src="<?= htmlspecialchars($produto['imagem']) ?>"
-                                    alt="<?= htmlspecialchars($produto['nome']) ?>">
-                                <?php else: ?>
-                                <img src="assets/img/produto-sem-imagem.png" alt="Sem imagem">
-                                <?php endif; ?>
-                            </a>
-                        </div>
-
-                        <!-- Info -->
-                        <div class="infor-produto">
-                            <h3 class="titulo"><?= htmlspecialchars($produto['nome']) ?></h3>
-
-                            <p class="descri">
-                                <?= htmlspecialchars(mb_strimwidth($produto['descricao'] ?? 'Sem descrição.', 0, 80, '...')) ?>
-                            </p>
-
-                            <p class="preco">Kz <?= number_format($produto['preco'], 2, ',', '.') ?></p>
-                        </div>
-
-                        <!-- Ações -->
-                        <div class="produtos-accao">
-                            <a href="#" class="btn-1 btn-adicionar" data-id="<?= (int) $produto['id'] ?>"
-                                data-nome="<?= htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8') ?>">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="9" cy="21" r="1"></circle>
-                                    <circle cx="20" cy="21" r="1"></circle>
-                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                </svg>
-                                Add To Cart
-                            </a>
-
-                            <a href="pages/detalhes.php?id=<?= (int) $produto['id'] ?>" class="btn">
-                                Saiba mais...
-                            </a>
-                        </div>
-
-                    </div>
+                    <?= renderCard($produto) ?>
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>

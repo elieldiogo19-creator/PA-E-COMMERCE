@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $nome = trim($_POST['nome'] ?? '');
     $descricao = trim($_POST['descricao'] ?? '');
+    $descricao_curta = trim($_POST['descricao_curta'] ?? '');
     $preco = $_POST['preco'] ?? '';
     $estoque = (int) ($_POST['estoque'] ?? 0);
     $categoria_id = !empty($_POST['categoria_id']) 
@@ -32,6 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validação da imagem
     if (!isset($_FILES['imagem']) || $_FILES['imagem']['error'] !== UPLOAD_ERR_OK) {
         $errors[] = 'Selecione uma imagem válida.';
+    }
+
+    if (mb_strlen($descricao_curta) > 200) {
+    $errors[] = 'A descrição curta não pode ter mais de 200 caracteres.';
     }
 
     if (empty($errors)) {
@@ -54,14 +59,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // 🔹 Inserir no banco
             $stmt = $pdo->prepare("
-                INSERT INTO produtos 
-                (nome, descricao, preco, imagem, estoque, categoria_id)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO produtos (nome, descricao, descricao_curta, preco, imagem, estoque, categoria_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             ");
 
             $stmt->execute([
                 $nome,
                 $descricao,
+                $descricao_curta,
                 $preco,
                 $caminhoBanco,
                 $estoque,
@@ -105,6 +110,12 @@ require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
             <label>
                 Nome:
                 <input type="text" name="nome" required>
+            </label>
+            <br><br>
+
+            <label>
+                Descrição curta (aparece nos cards):
+                <textarea name="descricao_curta" rows="2" maxlength="200"></textarea>
             </label>
             <br><br>
 

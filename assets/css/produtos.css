@@ -214,7 +214,7 @@
 .infor-produto {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px; /* Era 6px, agora 4px */
     margin-bottom: 10px;
     flex: 1;
 }
@@ -231,20 +231,19 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 2.1em;
+    /* Removi: min-height: 2.1em; */
 }
 
 /* Descrição escondida por padrão (mostra só no hover se quiseres) */
 .descri {
     font-size: 0.75rem;
-    color: #888;
+    color: #333;
     line-height: 1.4;
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2; /* Máximo 2 linhas */
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 2.1em;
 }
 
 /* Preço pequeno */
@@ -275,7 +274,7 @@
 
 /* Botão Adicionar - compacto */
 .btn-1 {
-    background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+    background: linear-gradient(135deg, #d4af37 0%, #f39c12 100%);
     color: white;
     padding: 9px 10px;
     border-radius: 8px;
@@ -308,15 +307,15 @@
 /* Botão Saber mais - link discreto */
 .btn {
     background: transparent;
-    color: #666;
+    color: #d4af37;
     padding: 6px 10px;
     border-radius: 6px;
     font-size: 0.7rem;
-    font-weight: 500;
+    font-weight: 700;
     text-decoration: none;
     text-align: center;
     transition: all 0.2s ease;
-    border: 1px solid #e0e0e0;
+    border: 2px solid #d4af37;
     display: block;
 }
 
@@ -476,5 +475,81 @@
 @media (max-width: 400px) {
     .vitrine {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   10. FILTRO DE ORDENAÇÃO
+   ============================================ */
+
+.produtos-cabecalho-direita {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.produtos-ordenar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.produtos-ordenar label {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.select-ordem {
+    padding: 7px 12px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    color: #1a1a1a;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    outline: none;
+
+    /* Seta customizada */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='3'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 32px;
+}
+
+.select-ordem:hover {
+    border-color: #d4af37;
+}
+
+.select-ordem:focus {
+    border-color: #d4af37;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+    .produtos-cabecalho-direita {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .produtos-ordenar label {
+        display: none;
+    }
+
+    .select-ordem {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+        padding-right: 28px;
     }
 }

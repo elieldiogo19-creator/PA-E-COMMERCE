@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $nome = trim($_POST['nome'] ?? '');
     $descricao = trim($_POST['descricao'] ?? '');
+    $descricao_curta = trim($_POST['descricao_curta'] ?? '');
     $preco = $_POST['preco'] ?? '';
     $estoque = (int) ($_POST['estoque'] ?? 0);
     $categoria_id = !empty($_POST['categoria_id'])
@@ -82,13 +83,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt = $pdo->prepare("
     UPDATE produtos
-    SET nome=?, descricao=?, preco=?, imagem=?, estoque=?, categoria_id=?
+    SET nome=?, descricao=?, descricao_curta=?, preco=?, imagem=?, estoque=?, categoria_id=?
     WHERE id=?
 ");
 
         $stmt->execute([
     $nome,
     $descricao,
+    $descricao_curta,
     $preco,
     $imagemBanco,
     $estoque,
@@ -125,6 +127,13 @@ require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
             <label>
                 Nome:
                 <input type="text" name="nome" value="<?= htmlspecialchars($produto['nome']) ?>" required>
+            </label>
+            <br><br>
+
+            <label>
+                Descrição curta (aparece nos cards):
+                <textarea name="descricao_curta" rows="2"
+                    maxlength="200"><?= htmlspecialchars($produto['descricao_curta'] ?? '') ?></textarea>
             </label>
             <br><br>
 

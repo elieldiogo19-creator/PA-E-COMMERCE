@@ -24,7 +24,7 @@ if (isset($_SESSION['carrinho']) && is_array($_SESSION['carrinho'])) {
 function getNavbarCategorias($pdo) {
     if (!isset($pdo)) return [];
     try {
-        $stmt = $pdo->query("SELECT id, nome FROM categorias ORDER BY nome LIMIT 6");
+        $stmt = $pdo->query("SELECT id, nome FROM categorias ORDER BY nome");
         return $stmt->fetchAll();
     } catch (PDOException $e) {
         return [];
