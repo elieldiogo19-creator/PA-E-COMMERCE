@@ -10,21 +10,22 @@ require_once __DIR__ . '/../includes/admin_flash.php';
 require_once __DIR__ . '/../../config/db.php';
 
 $nomeProjeto = 'CANZALA, LDA.';
-$pageTitle = 'Adicionar Produto - ' . $nomeProjeto;
-$baseUrl = '../../';
+$pageTitle   = 'Adicionar Produto - ' . $nomeProjeto;
+$baseUrl     = '../../';
+$pageCSS     = 'dashboard';
 
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $nome = trim($_POST['nome'] ?? '');
-    $descricao = trim($_POST['descricao'] ?? '');
+    $nome            = trim($_POST['nome'] ?? '');
+    $descricao       = trim($_POST['descricao'] ?? '');
     $descricao_curta = trim($_POST['descricao_curta'] ?? '');
-    $preco = $_POST['preco'] ?? '';
-    $estoque = (int) ($_POST['estoque'] ?? 0);
-    $categoria_id = !empty($_POST['categoria_id']) 
-    ? (int) $_POST['categoria_id'] 
-    : null;
+    $preco           = $_POST['preco'] ?? '';
+    $estoque         = (int) ($_POST['estoque'] ?? 0);
+    $categoria_id    = !empty($_POST['categoria_id'])
+                        ? (int) $_POST['categoria_id']
+                        : null;
 
     if ($nome === '' || $preco === '') {
         $errors[] = 'Nome e preço são obrigatórios.';
@@ -36,28 +37,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (mb_strlen($descricao_curta) > 200) {
-    $errors[] = 'A descrição curta não pode ter mais de 200 caracteres.';
+        $errors[] = 'A descrição curta não pode ter mais de 200 caracteres.';
     }
 
     if (empty($errors)) {
-
         try {
-
-            // 🔹 Gerar nome único
-            $extensao = pathinfo($_FILES['imagem']['name'], PATHINFO_EXTENSION);
+            // Gerar nome único
+            $extensao   = pathinfo($_FILES['imagem']['name'], PATHINFO_EXTENSION);
             $nomeImagem = uniqid('prod_', true) . '.' . strtolower($extensao);
 
-            // 🔹 Caminho físico
+            // Caminho físico
             $caminhoFisico = __DIR__ . '/../../assets/img/prods/' . $nomeImagem;
 
-            // 🔹 Caminho que vai para o banco
+            // Caminho que vai para o banco
             $caminhoBanco = 'assets/img/prods/' . $nomeImagem;
 
             if (!move_uploaded_file($_FILES['imagem']['tmp_name'], $caminhoFisico)) {
                 throw new Exception('Erro ao salvar imagem.');
             }
 
-            // 🔹 Inserir no banco
+            // Inserir no banco
             $stmt = $pdo->prepare("
                 INSERT INTO produtos (nome, descricao, descricao_curta, preco, imagem, estoque, categoria_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -87,87 +86,232 @@ $stmt = $pdo->query("SELECT * FROM categorias ORDER BY nome ASC");
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 require_once __DIR__ . '/../../includes/header.php';
-require_once __DIR__ . '/../../admin/includes/admin_sidebar.php';
 ?>
 
-<main>
+<div class="admin-wrapper">
+    <?php require_once __DIR__ . '/../includes/admin_sidebar.php'; ?>
 
-    <section class="section">
-        <h1>Adicionar Produto</h1>
+    <main class="admin-dashboard">
 
+        <!-- Cabeçalho da página -->
+        <section class="section page-header">
+            <div>
+                <h1>Adicionar Produto</h1>
+                <p>Preencha os dados abaixo para cadastrar um novo produto.</p>
+            </div>
+
+            <a href="listar.php" class="btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Voltar
+            </a>
+        </section>
+
+        <!-- Erros -->
         <?php if (!empty($errors)): ?>
-        <div class="alert alert-erro">
-            <ul>
-                <?php foreach ($errors as $erro): ?>
-                <li><?= htmlspecialchars($erro) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
+            <div class="alert alert-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <div>
+                    <strong>Ocorreu um erro:</strong>
+                    <ul style="margin: 4px 0 0; padding-left: 20px;">
+                        <?php foreach ($errors as $erro): ?>
+                            <li><?= htmlspecialchars($erro) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
         <?php endif; ?>
 
-        <form method="POST" enctype="multipart/form-data">
+        <!-- Formulário -->
+        <form method="POST" enctype="multipart/form-data" class="admin-form">
 
-            <label>
-                Nome:
-                <input type="text" name="nome" required>
-            </label>
-            <br><br>
+            <div class="form-grid">
 
-            <label>
-                Descrição curta (aparece nos cards):
-                <textarea name="descricao_curta" rows="2" maxlength="200"></textarea>
-            </label>
-            <br><br>
+                <!-- Coluna esquerda -->
+                <div class="form-column">
 
-            <label>
-                Descrição:
-                <textarea name="descricao" rows="4"></textarea>
-            </label>
-            <br><br>
+                    <div class="form-card">
+                        <h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            Informações do Produto
+                        </h2>
 
-            <label>
-                Preço:
-                <input type="number" step="0.01" name="preco" required>
-            </label>
-            <br><br>
+                        <div class="form-group">
+                            <label for="nome">Nome do produto <span class="required">*</span></label>
+                            <input type="text" id="nome" name="nome"
+                                   value="<?= htmlspecialchars($_POST['nome'] ?? '') ?>"
+                                   placeholder="Ex: Samsung Galaxy S24 Ultra"
+                                   required>
+                        </div>
 
-            <label>
-                Imagem:
-                <input type="file" name="imagem" accept="image/*" required>
-            </label>
-            <br><br>
+                        <div class="form-group">
+                            <label for="descricao_curta">
+                                Descrição curta
+                                <span class="label-hint">(aparece nos cards, máx. 200 caracteres)</span>
+                            </label>
+                            <textarea id="descricao_curta" name="descricao_curta"
+                                      rows="2" maxlength="200"
+                                      placeholder="Uma breve descrição atraente..."><?= htmlspecialchars($_POST['descricao_curta'] ?? '') ?></textarea>
+                            <small class="char-counter"><span id="counter">0</span>/200</small>
+                        </div>
 
-            <label>
-                Estoque:
-                <input type="number" name="estoque" min="0" required>
-            </label>
-            <br>
+                        <div class="form-group">
+                            <label for="descricao">Descrição completa</label>
+                            <textarea id="descricao" name="descricao" rows="6"
+                                      placeholder="Detalhes técnicos, benefícios, características..."><?= htmlspecialchars($_POST['descricao'] ?? '') ?></textarea>
+                        </div>
+                    </div>
 
-            <label>
-                Categoria:
-                <select name="categoria_id">
-                    <option value="">Sem categoria</option>
+                    <div class="form-card">
+                        <h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                            Preço e Estoque
+                        </h2>
 
-                    <?php foreach ($categorias as $cat): ?>
-                    <option value="<?= $cat['id'] ?>">
-                        <?= htmlspecialchars($cat['nome']) ?>
-                    </option>
-                    <?php endforeach; ?>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="preco">Preço (Kz) <span class="required">*</span></label>
+                                <input type="number" id="preco" name="preco"
+                                       step="0.01" min="0"
+                                       value="<?= htmlspecialchars($_POST['preco'] ?? '') ?>"
+                                       placeholder="0.00" required>
+                            </div>
 
-                </select>
-            </label>
-            <br><br>
+                            <div class="form-group">
+                                <label for="estoque">Estoque inicial <span class="required">*</span></label>
+                                <input type="number" id="estoque" name="estoque"
+                                       min="0"
+                                       value="<?= htmlspecialchars($_POST['estoque'] ?? '0') ?>"
+                                       placeholder="0" required>
+                            </div>
+                        </div>
+                    </div>
 
+                </div>
 
+                <!-- Coluna direita -->
+                <div class="form-column">
 
-            <button type="submit">Salvar Produto</button>
+                    <div class="form-card">
+                        <h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            Imagem do Produto
+                        </h2>
+
+                        <div class="upload-area" id="uploadArea">
+                            <input type="file" id="imagem" name="imagem"
+                                   accept="image/*" required
+                                   class="upload-input">
+                            <label for="imagem" class="upload-label">
+                                <div class="upload-preview" id="uploadPreview">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                    </svg>
+                                    <p><strong>Clique para escolher</strong> ou arraste a imagem</p>
+                                    <small>PNG, JPG ou WEBP</small>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-card">
+                        <h2>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Categoria
+                        </h2>
+
+                        <div class="form-group">
+                            <label for="categoria_id">Selecione a categoria</label>
+                            <select id="categoria_id" name="categoria_id">
+                                <option value="">Sem categoria</option>
+                                <?php foreach ($categorias as $cat): ?>
+                                    <option value="<?= $cat['id'] ?>"
+                                        <?= (isset($_POST['categoria_id']) && $_POST['categoria_id'] == $cat['id']) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($cat['nome']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Ações -->
+                    <div class="form-actions">
+                        <a href="listar.php" class="btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            Salvar Produto
+                        </button>
+                    </div>
+
+                </div>
+            </div>
         </form>
 
-        <p>
-            <a href="listar.php">← Voltar</a>
-        </p>
+    </main>
+</div>
 
-    </section>
-</main>
+<script>
+    // Contador de caracteres
+    const textarea = document.getElementById('descricao_curta');
+    const counter  = document.getElementById('counter');
+    if (textarea && counter) {
+        const update = () => counter.textContent = textarea.value.length;
+        textarea.addEventListener('input', update);
+        update();
+    }
 
-<?php require_once __DIR__ . '/../../admin/includes/admin_footer.php'; ?>
+    // Preview da imagem
+    const inputImg = document.getElementById('imagem');
+    const preview  = document.getElementById('uploadPreview');
+    if (inputImg && preview) {
+        inputImg.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                preview.innerHTML = `
+                    <img src="${ev.target.result}" alt="Preview">
+                    <p class="upload-filename">${file.name}</p>
+                    <small>Clique para trocar</small>
+                `;
+                preview.classList.add('has-image');
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
+
+<?php require_once __DIR__ . '/../includes/admin_footer.php'; ?>
