@@ -553,3 +553,88 @@
         padding-right: 28px;
     }
 }
+
+/* ============================================
+   PAGINAÇÃO
+   ============================================ */
+.paginacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin: 40px 0 20px;
+    flex-wrap: wrap;
+}
+
+.pag-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    background: #fff;
+    color: #666;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.pag-btn:hover:not(.disabled):not(.active):not(.pag-dots) {
+    background: #fafafa;
+    border-color: var(--cor-primaria);
+    color: var(--cor-primaria);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(212, 175, 55, 0.15);
+}
+
+.pag-btn.active {
+    background: linear-gradient(135deg, var(--cor-primaria) 0%, var(--cor-acento) 100%);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.35);
+    cursor: default;
+}
+
+.pag-btn.disabled {
+    background: #f5f5f5;
+    color: #bbb;
+    border-color: #eee;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.pag-dots {
+    background: transparent !important;
+    border: none !important;
+    color: #999;
+    cursor: default;
+}
+
+.pag-nav svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .pag-nav {
+        padding: 0 10px;
+        font-size: 0.82rem;
+    }
+    .pag-nav span,
+    .pag-nav {
+        gap: 4px;
+    }
+    .pag-btn {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 10px;
+    }
+}

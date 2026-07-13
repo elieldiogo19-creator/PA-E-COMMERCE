@@ -12,51 +12,163 @@ $usuarioNome = $_SESSION['usuario_nome'] ?? null;
 $qtdCarrinho = 0;
 
 // ============================================
-// Queries ao Banco de Dados
+// CONFIGURAÇÃO: 8 CATEGORIAS DA HOME
 // ============================================
+$categoriasHome = [4, 10, 11, 1, 12, 6, 3, 8];
 
-// 1. Slider (Carrega os 3 mais recentes do banco)
+// ============================================
+// ROTAÇÃO AUTOMÁTICA (A cada 6 minutos)
+// Para testar: mude 360 para 10 (10 segundos)
+// ============================================
+$seed = floor(time() / 360);
+
+function seededShuffle(array $array, int $seed): array {
+    mt_srand($seed);
+    $keys = array_keys($array);
+    for ($i = count($keys) - 1; $i > 0; $i--) {
+        $j = mt_rand(0, $i);
+        $tmp = $keys[$i];
+        $keys[$i] = $keys[$j];
+        $keys[$j] = $tmp;
+    }
+    mt_srand();
+    $result = [];
+    foreach ($keys as $k) {
+        $result[] = $array[$k];
+    }
+    return $result;
+}
+
+// Embaralha as 8 categorias com base no tempo
+$cats = seededShuffle($categoriasHome, $seed);
+
+// Distribui pelas seções (8 cats para 15 slots)
+$heroCats    = [$cats[0], $cats[1], $cats[2]];
+$gridCats    = [$cats[3], $cats[4], $cats[5], $cats[6], $cats[7], $cats[0]];
+$bannerCats  = [$cats[1], $cats[2]];
+$vitrineCats = [$cats[3], $cats[4], $cats[5], $cats[6]];
+
+// ============================================
+// FUNÇÃO: Busca 1 produto aleatório por categoria
+// ============================================
+function fetchRandomByCategories($pdo, array $catIds, array $extraFields = []) {
+    if (empty($catIds)) return [];
+
+    $placeholders = implode(',', array_fill(0, count($catIds), '?'));
+    $fields = !empty($extraFields) ? ', ' . implode(', ', $extraFields) : '';
+
+    $sql = "SELECT p.id, p.nome, p.nome_curto, p.imagem, p.categoria_id, c.nome as cat_nome {$fields}
+            FROM produtos p
+            LEFT JOIN categorias c ON c.id = p.categoria_id
+            WHERE p.categoria_id IN ($placeholders)";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($catIds);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Agrupa por categoria
+    $grouped = [];
+    foreach ($rows as $row) {
+        $grouped[$row['categoria_id']][] = $row;
+    }
+
+    // Pega 1 aleatório de cada categoria, respeitando a ordem do sorteio
+    $result = [];
+    foreach ($catIds as $cid) {
+        if (!empty($grouped[$cid])) {
+            $pick = $grouped[$cid][array_rand($grouped[$cid])];
+            // Garante fallback se nome_curto estiver vazio
+            if (empty($pick['nome_curto'])) {
+                $pick['nome_curto'] = $pick['nome'];
+            }
+            $result[] = $pick;
+        }
+    }
+    return $result;
+}
+
+// ============================================
+// FUNÇÃO: Busca o produto mais caro por categoria
+// ============================================
+function fetchExpensiveByCategories($pdo, array $catIds) {
+    if (empty($catIds)) return [];
+
+    $placeholders = implode(',', array_fill(0, count($catIds), '?'));
+
+    $sql = "SELECT p.id, p.nome, p.nome_curto, p.imagem, p.preco, p.categoria_id, c.nome as cat_nome
+            FROM produtos p
+            LEFT JOIN categorias c ON c.id = p.categoria_id
+            INNER JOIN (
+                SELECT categoria_id, MAX(preco) as max_preco
+                FROM produtos
+                WHERE categoria_id IN ($placeholders)
+                GROUP BY categoria_id
+            ) m ON m.categoria_id = p.categoria_id AND m.max_preco = p.preco";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($catIds);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Garante 1 só por categoria (se houver empate no preço, pega o primeiro)
+    $byCat = [];
+    foreach ($rows as $row) {
+        if (empty($row['nome_curto'])) {
+            $row['nome_curto'] = $row['nome'];
+        }
+        if (!isset($byCat[$row['categoria_id']])) {
+            $byCat[$row['categoria_id']] = $row;
+        }
+    }
+
+    // Mantém a ordem das categorias sorteadas
+    $result = [];
+    foreach ($catIds as $cid) {
+        if (isset($byCat[$cid])) {
+            $result[] = $byCat[$cid];
+        }
+    }
+    return $result;
+}
+
+// ============================================
+// 1. HERO SLIDER (3 produtos aleatórios)
+// ============================================
 try {
-    $stmt = $pdo->query("SELECT id, nome, preco, imagem FROM produtos ORDER BY criado_em DESC LIMIT 3");
-    $dbSliders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $dbSliders = fetchRandomByCategories($pdo, $heroCats);
 } catch (PDOException $e) {
     $dbSliders = [];
 }
 
-// 2. Grid de 6 Cards (Carrega produtos do banco para preencher os cards)
+// ============================================
+// 2. GRID DE 6 CARDS (1 produto de cada categoria)
+// ============================================
 try {
-    $stmt = $pdo->query("
-        SELECT p.id, p.nome, p.imagem, c.nome as cat_nome 
-        FROM produtos p
-        LEFT JOIN categorias c ON c.id = p.categoria_id
-        ORDER BY p.criado_em DESC LIMIT 6
-    ");
-    $dbGrid = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $dbGrid = fetchRandomByCategories($pdo, $gridCats);
 } catch (PDOException $e) {
     $dbGrid = [];
 }
 
-// 3. Banners (Banner 1 e Banner 2)
+// ============================================
+// 3. BANNERS (Produto mais caro de 2 categorias)
+// ============================================
 try {
-    $stmt = $pdo->query("SELECT id, nome, preco, imagem FROM produtos ORDER BY preco DESC LIMIT 2");
-    $dbBanners = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $dbBanners = fetchExpensiveByCategories($pdo, $bannerCats);
 } catch (PDOException $e) {
     $dbBanners = [];
 }
 
-// 4. Vitrine (Best Sellers - 4 produtos do banco)
+// ============================================
+// 4. VITRINE (4 produtos aleatórios)
+// ============================================
 try {
-    $stmt = $pdo->query("SELECT id, nome, preco, imagem FROM produtos ORDER BY criado_em ASC LIMIT 4");
-    $dbVitrine = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $dbVitrine = fetchRandomByCategories($pdo, $vitrineCats, ['p.preco']);
 } catch (PDOException $e) {
     $dbVitrine = [];
 }
 
 // ============================================
-// Lógica de Fallback (Placeholders se o banco estiver com poucos registros)
+// LÓGICA DE FALLBACK (Mocks se faltar produtos)
 // ============================================
-
-// Preenchimento dos 6 cards coloridos caso não existam 6 cadastrados
 $coresGrid = ['card-black', 'card-yellow', 'card-red', 'card-silver', 'card-green', 'card-blue'];
 $titulosFicticios = ['Earphone', 'Gadget', 'Laptop', 'Console', 'Oculus', 'Speakers'];
 $gridFinal = [];
@@ -66,12 +178,11 @@ for ($i = 0; $i < 6; $i++) {
         $gridFinal[] = [
             'id' => $dbGrid[$i]['id'],
             'titulo' => $dbGrid[$i]['cat_nome'] ?? 'Novidade',
-            'subtitulo' => $dbGrid[$i]['nome'],
+            'subtitulo' => $dbGrid[$i]['nome_curto'] ?? $dbGrid[$i]['nome'],
             'imagem' => $dbGrid[$i]['imagem'],
             'fallback' => false
         ];
     } else {
-        // Mock se não houver produto suficiente no banco para preencher os 6 cards
         $gridFinal[] = [
             'id' => '#',
             'titulo' => 'Enjoy With',
@@ -82,7 +193,6 @@ for ($i = 0; $i < 6; $i++) {
     }
 }
 
-// Preenchimento dos 4 produtos da Vitrine
 $vitrineFinal = [];
 for ($i = 0; $i < 4; $i++) {
     if (isset($dbVitrine[$i])) {
@@ -100,7 +210,6 @@ $pageCSS = 'home'; // Carrega home.css depois do global
 require __DIR__ . '/includes/header.php';
 ?>
 
-<link rel="stylesheet" href="<?php echo $baseUrl; ?>assets/css/home.css">
 
 <?php require __DIR__ . '/includes/navbar.php'; ?>
 
@@ -119,7 +228,7 @@ require __DIR__ . '/includes/header.php';
             <div class="carrosel <?php echo $classeCor; ?>">
                 <div class="content revelar">
                     <span class="brand-name">Canzala Series</span>
-                    <h1><?php echo htmlspecialchars($prod['nome']); ?></h1>
+                    <h1><?php echo htmlspecialchars($prod['nome_curto'] ?: $prod['nome']); ?></h1>
                     <h2 class="bg-text">WIRELESS</h2>
                     <button class="btn-shop" onclick="irParaDetalhes(<?php echo $prod['id']; ?>)">Shop Now</button>
                 </div>
@@ -167,7 +276,7 @@ require __DIR__ . '/includes/header.php';
          3. BANNER 1 (Produto mais caro / destaque do banco)
          ============================================ -->
     <?php 
-        $b1_nome = isset($dbBanners[0]) ? $dbBanners[0]['nome'] : 'Fine Smile';
+        $b1_nome = isset($dbBanners[0]) ? ($dbBanners[0]['nome_curto'] ?: $dbBanners[0]['nome']) : 'Fine Smile';
         $b1_preco = isset($dbBanners[0]) ? number_format($dbBanners[0]['preco'], 2, ',', '.') . ' Kz' : '$129';
         $b1_img = isset($dbBanners[0]['imagem']) ? $dbBanners[0]['imagem'] : 'assets/img/produto-sem-imagem.png';
         $b1_link = isset($dbBanners[0]) ? "irParaDetalhes(".$dbBanners[0]['id'].")" : "";
@@ -204,7 +313,7 @@ require __DIR__ . '/includes/header.php';
                     <img src="<?php echo htmlspecialchars($img); ?>" alt="Produto" onerror="this.src='assets/img/produto-sem-imagem.png'">
                     <button class="add-to-cart" onclick="<?php echo $link; ?>">Saiba Mais</button>
                 </div>
-                <h3 class="vamos"><?php echo htmlspecialchars($prod['nome']); ?></h3>
+                <h3 class="vamos"><?php echo htmlspecialchars($prod['nome_curto'] ?: $prod['nome']); ?></h3>
                 <p class="preco"><?php echo is_numeric($prod['preco']) ? number_format($prod['preco'], 2, ',', '.') . ' Kz' : $prod['preco']; ?></p>
             </div>
             <?php endforeach; ?>
@@ -215,7 +324,7 @@ require __DIR__ . '/includes/header.php';
          5. BANNER 2 (Segundo produto em destaque)
          ============================================ -->
     <?php 
-        $b2_nome = isset($dbBanners[1]) ? $dbBanners[1]['nome'] : 'Smart Solo';
+        $b2_nome = isset($dbBanners[1]) ? ($dbBanners[1]['nome_curto'] ?: $dbBanners[1]['nome']) : 'Smart Solo';
         $b2_preco = isset($dbBanners[1]) ? number_format($dbBanners[1]['preco'], 2, ',', '.') . ' Kz' : '$129';
         $b2_img = isset($dbBanners[1]['imagem']) ? $dbBanners[1]['imagem'] : 'assets/img/produto-sem-imagem.png';
         $b2_link = isset($dbBanners[1]) ? "irParaDetalhes(".$dbBanners[1]['id'].")" : "";

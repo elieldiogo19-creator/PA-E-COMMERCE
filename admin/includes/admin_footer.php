@@ -22,6 +22,6 @@
 
     </div>
 </footer>
-
+<script src="/PA-E-COMMERCE/assets/js/admin-ajax.js"></script>
 </body>
 </html>

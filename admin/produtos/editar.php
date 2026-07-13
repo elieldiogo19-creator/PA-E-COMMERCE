@@ -40,6 +40,7 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $nome            = trim($_POST['nome'] ?? '');
+    $nome_curto      = trim($_POST['nome_curto'] ?? '');
     $descricao       = trim($_POST['descricao'] ?? '');
     $descricao_curta = trim($_POST['descricao_curta'] ?? '');
     $preco           = $_POST['preco'] ?? '';
@@ -52,6 +53,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Nome e preço são obrigatórios.';
     }
 
+    if (mb_strlen($descricao_curta) > 200) {
+        $errors[] = 'A descrição curta não pode ter mais de 200 caracteres.';
+    }
+
+    if (mb_strlen($nome_curto) > 50) {
+        $errors[] = 'O nome curto não pode ter mais de 50 caracteres.';
+    }
+
     $imagemBanco = $produto['imagem']; // padrão: mantém a atual
 
     // Se enviou nova imagem
@@ -62,8 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $extensao  = pathinfo($_FILES['imagem']['name'], PATHINFO_EXTENSION);
             $novoNome  = uniqid('prod_', true) . '.' . strtolower($extensao);
 
-            $caminhoFisico = __DIR__ . '/../../assets/img/' . $novoNome;
-            $caminhoBanco  = 'assets/img/' . $novoNome;
+            $caminhoFisico = __DIR__ . '/../../assets/img/prods/' . $novoNome;
+            $caminhoBanco  = 'assets/img/prods/' . $novoNome;
 
             if (move_uploaded_file($_FILES['imagem']['tmp_name'], $caminhoFisico)) {
 
@@ -85,12 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt = $pdo->prepare("
             UPDATE produtos
-            SET nome=?, descricao=?, descricao_curta=?, preco=?, imagem=?, estoque=?, categoria_id=?
+            SET nome=?, nome_curto=?, descricao=?, descricao_curta=?, preco=?, imagem=?, estoque=?, categoria_id=?
             WHERE id=?
         ");
 
         $stmt->execute([
             $nome,
+            $nome_curto ?: null,
             $descricao,
             $descricao_curta,
             $preco,
@@ -100,9 +110,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id
         ]);
 
+        // 🆕 Resposta AJAX
+        if (isAjax()) {
+            jsonSuccess('Produto atualizado com sucesso.', [
+                'id'       => $id,
+                'redirect' => 'listar.php',
+            ]);
+        }
+
+        // Fluxo normal (sem AJAX)
         setFlash('sucesso', 'Produto atualizado com sucesso.');
         header('Location: listar.php');
         exit;
+    }
+
+    // 🆕 Se AJAX e tem erros → devolve JSON
+    if (isAjax() && !empty($errors)) {
+        jsonError('Corrija os erros abaixo.', $errors);
     }
 }
 
@@ -121,7 +145,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 <p>A editar: <strong><?= htmlspecialchars($produto['nome']) ?></strong> · ID #<?= $id ?></p>
             </div>
 
-            <a href="listar.php" class="btn-secondary">
+            <a href="listar.php" class="btn-secondary" data-history-back>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -131,7 +155,7 @@ require_once __DIR__ . '/../../includes/header.php';
             </a>
         </section>
 
-        <!-- Erros -->
+        <!-- Erros (fallback sem JS) -->
         <?php if (!empty($errors)): ?>
             <div class="alert alert-danger">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -151,8 +175,8 @@ require_once __DIR__ . '/../../includes/header.php';
             </div>
         <?php endif; ?>
 
-        <!-- Formulário -->
-        <form method="POST" enctype="multipart/form-data" class="admin-form">
+        <!-- Formulário AJAX -->
+        <form method="POST" enctype="multipart/form-data" class="admin-form" data-ajax>
 
             <div class="form-grid">
 
@@ -173,8 +197,23 @@ require_once __DIR__ . '/../../includes/header.php';
                             <label for="nome">Nome do produto <span class="required">*</span></label>
                             <input type="text" id="nome" name="nome"
                                    value="<?= htmlspecialchars($produto['nome']) ?>"
-                                   placeholder="Ex: Samsung Galaxy S24 Ultra"
+                                   placeholder="Ex: Samsung Galaxy S24 Ultra 512GB - Preto Titanium"
                                    required>
+                            <small class="label-hint" style="margin-top: 6px; display: block;">
+                                Nome completo que aparece nas páginas de detalhes e listagens.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nome_curto">
+                                Nome curto
+                                <span class="label-hint">(exibido no Home, máx. 50 caracteres)</span>
+                            </label>
+                            <input type="text" id="nome_curto" name="nome_curto"
+                                   value="<?= htmlspecialchars($produto['nome_curto'] ?? '') ?>"
+                                   placeholder="Ex: Galaxy S24 Ultra"
+                                   maxlength="50">
+                            <small class="char-counter"><span id="counter-curto">0</span>/50</small>
                         </div>
 
                         <div class="form-group">
@@ -293,7 +332,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
                     <!-- Ações -->
                     <div class="form-actions">
-                        <a href="listar.php" class="btn-secondary">Cancelar</a>
+                        <a href="listar.php" class="btn-secondary" data-history-back>Cancelar</a>
                         <button type="submit" class="btn-primary">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -311,13 +350,22 @@ require_once __DIR__ . '/../../includes/header.php';
 </div>
 
 <script>
-    // Contador de caracteres
+    // Contador da descrição curta
     const textarea = document.getElementById('descricao_curta');
     const counter  = document.getElementById('counter');
     if (textarea && counter) {
         const update = () => counter.textContent = textarea.value.length;
         textarea.addEventListener('input', update);
         update();
+    }
+
+    // Contador do nome curto
+    const nomeCurto = document.getElementById('nome_curto');
+    const counterC  = document.getElementById('counter-curto');
+    if (nomeCurto && counterC) {
+        const upd = () => counterC.textContent = nomeCurto.value.length;
+        nomeCurto.addEventListener('input', upd);
+        upd();
     }
 
     // Preview da nova imagem

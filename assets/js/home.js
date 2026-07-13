@@ -9,15 +9,13 @@ const initInfiniteTracker = () => {
     if (slides.length <= 1) return;
 
     let index = 0;
-    const intervalTime = 4000; // Tempo de rotação (4 segundos)
+    const intervalTime = 4000;
     let autoSlideInterval;
 
     const startAutoSlide = () => {
         autoSlideInterval = setInterval(() => {
             index++;
-            if (index >= slides.length) {
-                index = 0; // Volta ao início de forma infinita
-            }
+            if (index >= slides.length) index = 0;
             hero.scrollTo({
                 left: hero.offsetWidth * index,
                 behavior: 'smooth'
@@ -25,18 +23,14 @@ const initInfiniteTracker = () => {
         }, intervalTime);
     };
 
-    const stopAutoSlide = () => {
-        clearInterval(autoSlideInterval);
-    };
+    const stopAutoSlide = () => clearInterval(autoSlideInterval);
 
-    // Inicia o autoplay
     startAutoSlide();
 
-    // Pausa o carrossel se o usuário arrastar manualmente
     hero.addEventListener('touchstart', stopAutoSlide);
-    hero.addEventListener('mousedown', stopAutoSlide);
-    hero.addEventListener('touchend', startAutoSlide);
-    hero.addEventListener('mouseup', startAutoSlide);
+    hero.addEventListener('mousedown',  stopAutoSlide);
+    hero.addEventListener('touchend',   startAutoSlide);
+    hero.addEventListener('mouseup',    startAutoSlide);
 };
 
 // ============================================
@@ -50,16 +44,15 @@ const observador = new IntersectionObserver((entries) => {
             entry.target.classList.remove('show');
         }
     });
-}, {
-    threshold: 0.1
-});
+}, { threshold: 0.1 });
 
 const aplicarRevelar = () => {
-    const elementos = document.querySelectorAll('.revelar');
-    elementos.forEach((el) => observador.observe(el));
+    document.querySelectorAll('.revelar').forEach((el) => observador.observe(el));
 };
 
-// Inicialização Geral
+// ============================================
+// INICIALIZAÇÃO GERAL
+// ============================================
 window.addEventListener('load', () => {
     initInfiniteTracker();
     aplicarRevelar();
@@ -68,78 +61,203 @@ window.addEventListener('load', () => {
 function irParaDetalhes(id) {
     window.location.href = `pages/detalhes.php?id=${id}`;
 }
+
 // ============================================
-// CORES DINÂMICAS NOS CARDS (Análise de Imagem)
+// CORES DINÂMICAS NOS CARDS (v2 – Melhorada)
 // ============================================
 
-function getAverageColor(imageElement, callback) {
-    // Cria um canvas invisível para analisar a imagem
+/**
+ * Paleta de fallback (cores douradas/quentes se a análise falhar)
+ */
+const FALLBACK_COLORS = [
+    { r: 180, g: 140, b: 60  }, // Dourado escuro
+    { r: 155, g: 90,  b: 50  }, // Terracota
+    { r: 100, g: 80,  b: 120 }, // Roxo suave
+    { r: 60,  g: 100, b: 130 }, // Azul petróleo
+    { r: 110, g: 130, b: 90  }, // Verde oliva
+];
+
+/**
+ * Cache em memória (evita recalcular na mesma sessão)
+ */
+const colorCache = new Map();
+
+/**
+ * Extrai a cor dominante de uma imagem — versão inteligente
+ * Ignora pixels muito claros (fundo branco) ou muito escuros (sombras)
+ */
+function getSmartColor(imageElement, callback) {
+    const src = imageElement.src;
+
+    // ---- Cache ----
+    if (colorCache.has(src)) {
+        callback(colorCache.get(src));
+        return;
+    }
+
+    // ---- Cache no sessionStorage (persiste entre navegações) ----
+    const cached = sessionStorage.getItem('color_' + src);
+    if (cached) {
+        const parsed = JSON.parse(cached);
+        colorCache.set(src, parsed);
+        callback(parsed);
+        return;
+    }
+
     const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-    
-    // Resolve problema de CORS (se a imagem for do mesmo domínio)
-    img.crossOrigin = "Anonymous";
-    
+    const ctx    = canvas.getContext('2d', { willReadFrequently: true });
+    const img    = new Image();
+
+    img.crossOrigin = 'Anonymous';
+
     img.onload = function() {
-        // Redimensiona para 50x50px (suficiente para pegar a cor média)
-        canvas.width = 50;
-        canvas.height = 50;
-        
-        // Desenha a imagem reduzida
-        ctx.drawImage(img, 0, 0, 50, 50);
-        
-        // Pega os dados dos pixels
-        const imageData = ctx.getImageData(0, 0, 50, 50);
-        const data = imageData.data;
-        
-        let r = 0, g = 0, b = 0;
-        let count = 0;
-        
-        // Soma todas as cores (pulando pixels transparentes)
-        for (let i = 0; i < data.length; i += 4) {
-            if (data[i+3] > 128) { // Se não for transparente
-                r += data[i];
-                g += data[i+1];
-                b += data[i+2];
+        const SIZE = 40; // pequeno = rápido
+        canvas.width  = SIZE;
+        canvas.height = SIZE;
+
+        try {
+            ctx.drawImage(img, 0, 0, SIZE, SIZE);
+            const data = ctx.getImageData(0, 0, SIZE, SIZE).data;
+
+            let r = 0, g = 0, b = 0, count = 0;
+
+            // Amostragem inteligente: ignora pixels brancos/pretos/transparentes
+            for (let i = 0; i < data.length; i += 4) {
+                const pR = data[i];
+                const pG = data[i + 1];
+                const pB = data[i + 2];
+                const pA = data[i + 3];
+
+                if (pA < 128) continue;                              // transparente
+                if (pR > 240 && pG > 240 && pB > 240) continue;      // quase branco
+                if (pR < 15  && pG < 15  && pB < 15)  continue;      // quase preto
+
+                // Ignora cinzas muito saturados (sem cor)
+                const max = Math.max(pR, pG, pB);
+                const min = Math.min(pR, pG, pB);
+                if (max - min < 15 && max > 200) continue;           // cinza claro
+
+                r += pR;
+                g += pG;
+                b += pB;
                 count++;
             }
+
+            // Se quase todos os pixels foram ignorados, usa fallback
+            if (count < 20) {
+                useFallback(src, callback);
+                return;
+            }
+
+            r = Math.floor(r / count);
+            g = Math.floor(g / count);
+            b = Math.floor(b / count);
+
+            // Ajusta luminância inteligentemente
+            const color = adjustForContrast(r, g, b);
+
+            // Guarda em cache
+            colorCache.set(src, color);
+            try {
+                sessionStorage.setItem('color_' + src, JSON.stringify(color));
+            } catch (e) { /* quota exceeded, ignora */ }
+
+            callback(color);
+
+        } catch (err) {
+            console.warn('Erro ao analisar imagem (CORS?):', src);
+            useFallback(src, callback);
         }
-        
-        // Calcula a média
-        r = Math.floor(r / count);
-        g = Math.floor(g / count);
-        b = Math.floor(b / count);
-        
-        // Escurece um pouco para garantir contraste com texto branco
-        r = Math.floor(r * 0.8);
-        g = Math.floor(g * 0.8);
-        b = Math.floor(b * 0.8);
-        
-        callback(`rgb(${r}, ${g}, ${b})`);
     };
-    
-    img.src = imageElement.src;
+
+    img.onerror = () => useFallback(src, callback);
+    img.src = src;
 }
 
-// Aplica cores dinâmicas aos cards
-document.addEventListener('DOMContentLoaded', function() {
+/**
+ * Ajusta a cor para ter bom contraste com texto branco
+ * - Se for muito clara → escurece
+ * - Se for muito escura → clareia ligeiramente
+ * - Se for saturada → mantém vibrante
+ */
+function adjustForContrast(r, g, b) {
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+
+    let factor;
+    if (luminance > 180)      factor = 0.55;  // muito clara → escurece muito
+    else if (luminance > 130) factor = 0.70;  // média-clara → escurece
+    else if (luminance > 80)  factor = 0.85;  // média → escurece pouco
+    else                      factor = 1.0;   // já é escura → mantém
+
+    return {
+        r: Math.max(20, Math.floor(r * factor)),
+        g: Math.max(20, Math.floor(g * factor)),
+        b: Math.max(20, Math.floor(b * factor))
+    };
+}
+
+/**
+ * Retorna uma cor de fallback baseada no hash da URL da imagem
+ * (assim a mesma imagem sempre tem a mesma cor)
+ */
+function useFallback(src, callback) {
+    let hash = 0;
+    for (let i = 0; i < src.length; i++) {
+        hash = ((hash << 5) - hash) + src.charCodeAt(i);
+        hash |= 0;
+    }
+    const idx = Math.abs(hash) % FALLBACK_COLORS.length;
+    callback(FALLBACK_COLORS[idx]);
+}
+
+/**
+ * Aplica a cor num card
+ */
+function applyColorToCard(card, color) {
+    const { r, g, b } = color;
+    const rgb        = `rgb(${r}, ${g}, ${b})`;
+    const rgbDark    = `rgb(${Math.floor(r * 0.6)}, ${Math.floor(g * 0.6)}, ${Math.floor(b * 0.6)})`;
+
+    // Transição suave
+    card.style.transition = 'background 0.6s ease';
+    card.style.background = `linear-gradient(135deg, ${rgb} 0%, ${rgbDark} 100%)`;
+    card.classList.add('card-color-loaded');
+
+    // Ajusta o botão para ter cor complementar
+    const btn = card.querySelector('.btn');
+    if (btn) {
+        btn.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+        btn.style.color           = rgb;
+        btn.style.fontWeight      = '700';
+    }
+}
+
+/**
+ * Processa todos os cards do Home
+ */
+function initDynamicColors() {
     const cards = document.querySelectorAll('.products-grid .card');
-    
+    if (!cards.length) return;
+
     cards.forEach(card => {
         const img = card.querySelector('img');
-        if (img && img.src) {
-            getAverageColor(img, (color) => {
-                card.style.backgroundColor = color;
-                card.style.backgroundImage = `linear-gradient(135deg, ${color} 0%, rgba(0,0,0,0.3) 100%)`;
-                
-                // Ajusta a cor do texto/botão se necessário
-                const btn = card.querySelector('.btn');
-                if (btn) {
-                    btn.style.backgroundColor = 'rgba(255,255,255,0.9)';
-                    btn.style.color = color;
-                }
-            });
+        if (!img) return;
+
+        // Se a imagem já carregou → processa
+        if (img.complete && img.naturalWidth > 0) {
+            getSmartColor(img, (color) => applyColorToCard(card, color));
+        } else {
+            // Espera carregar
+            img.addEventListener('load', () => {
+                getSmartColor(img, (color) => applyColorToCard(card, color));
+            }, { once: true });
+
+            img.addEventListener('error', () => {
+                useFallback(img.src, (color) => applyColorToCard(card, color));
+            }, { once: true });
         }
     });
-});
+}
+
+// Executa quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', initDynamicColors);

@@ -1,21 +1,20 @@
-// ============================================
-// PRODUTOS - Filtro AJAX (categoria + ordenação)
-// ============================================
-
 document.addEventListener('DOMContentLoaded', function() {
 
-    const sidebarItems     = document.querySelectorAll('.sidebar-item');
-    const produtosContent  = document.querySelector('.produtos-content');
-    const produtosTitulo   = document.querySelector('.produtos-titulo');
-    const produtosCount    = document.querySelector('.produtos-count');
-    const selectOrdem      = document.querySelector('.select-ordem');
+    const sidebarItems   = document.querySelectorAll('.sidebar-item');
+    const produtosContent = document.querySelector('.produtos-content');
+    const produtosTitulo = document.querySelector('.produtos-titulo');
+    const produtosCount  = document.querySelector('.produtos-count');
+    const selectOrdem    = document.querySelector('.select-ordem');
 
     if (!produtosContent) return;
 
+    // 🆕 Configuração
+    const POR_PAGINA = 8;
+
     /**
-     * Constrói a URL final combinando categoria + ordem
+     * Constrói a URL final combinando categoria + ordem + página
      */
-    function construirURL(categoriaId, ordem) {
+    function construirURL(categoriaId, ordem, pagina = 1) {
         const params = new URLSearchParams();
 
         if (categoriaId && categoriaId !== '0') {
@@ -24,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (ordem && ordem !== 'recentes') {
             params.set('ordem', ordem);
+        }
+
+        // 🆕 Adiciona página se > 1
+        if (pagina && pagina > 1) {
+            params.set('pagina', pagina);
         }
 
         const query = params.toString();
@@ -90,13 +94,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             produtosTitulo.textContent = titulo;
 
-            const countSpan = produtosContent.querySelector('#count-produtos');
-            if (countSpan && produtosCount) {
-                const total = parseInt(countSpan.textContent);
-                produtosCount.textContent = `${total} ${total === 1 ? 'produto' : 'produtos'}`;
-                countSpan.remove();
-            }
+            // 🆕 Atualizar contador (Mostrando X–Y de Z)
+            atualizarContador();
 
+            // Animação de entrada
             const vitrine = produtosContent.querySelector('.vitrine');
             if (vitrine) {
                 vitrine.style.opacity = '0';
@@ -107,6 +108,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     vitrine.style.transform = 'translateY(0)';
                 }, 50);
             }
+
+            // 🆕 Anexar listeners da paginação (novos elementos)
+            attachPaginacaoListeners();
         })
         .catch(err => {
             console.error('Erro:', err);
@@ -115,9 +119,68 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ============================
+    /**
+     * 🆕 Atualiza o contador "Mostrando X–Y de Z produtos"
+     */
+    function atualizarContador() {
+        const totalEl    = produtosContent.querySelector('#total-produtos');
+        const paginaEl   = produtosContent.querySelector('#pagina-atual');
+
+        if (!totalEl || !paginaEl || !produtosCount) return;
+
+        const total     = parseInt(totalEl.textContent) || 0;
+        const paginaAt  = parseInt(paginaEl.textContent) || 1;
+
+        if (total === 0) {
+            produtosCount.textContent = '0 produtos';
+            return;
+        }
+
+        const inicio = ((paginaAt - 1) * POR_PAGINA) + 1;
+        const fim    = Math.min(paginaAt * POR_PAGINA, total);
+        const label  = total === 1 ? 'produto' : 'produtos';
+
+        produtosCount.innerHTML = `Mostrando <strong>${inicio}–${fim}</strong> de <strong>${total}</strong> ${label}`;
+
+        // Remove os spans ocultos após usá-los
+        totalEl.remove();
+        paginaEl.remove();
+        const cont = produtosContent.querySelector('#count-produtos');
+        if (cont) cont.remove();
+        const tPag = produtosContent.querySelector('#total-paginas');
+        if (tPag) tPag.remove();
+    }
+
+    /**
+     * 🆕 Anexa listeners aos botões da paginação
+     */
+    function attachPaginacaoListeners() {
+        const pagLinks = produtosContent.querySelectorAll('.pag-btn[data-pagina]');
+
+        pagLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const pagina        = parseInt(this.dataset.pagina);
+                const categoriaId   = getCategoriaAtiva();
+                const categoriaNome = getCategoriaNome();
+                const ordemAtual    = selectOrdem ? selectOrdem.value : 'recentes';
+
+                const urlFinal = construirURL(categoriaId, ordemAtual, pagina);
+
+                window.history.pushState({ url: urlFinal }, '', urlFinal);
+
+                carregarProdutos(urlFinal, categoriaNome);
+
+                // 🆕 Scroll suave até o topo dos produtos
+                produtosContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    }
+
+    // ==========================
     // Listener: sidebar de categorias
-    // ============================
+    // ==========================
     sidebarItems.forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
@@ -136,8 +199,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Pega a ordem atual do select
             const ordemAtual = selectOrdem ? selectOrdem.value : 'recentes';
 
-            // Constrói URL combinada
-            const urlFinal = construirURL(categoriaId, ordemAtual);
+            // 🆕 Ao trocar categoria, volta para página 1
+            const urlFinal = construirURL(categoriaId, ordemAtual, 1);
 
             // Atualiza URL do navegador
             window.history.pushState({ url: urlFinal }, '', urlFinal);
@@ -149,16 +212,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // ============================
+    // ==========================
     // Listener: dropdown de ordenação
-    // ============================
+    // ==========================
     if (selectOrdem) {
         selectOrdem.addEventListener('change', function() {
-            const novaOrdem = this.value;
+            const novaOrdem     = this.value;
             const categoriaAtiva = getCategoriaAtiva();
-            const categoriaNome = getCategoriaNome();
+            const categoriaNome  = getCategoriaNome();
 
-            const urlFinal = construirURL(categoriaAtiva, novaOrdem);
+            // 🆕 Ao trocar ordenação, volta para página 1
+            const urlFinal = construirURL(categoriaAtiva, novaOrdem, 1);
 
             window.history.pushState({ url: urlFinal }, '', urlFinal);
 
@@ -166,13 +230,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ============================
+    // ==========================
     // Listener: voltar/avançar do navegador
-    // ============================
+    // ==========================
     window.addEventListener('popstate', function() {
         const urlParams = new URLSearchParams(window.location.search);
-        const catId = urlParams.get('categoria') || '0';
-        const ordem = urlParams.get('ordem') || 'recentes';
+        const catId    = urlParams.get('categoria') || '0';
+        const ordem    = urlParams.get('ordem')     || 'recentes';
+        const pagina   = parseInt(urlParams.get('pagina')) || 1; // 🆕
 
         // Atualiza sidebar
         sidebarItems.forEach(i => i.classList.remove('active'));
@@ -194,7 +259,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Atualiza select
         if (selectOrdem) selectOrdem.value = ordem;
 
-        const urlFinal = construirURL(catId, ordem);
+        const urlFinal = construirURL(catId, ordem, pagina); // 🆕
         carregarProdutos(urlFinal, titulo);
     });
+
+    // 🆕 Anexar listeners iniciais da paginação (no load da página)
+    attachPaginacaoListeners();
+
+    // 🆕 Atualizar contador no load inicial (se veio server-side)
+    atualizarContador();
 });
