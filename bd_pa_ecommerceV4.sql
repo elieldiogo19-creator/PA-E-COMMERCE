@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 11/07/2026 às 22:50
+-- Tempo de geração: 13/07/2026 às 03:07
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.0.30
 
@@ -41,9 +41,9 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `nome`, `email`, `senha_hash`, `ultimo_acesso`, `criado_em`) VALUES
-(1, 'Admin DaHoodie', 'dahoodiewrld@gmail.com', '$2y$10$68860yDGeEI5GMTMB/yFHOjguwbJ4abaDClBPMJJzKMsFAwdWiP0C', '2026-07-10 17:33:55', '2026-04-06 20:48:00'),
+(1, 'Admin DaHoodie', 'dahoodiewrld@gmail.com', '$2y$10$68860yDGeEI5GMTMB/yFHOjguwbJ4abaDClBPMJJzKMsFAwdWiP0C', '2026-07-12 02:26:39', '2026-04-06 20:48:00'),
 (2, 'Eliel Diogo', 'elieldiogo@gmail.com', '$2y$10$cB1gDXDalXmc0NclYcAQzuhzDkLpF1IQ7/.w3eujonRwIiNmwzBbq', NULL, '2026-05-05 13:00:02'),
-(3, 'vou le aleja', 'josediogo2344@gmail.com', '$2y$10$9oDkt0twFj2bKXtw9F20fOoaz/7x0kHMfLf4PDfCvEiFAwcFjb1rO', '2026-07-07 01:34:58', '2026-07-10 15:16:02');
+(3, 'vou le aleja', 'josediogo2344@gmail.com', '$2y$10$j8uv2oEWa.HGncleqx0b3.5/oTjAlZU87aKQpS8dwlm0aNUsdfJaG', '2026-07-07 01:34:58', '2026-07-10 15:16:02');
 
 -- --------------------------------------------------------
 
@@ -89,15 +89,6 @@ CREATE TABLE `itens_pedido` (
   `preco_unitario` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Despejando dados para a tabela `itens_pedido`
---
-
-INSERT INTO `itens_pedido` (`id`, `pedido_id`, `produto_id`, `quantidade`, `preco_unitario`) VALUES
-(9, 7, 46, 2, 633245.90),
-(10, 8, 61, 1, 980000.90),
-(11, 8, 59, 1, 790000.90);
-
 -- --------------------------------------------------------
 
 --
@@ -114,14 +105,6 @@ CREATE TABLE `pedidos` (
   `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
   `status` varchar(50) NOT NULL DEFAULT 'pendente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Despejando dados para a tabela `pedidos`
---
-
-INSERT INTO `pedidos` (`id`, `usuario_id`, `nome_cliente`, `email_cliente`, `endereco`, `total`, `criado_em`, `status`) VALUES
-(7, 1, 'DaHoodie', 'dahoodiewrld@gmail.com', 'Viana', 1266491.80, '2026-07-09 23:33:38', 'Confirmado'),
-(8, 19, 'vou le aleja', 'josediogo2344@gmail.com', 'Viana', 1770001.80, '2026-07-11 03:27:25', 'pendente');
 
 -- --------------------------------------------------------
 
@@ -155,7 +138,7 @@ INSERT INTO `produtos` (`id`, `nome`, `descricao`, `descricao_curta`, `preco`, `
 (48, 'Câmera Hikvision PanoVu / Multi-Sensor', 'A Câmera Hikvision Multi-Sensor redefine o monitoramento de alta segurança. Este dispositivo avançado combina múltiplas lentes fixas para gerar uma visão panorâmica contínua e sem pontos cegos, integrada a uma câmera PTZ inferior de alta velocidade. Enquanto os sensores superiores mantêm os olhos em todo o ambiente simultaneamente, a lente móvel faz aproximações detalhadas e rastreia alvos em movimento automaticamente, oferecendo uma cobertura completa e inteligente para grandes empresas.', 'Visão panorâmica de 360 graus combinada com rastreamento PTZ.', 390000.90, 'assets/img/prod_6a527915509974.73215673.png', '2026-07-11 02:52:00', 14, 11),
 (49, 'Câmera Dome PTZ Sunba', 'Maximize o seu campo de visão com a Câmera Profissional Sunba Dome PTZ. Equipada com motores de alta precisão, ela permite controlar o movimento horizontal, vertical e o zoom diretamente pelo seu smartphone ou central de monitoramento. O seu poderoso zoom ótico consegue aproximar rostos e matrículas de veículos à longa distância sem perder a qualidade da imagem. O design em cúpula facilita a fixação em paredes altas, sendo perfeita para cobrir grandes perímetros com um único equipamento.', 'Movimentação completa PTZ e zoom potente para grandes áreas.', 185000.90, 'assets/img/prod_6a527959d03c60.58754544.png', '2026-07-11 02:53:34', 16, 11),
 (50, 'Câmera de Segurança Hikvision Bullet IP Full HD – Branca', 'A Câmera Hikvision Bullet é a escolha ideal para garantir a segurança de áreas externas da sua casa ou empresa. Com uma estrutura robusta e proteção contra chuva e poeira, ela monitora fachadas, portões e estacionamentos sob qualquer condição climática. As suas lentes capturam imagens em alta definição com excelente balanço de cores durante o dia e contam com um potente modo de visão noturna por infravermelho para registrar qualquer atividade suspeita na total escuridão.', 'Proteção resistente à água e monitoramento nítido para o exterior.', 45000.90, 'assets/img/prod_6a5279a7d10178.77124783.png', '2026-07-11 03:02:33', 26, 11),
-(51, 'Smartphone Samsung Galaxy S24 Ultra 512GB (Com S Pen) – Preto Titanium', 'Conheça o ápice da tecnologia móvel com o Samsung Galaxy S24 Ultra. Construído com uma estrutura inovadora e ultrarresistente de Titânio, ele eleva o patamar de durabilidade e elegância. Explore o ecossistema Galaxy AI, que permite traduzir chamadas em tempo real, circular objetos na tela para pesquisar instantaneamente e editar fotos profissionalmente com apenas um toque. Sua câmera de 200 megapixels captura texturas e detalhes inacreditáveis, mesmo no escuro absoluto. A icônica S Pen vem embutida no corpo do aparelho, pronta para você assinar documentos, controlar apresentações e criar com precisão cirúrgica.', 'Conheça o ápice da tecnologia móvel com o Samsung Galaxy S24 Ultra. Construído com uma estrutura ino', 1250000.90, 'assets/img/prod_6a5276f286ee58.03433823.png', '2026-07-11 03:06:36', 2, 10),
+(51, 'Smartphone Samsung Galaxy S24 Ultra 512GB (Com S Pen) – Preto Titanium', 'Conheça o ápice da tecnologia móvel com o Samsung Galaxy S24 Ultra. Construído com uma estrutura inovadora e ultrarresistente de Titânio, ele eleva o patamar de durabilidade e elegância. Explore o ecossistema Galaxy AI, que permite traduzir chamadas em tempo real, circular objetos na tela para pesquisar instantaneamente e editar fotos profissionalmente com apenas um toque. Sua câmera de 200 megapixels captura texturas e detalhes inacreditáveis, mesmo no escuro absoluto. A icônica S Pen vem embutida no corpo do aparelho, pronta para você assinar documentos, controlar apresentações e criar com precisão cirúrgica.', 'Conheça o ápice da tecnologia móvel com o Samsung Galaxy S24 Ultra. Construído com uma estrutura ino', 1250000.90, 'assets/img/prod_6a543a2a71efc2.47954642.png', '2026-07-11 03:06:36', 2, 10),
 (52, 'Tablet Xiaomi Redmi Pad SE 2 128GB Wi-Fi – Lilás', 'O Xiaomi Redmi Pad SE 2 é a escolha perfeita para quem procura um tablet versátil e com excelente custo-benefício. O seu ecrã grande com alta taxa de atualização oferece transições suaves e cores vivas, tornando a experiência de assistir vídeos, navegar pelas redes sociais ou ler livros digitais muito mais confortável. O seu corpo fino e elegante na cor lilás garante leveza no transporte, enquanto a bateria de longa duração permite que você aproveite as suas aplicações preferidas durante todo o dia sem a preocupação de correr para a tomada.', 'Tela fluida e design moderno ideal para o entretenimento diário.', 210000.90, 'assets/img/prods/prod_6a51b3cbb6ae67.80255944.png', '2026-07-11 03:08:59', 8, NULL),
 (53, 'Tablet Xiaomi Redmi Pad SE 2 128GB Wi-Fi – Lilás', 'O Xiaomi Redmi Pad SE 2 é a escolha perfeita para quem procura um tablet versátil e com excelente custo-benefício. O seu ecrã grande com alta taxa de atualização oferece transições suaves e cores vivas, tornando a experiência de assistir vídeos, navegar pelas redes sociais ou ler livros digitais muito mais confortável. O seu corpo fino e elegante na cor lilás garante leveza no transporte, enquanto a bateria de longa duração permite que você aproveite as suas aplicações preferidas durante todo o dia sem a preocupação de correr para a tomada.', 'O Xiaomi Redmi Pad SE 2 é a escolha perfeita para quem procura um tablet versátil e com excelente cu', 210000.90, 'assets/img/prods/prod_6a51b3f7e69a57.69834463.png', '2026-07-11 03:09:43', 16, 10),
 (54, 'Smartphone Samsung Galaxy M56 5G 128GB – Preto Cromo', 'Entre na era da ultravelocidade com o Samsung Galaxy M56 5G. Este smartphone combina perfeitamente um visual minimalista e elegante em tom escuro com a potência necessária para lidar com as suas tarefas simultâneas sem qualquer lentidão. A sua tela fluida oferece uma óptima experiência de navegação e jogabilidade responsiva. Na parte traseira, o renovado conjunto de câmeras permite registar fotos nítidas e cheias de detalhes em qualquer ambiente, enquanto o sistema inteligente de gestão de energia garante que a bateria dure o dia todo.', 'Conexão 5G rápida, ótimo desempenho e câmeras avançadas.', 320000.90, 'assets/img/prods/prod_6a51b420e363c7.59546166.png', '2026-07-11 03:10:24', 8, 10),
@@ -192,9 +175,8 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha_hash`, `criado_em`) VALUES
 (1, 'DaHoodie', 'dahoodiewrld@gmail.com', '$2y$10$68860yDGeEI5GMTMB/yFHOjguwbJ4abaDClBPMJJzKMsFAwdWiP0C', '2026-04-29 19:30:48'),
-(12, 'Eliel Manuel Mucanza Diogo', 'elieldiogo@gmail.com', '$2y$10$cB1gDXDalXmc0NclYcAQzuhzDkLpF1IQ7/.w3eujonRwIiNmwzBbq', '2026-05-05 13:00:02'),
-(18, 'Hoodie', 'hoodie@gmail.com', '$2y$10$e6lrsw3ZKQlvq9iPuPvDmekSpMf1QAmm.Qr9L0Gd9M8Ea8qwnrk5a', '2026-07-03 16:43:59'),
-(19, 'vou le aleja', 'josediogo2344@gmail.com', '$2y$10$9oDkt0twFj2bKXtw9F20fOoaz/7x0kHMfLf4PDfCvEiFAwcFjb1rO', '2026-07-11 03:24:57');
+(12, 'Eliel Manuel Mucanza Diogo', 'elieldiogo19@gmail.com', '$2y$10$cB1gDXDalXmc0NclYcAQzuhzDkLpF1IQ7/.w3eujonRwIiNmwzBbq', '2026-05-05 13:00:02'),
+(20, 'Vou lhe aleja', 'josediogo2344@gmail.com', '$2y$10$j8uv2oEWa.HGncleqx0b3.5/oTjAlZU87aKQpS8dwlm0aNUsdfJaG', '2026-07-13 00:55:51');
 
 --
 -- Índices para tabelas despejadas
@@ -282,7 +264,7 @@ ALTER TABLE `produtos`
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Restrições para tabelas despejadas

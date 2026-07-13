@@ -1614,3 +1614,793 @@ body.has-admin-panel {
     .flash-content strong { font-size: 0.85rem; }
     .flash-content span { font-size: 0.8rem; }
 }
+
+/* ============================================
+   FILTROS E BUSCA
+   ============================================ */
+.filters-bar {
+    background: #fff;
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: var(--admin-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Formulário de busca */
+.filters-form {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.search-input {
+    position: relative;
+    flex: 1;
+}
+
+.search-input svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    stroke: var(--admin-text-muted);
+    pointer-events: none;
+}
+
+.search-input input {
+    width: 100%;
+    padding: 11px 14px 11px 44px;
+    border: 1.5px solid var(--admin-border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--admin-text);
+    background: #fafafa;
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.search-input input:focus {
+    border-color: var(--cor-primaria);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+.filters-form .btn-primary {
+    padding: 11px 22px;
+    white-space: nowrap;
+}
+
+/* Tabs de filtro */
+.filter-tabs {
+    display: flex;
+    gap: 4px;
+    border-top: 1px solid var(--admin-border);
+    padding-top: 14px;
+    overflow-x: auto;
+}
+
+.filter-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    color: var(--admin-text-muted);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.filter-tab span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    background: #f0f0f0;
+    color: var(--admin-text-muted);
+    border-radius: 11px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.filter-tab:hover {
+    background: #fafafa;
+    color: var(--admin-text);
+}
+
+.filter-tab.active {
+    background: rgba(212, 175, 55, 0.12);
+    color: var(--cor-primaria);
+}
+
+.filter-tab.active span {
+    background: var(--cor-primaria);
+    color: #fff;
+}
+
+/* ============================================
+   CÉLULAS ESPECIAIS DA TABELA
+   ============================================ */
+.pedido-id {
+    color: var(--cor-primaria);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* Cliente com avatar */
+.cell-cliente {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cliente-avatar {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, var(--cor-primaria) 0%, var(--cor-acento) 100%);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+/* Empty state melhorado */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 20px;
+}
+
+.empty-state svg {
+    width: 56px;
+    height: 56px;
+    stroke: #cbd5e1;
+    margin-bottom: 14px;
+}
+
+.empty-state p {
+    color: var(--admin-text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+    text-align: center;
+}
+
+/* Data com hora abaixo */
+.admin-table td small {
+    color: var(--admin-text-muted);
+    font-size: 0.78rem;
+}
+
+/* ---------- Responsive filtros ---------- */
+@media (max-width: 640px) {
+    .filters-form {
+        flex-direction: column;
+    }
+    .filter-tabs {
+        justify-content: flex-start;
+    }
+}
+
+/* ============================================
+   VISUALIZAÇÃO DE PEDIDO
+   ============================================ */
+.pedido-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.pedido-main,
+.pedido-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Contador de itens no título */
+.badge-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 8px;
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--cor-primaria);
+    border-radius: 13px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-left: auto;
+}
+
+/* ============================================
+   ITENS DO PEDIDO
+   ============================================ */
+.pedido-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pedido-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px;
+    background: #fafafa;
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.pedido-item:hover {
+    background: #fff;
+    border-color: var(--cor-primaria);
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.1);
+}
+
+.pedido-item-img {
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #ccc;
+}
+
+.pedido-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pedido-item-img svg {
+    width: 26px;
+    height: 26px;
+}
+
+.pedido-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.pedido-item-info h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--admin-text);
+    margin: 0 0 6px 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.pedido-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--admin-text-muted);
+    font-size: 0.82rem;
+    flex-wrap: wrap;
+}
+
+.pedido-item-meta strong {
+    color: var(--admin-text);
+    font-weight: 600;
+}
+
+.pedido-item-total {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--cor-primaria);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   RESUMO FINANCEIRO
+   ============================================ */
+.pedido-resumo {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px dashed var(--admin-border);
+}
+
+.resumo-linha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    color: var(--admin-text);
+    font-size: 0.92rem;
+}
+
+.resumo-linha .text-muted {
+    color: var(--admin-success);
+    font-weight: 600;
+}
+
+.resumo-total {
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--admin-border);
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.resumo-total span:last-child {
+    color: var(--cor-primaria);
+    font-size: 1.4rem;
+}
+
+/* ============================================
+   CARD DO CLIENTE
+   ============================================ */
+.cliente-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.06), rgba(230, 126, 34, 0.03));
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.cliente-avatar-lg {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, var(--cor-primaria) 0%, var(--cor-acento) 100%);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+}
+
+.cliente-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cliente-info strong {
+    color: var(--admin-text);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.cliente-info span {
+    color: var(--admin-text-muted);
+    font-size: 0.82rem;
+}
+
+/* Info list */
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--admin-text-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.info-label svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--admin-text-muted);
+}
+
+.info-value {
+    color: var(--admin-text);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    padding-left: 20px;
+    word-break: break-word;
+}
+
+.info-value a {
+    color: var(--cor-primaria);
+    text-decoration: none;
+}
+
+.info-value a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================
+   TIMELINE DO STATUS
+   ============================================ */
+.status-form {
+    margin-bottom: 20px;
+}
+
+.status-timeline {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--admin-border);
+}
+
+.status-timeline::before {
+    content: '';
+    position: absolute;
+    top: 32px;
+    left: 12%;
+    right: 12%;
+    height: 2px;
+    background: var(--admin-border);
+    z-index: 0;
+}
+
+.timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.timeline-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.timeline-step span {
+    font-size: 0.72rem;
+    color: var(--admin-text-muted);
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.timeline-step.done .timeline-dot {
+    background: var(--admin-success);
+    border-color: var(--admin-success);
+}
+
+.timeline-step.done span {
+    color: var(--admin-success);
+}
+
+.timeline-step.current .timeline-dot {
+    background: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 5px rgba(212, 175, 55, 0.2);
+    animation: pulseDot 2s ease-in-out infinite;
+}
+
+.timeline-step.current span {
+    color: var(--cor-primaria);
+    font-weight: 700;
+}
+
+.timeline-step.cancelled .timeline-dot {
+    background: var(--admin-danger);
+    border-color: var(--admin-danger);
+}
+
+.timeline-step.cancelled span {
+    color: var(--admin-danger);
+}
+
+@keyframes pulseDot {
+    0%, 100% { box-shadow: 0 0 0 5px rgba(212, 175, 55, 0.2); }
+    50%      { box-shadow: 0 0 0 8px rgba(212, 175, 55, 0.1); }
+}
+
+/* Badge para status "Concluído" e "Enviado" (novos) */
+.badge-enviado   { background: rgba(139, 92, 246, 0.15); color: #6d28d9; }
+.badge-concluído,
+.badge-concluido { background: rgba(16, 185, 129, 0.15); color: #047857; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+    .pedido-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+    .pedido-item {
+        flex-wrap: wrap;
+    }
+    .pedido-item-total {
+        width: 100%;
+        text-align: right;
+        padding-top: 10px;
+        border-top: 1px dashed var(--admin-border);
+    }
+    .status-timeline {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    .status-timeline::before { display: none; }
+}
+
+/* ============================================
+   CLIENTES - Estilos específicos
+   ============================================ */
+
+/* Célula cliente com nome + status */
+.cell-cliente > div:not(.cliente-avatar) {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.cell-cliente strong {
+    color: var(--admin-text);
+    font-weight: 600;
+    font-size: 0.92rem;
+    line-height: 1.3;
+}
+
+.cliente-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cliente-status.active {
+    color: var(--admin-success);
+}
+
+.cliente-status.inactive {
+    color: var(--admin-text-muted);
+}
+
+/* Link de email na tabela */
+.email-link {
+    color: var(--admin-text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.email-link:hover {
+    color: var(--cor-primaria);
+    text-decoration: underline;
+}
+
+/* ============================================
+   PERFIL DO CLIENTE (Banner de topo)
+   ============================================ */
+.cliente-profile {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 28px;
+    background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+    border: 1px solid var(--admin-border);
+    border-radius: 14px;
+    box-shadow: var(--admin-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.cliente-profile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.04), rgba(230, 126, 34, 0.02));
+    pointer-events: none;
+}
+
+.cliente-profile-avatar {
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, var(--cor-primaria) 0%, var(--cor-acento) 100%);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 2.6rem;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    box-shadow: 0 6px 16px rgba(212, 175, 55, 0.35);
+    position: relative;
+    z-index: 1;
+}
+
+.cliente-profile-info {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+}
+
+.cliente-profile-info h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--admin-text);
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+}
+
+.cliente-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    color: var(--admin-text-muted);
+    font-size: 0.88rem;
+}
+
+.cliente-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cliente-meta-item svg {
+    width: 15px;
+    height: 15px;
+    stroke: var(--admin-text-muted);
+}
+
+.cliente-meta-item a {
+    color: var(--admin-text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.cliente-meta-item a:hover {
+    color: var(--cor-primaria);
+    text-decoration: underline;
+}
+
+.cliente-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.cliente-badge.active {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--admin-success);
+}
+
+.cliente-badge.inactive {
+    background: rgba(148, 163, 184, 0.15);
+    color: #64748b;
+}
+
+/* Número menor no card (para datas) */
+.card-number-sm {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--admin-text);
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+    .cliente-profile {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    .cliente-profile-avatar {
+        width: 72px;
+        height: 72px;
+        font-size: 2rem;
+    }
+    .cliente-profile-info h2 { font-size: 1.3rem; }
+    .cliente-meta { justify-content: center; }
+}
+
+/* ============================================
+   CATEGORIAS - Célula com ícone
+   ============================================ */
+.cell-categoria {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.categoria-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(212, 175, 55, 0.12);
+    color: var(--cor-primaria);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.categoria-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+}
+
+.cell-categoria strong {
+    color: var(--admin-text);
+    font-weight: 600;
+    font-size: 0.92rem;
+}
+
+/* Badge "Vazia" */
+.badge-vazia {
+    background: rgba(148, 163, 184, 0.15);
+    color: #64748b;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* ============================================
+   FORMULÁRIO ESTREITO (para formulários simples)
+   ============================================ */
+.form-narrow {
+    max-width: 600px;
+    margin: 0 auto;
+}
