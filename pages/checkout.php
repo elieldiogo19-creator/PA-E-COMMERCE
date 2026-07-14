@@ -3,19 +3,18 @@ session_start();
 require __DIR__ . '/../config/db.php';
 
 $nomeProjeto = 'CANZALA, LDA.';
-$navbarMode = 'simple';
-$baseUrl = '../';
-$pageTitle = 'Checkout - ' . $nomeProjeto;
+$navbarMode  = 'simple';
+$baseUrl     = '../';
+$pageTitle   = 'Checkout - ' . $nomeProjeto;
+$pageCSS     = 'checkout';
 
-// Redirect to Login if not Log
+// Redireciona se não estiver logado
 if (empty($_SESSION['usuario_id'])) {
-    header('Location: /PA-E-COMMERCE/auth/login.php?from=checkout');
+    header('Location: /PA-E-COMMERCE/auth/login.php?redirect=checkout.php');
     exit;
 }
 
-// Build cart data
 $carrinho = $_SESSION['carrinho'] ?? [];
-
 $produtosCarrinho = [];
 $totalGeral = 0;
 
@@ -23,33 +22,19 @@ if (!empty($carrinho)) {
     $ids = array_keys($carrinho);
     $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
-    $stmt = $pdo->prepare("
-        SELECT id, nome, preco
-        FROM produtos
-        WHERE id IN ($placeholders)
-    ");
+    $stmt = $pdo->prepare("SELECT id, nome, preco FROM produtos WHERE id IN ($placeholders)");
     $stmt->execute($ids);
     $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $produtosPorId = [];
     foreach ($produtos as $p) {
-        $produtosPorId[$p['id']] = $p;
-    }
-
-    foreach ($carrinho as $idProduto => $quantidade) {
-        if (!isset($produtosPorId[$idProduto])) {
-            continue;
-        }
-
-        $p = $produtosPorId[$idProduto];
-        $subtotal = $p['preco'] * $quantidade;
+        $qtd = (int)$carrinho[$p['id']];
+        $subtotal = $p['preco'] * $qtd;
         $totalGeral += $subtotal;
 
         $produtosCarrinho[] = [
-            'id' => $p['id'],
             'nome' => $p['nome'],
             'preco' => $p['preco'],
-            'quantidade' => $quantidade,
+            'quantidade' => $qtd,
             'subtotal' => $subtotal
         ];
     }
@@ -59,82 +44,86 @@ require __DIR__ . '/../includes/header.php';
 require __DIR__ . '/../includes/navbar.php';
 ?>
 
-<main>
-    <section class="section">
-        <h1>Checkout</h1>
+<main class="checkout-main">
+    <div class="checkout-container">
+
+        <h1 class="checkout-titulo">Confirmação do Pedido</h1>
 
         <?php if (empty($produtosCarrinho)): ?>
-            <p>Seu carrinho está vazio.</p>
-            <p><a href="/PA-E-COMMERCE/produtos.php">Ver produtos</a></p>
+        <div class="checkout-vazio">
+            <h2>O seu carrinho está vazio</h2>
+            <a href="../produtos.php" class="btn-voltar">Ver Produtos</a>
+        </div>
         <?php else: ?>
 
-            <h2>Resumo do pedido</h2>
+        <div class="checkout-layout">
 
-            <table border="1" cellpadding="8" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Preço unitário</th>
-                        <th>Quantidade</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($produtosCarrinho as $item): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($item['nome']); ?></td>
-                            <td><?php echo number_format($item['preco'], 2, ',', '.'); ?> Kz</td>
-                            <td><?php echo (int) $item['quantidade']; ?></td>
-                            <td><?php echo number_format($item['subtotal'], 2, ',', '.'); ?> Kz</td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+            <!-- FORMULÁRIO -->
+            <div class="checkout-form">
 
-            <h2>Total: <?php echo number_format($totalGeral, 2, ',', '.'); ?> Kz</h2>
+                <form method="POST" action="/PA-E-COMMERCE/actions/finalizar_pedido.php" class="form-checkout">
 
-            <h2>Dados do cliente</h2>
+                    <h2 class="form-titulo">Dados do Cliente</h2>
 
-            <form method="POST" action="/PA-E-COMMERCE/actions/finalizar_pedido.php">
-                <label>
-                    Nome:
-                    <input
-                        type="text"
-                        name="nome_cliente"
-                        value="<?php echo htmlspecialchars($_SESSION['usuario_nome'] ?? ''); ?>"
-                        required
-                    >
-                </label>
-                <br><br>
+                    <div class="form-grupo">
+                        <label>Nome Completo</label>
+                        <input type="text" name="nome_cliente"
+                            value="<?php echo htmlspecialchars($_SESSION['usuario_nome'] ?? ''); ?>" required>
+                    </div>
 
-                <label>
-                    E-mail:
-                    <input
-                        type="email"
-                        name="email_cliente"
-                        value="<?php echo htmlspecialchars($_SESSION['usuario_email'] ?? ''); ?>"
-                        required
-                    >
-                </label>
-                <br><br>
+                    <div class="form-grupo">
+                        <label>E-mail</label>
+                        <input type="email" name="email_cliente"
+                            value="<?php echo htmlspecialchars($_SESSION['usuario_email'] ?? ''); ?>" required>
+                    </div>
 
-                <label>
-                    Endereço:
-                    <textarea name="endereco" rows="3" required></textarea>
-                </label>
-                <br><br>
+                    <div class="form-grupo">
+                        <label>Endereço Completo</label>
+                        <textarea name="endereco" rows="3" required></textarea>
+                    </div>
 
-                <label>
-                    Observações:
-                    <textarea name="observacoes" rows="3"></textarea>
-                </label>
-                <br><br>
+                    <div class="form-grupo">
+                        <label>Observações (opcional)</label>
+                        <textarea name="observacoes" rows="3"></textarea>
+                    </div>
 
-                <button type="submit">Confirmar pedido</button>
-            </form>
+
+                    <button type="submit" class="btn-finalizar">
+                        FINALIZAR PEDIDO
+                    </button>
+
+                </form>
+
+            </div>
+
+            <!-- RESUMO -->
+            <aside class="checkout-resumo">
+
+                <h2 class="resumo-titulo">Resumo do Pedido</h2>
+
+                <?php foreach ($produtosCarrinho as $item): ?>
+                <div class="resumo-item">
+                    <span><?php echo htmlspecialchars($item['nome']); ?> x<?php echo $item['quantidade']; ?></span>
+                    <strong><?php echo number_format($item['subtotal'], 2, ',', '.'); ?> Kz</strong>
+                </div>
+                <?php endforeach; ?>
+
+                <hr>
+
+                <div class="resumo-total">
+                    <span>Total</span>
+                    <span class="total-valor">
+                        <?php echo number_format($totalGeral, 2, ',', '.'); ?> Kz
+                    </span>
+                </div>
+
+            </aside>
+
+        </div>
 
         <?php endif; ?>
-    </section>
+
+    </div>
 </main>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>

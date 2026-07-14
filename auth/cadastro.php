@@ -19,6 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $senha  = $_POST['senha'] ?? '';
     $senha2 = $_POST['senha2'] ?? '';
 
+    if (strlen($nome) < 3) {
+    $erros[] = 'Nome deve ter pelo menos 3 caracteres.';
+    }
+
     if ($nome === '' || $email === '' || $senha === '' || $senha2 === '') {
         $erros[] = 'Preencha todos os campos.';
     }

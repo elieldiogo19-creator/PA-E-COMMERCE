@@ -1,0 +1,47 @@
+.hero-servicos {
+    min-height: 80vh;
+    background: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop') center/cover;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.hero-servicos .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,.55);
+}
+
+.hero-servicos .hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.form-servico textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #d4af37;
+    margin-bottom: 15px;
+    resize: vertical;
+}
+
+.alert-sucesso {
+    background: rgba(46, 204, 113, 0.1);
+    border: 1px solid #2ecc71;
+    padding: 12px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    color: #27ae60;
+    text-align: center;
+}
+
+.alert-erro {
+    background: rgba(244, 44, 55, 0.1);
+    border: 1px solid #f42c37;
+    padding: 12px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    color: #d4243d;
+    text-align: center;
+}

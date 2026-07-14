@@ -14,7 +14,7 @@ $qtdCarrinho = 0;
 // ============================================
 // CONFIGURAÇÃO: 8 CATEGORIAS DA HOME
 // ============================================
-$categoriasHome = [4, 10, 11, 1, 12, 6, 3, 8];
+$categoriasHome = [4, 10, 11, 1, 7, 6, 3, 8];
 
 // ============================================
 // ROTAÇÃO AUTOMÁTICA (A cada 6 minutos)
@@ -134,9 +134,35 @@ function fetchExpensiveByCategories($pdo, array $catIds) {
 // 1. HERO SLIDER (3 produtos aleatórios)
 // ============================================
 try {
-    $dbSliders = fetchRandomByCategories($pdo, $heroCats);
+    $rawSliders = fetchRandomByCategories($pdo, $heroCats);
 } catch (PDOException $e) {
-    $dbSliders = [];
+    $rawSliders = [];
+}
+
+// GARANTE EXATAMENTE 3 SLIDES (preenche com fallback se faltar)
+$coresHero = ['cor1', 'cor2', 'cor3'];
+$dbSliders = [];
+
+for ($i = 0; $i < 3; $i++) {
+    if (isset($rawSliders[$i])) {
+        $dbSliders[] = [
+            'id' => $rawSliders[$i]['id'],
+            'nome' => $rawSliders[$i]['nome'],
+            'nome_curto' => $rawSliders[$i]['nome_curto'] ?? $rawSliders[$i]['nome'],
+            'imagem' => $rawSliders[$i]['imagem'],
+            'cor' => $coresHero[$i],
+            'fallback' => false
+        ];
+    } else {
+        $dbSliders[] = [
+            'id' => '#',
+            'nome' => 'Novidades',
+            'nome_curto' => 'Novidades',
+            'imagem' => 'assets/img/produto-sem-imagem.png',
+            'cor' => $coresHero[$i],
+            'fallback' => true
+        ];
+    }
 }
 
 // ============================================
@@ -219,38 +245,28 @@ require __DIR__ . '/includes/header.php';
          1. HERO SLIDER (Infinite Carrousel)
          ============================================ -->
     <section class="hero revelar">
-        <?php if (!empty($dbSliders)): ?>
-            <?php foreach ($dbSliders as $index => $prod): 
-                $cores = ['cor1', 'cor2', 'cor3'];
-                $classeCor = $cores[$index % count($cores)];
-                $img = !empty($prod['imagem']) ? $prod['imagem'] : 'assets/img/produto-sem-imagem.png';
-            ?>
-            <div class="carrosel <?php echo $classeCor; ?>">
-                <div class="content revelar">
-                    <span class="brand-name">Canzala Series</span>
-                    <h1><?php echo htmlspecialchars($prod['nome_curto'] ?: $prod['nome']); ?></h1>
-                    <h2 class="bg-text">WIRELESS</h2>
-                    <button class="btn-shop" onclick="irParaDetalhes(<?php echo $prod['id']; ?>)">Shop Now</button>
-                </div>
-                <div class="hero-images revelar">
-                    <img src="<?php echo htmlspecialchars($img); ?>" alt="Hero" class="image" onerror="this.src='assets/img/produto-sem-imagem.png'">
-                </div>
+        <?php foreach ($dbSliders as $index => $prod): 
+        $classeCor = $prod['cor'];
+        $img = !empty($prod['imagem']) ? $prod['imagem'] : 'assets/img/produto-sem-imagem.png';
+    ?>
+        <div class="carrosel <?php echo $classeCor; ?>">
+            <div class="content revelar">
+                <span class="brand-name"><?php echo $prod['fallback'] ? 'Canzala' : 'Canzala Series'; ?></span>
+                <h1><?php echo htmlspecialchars($prod['nome_curto'] ?: $prod['nome']); ?></h1>
+                <h2 class="bg-text"><?php echo $prod['fallback'] ? 'E-COMMERCE' : 'WIRELESS'; ?></h2>
+                <?php if ($prod['fallback']): ?>
+                <button class="btn-shop">Ver Catálogo</button>
+                <?php else: ?>
+                <button class="btn-shop" onclick="irParaDetalhes(<?php echo $prod['id']; ?>)">Shop Now</button>
+                <?php endif; ?>
             </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <!-- Slide de Fallback caso banco esteja zerado -->
-            <div class="carrosel cor1">
-                <div class="content revelar">
-                    <span class="brand-name">Canzala</span>
-                    <h1>Novidades</h1>
-                    <h2 class="bg-text">E-COMMERCE</h2>
-                    <button class="btn-shop">Ver Catálogo</button>
-                </div>
-                <div class="hero-images revelar">
-                    <img src="assets/img/produto-sem-imagem.png" alt="Fallback" class="image">
-                </div>
+            <div class="hero-images revelar">
+                <img src="<?php echo htmlspecialchars($img); ?>"
+                    alt="<?php echo $prod['fallback'] ? 'Fallback' : 'Hero'; ?>" class="image"
+                    onerror="this.src='assets/img/produto-sem-imagem.png'">
             </div>
-        <?php endif; ?>
+        </div>
+        <?php endforeach; ?>
     </section>
 
     <!-- ============================================
@@ -261,14 +277,15 @@ require __DIR__ . '/includes/header.php';
             $cor = $coresGrid[$index];
             $link = $item['id'] !== '#' ? "pages/detalhes.php?id=" . $item['id'] : "#";
         ?>
-            <div class="card <?php echo $cor; ?> revelar">
-                <div class="text">
-                    <span><?php echo htmlspecialchars($item['titulo']); ?></span>
-                    <h3><?php echo htmlspecialchars($item['subtitulo']); ?></h3>
-                    <a href="<?php echo $link; ?>" class="btn">Saiba Mais</a>
-                </div>
-                <img src="<?php echo htmlspecialchars($item['imagem']); ?>" alt="Card Image" onerror="this.src='assets/img/produto-sem-imagem.png'">
+        <div class="card <?php echo $cor; ?> revelar">
+            <div class="text">
+                <span><?php echo htmlspecialchars($item['titulo']); ?></span>
+                <h3><?php echo htmlspecialchars($item['subtitulo']); ?></h3>
+                <a href="<?php echo $link; ?>" class="btn">Saiba Mais</a>
             </div>
+            <img src="<?php echo htmlspecialchars($item['imagem']); ?>" alt="Card Image"
+                onerror="this.src='assets/img/produto-sem-imagem.png'">
+        </div>
         <?php endforeach; ?>
     </section>
 
@@ -288,7 +305,8 @@ require __DIR__ . '/includes/header.php';
             <span class="txt2">Campanha de Inverno</span>
         </div>
         <div class="phones2 revelar">
-            <img src="<?php echo htmlspecialchars($b1_img); ?>" alt="Banner Image" class="headphone" onerror="this.src='assets/img/produto-sem-imagem.png'">
+            <img src="<?php echo htmlspecialchars($b1_img); ?>" alt="Banner Image" class="headphone"
+                onerror="this.src='assets/img/produto-sem-imagem.png'">
         </div>
         <div class="right-content revelar">
             <p class="p">Air Sale Now</p>
@@ -310,11 +328,14 @@ require __DIR__ . '/includes/header.php';
             ?>
             <div class="produto-card revelar">
                 <div class="image-container">
-                    <img src="<?php echo htmlspecialchars($img); ?>" alt="Produto" onerror="this.src='assets/img/produto-sem-imagem.png'">
+                    <img src="<?php echo htmlspecialchars($img); ?>" alt="Produto"
+                        onerror="this.src='assets/img/produto-sem-imagem.png'">
                     <button class="add-to-cart" onclick="<?php echo $link; ?>">Saiba Mais</button>
                 </div>
                 <h3 class="vamos"><?php echo htmlspecialchars($prod['nome_curto'] ?: $prod['nome']); ?></h3>
-                <p class="preco"><?php echo is_numeric($prod['preco']) ? number_format($prod['preco'], 2, ',', '.') . ' Kz' : $prod['preco']; ?></p>
+                <p class="preco">
+                    <?php echo is_numeric($prod['preco']) ? number_format($prod['preco'], 2, ',', '.') . ' Kz' : $prod['preco']; ?>
+                </p>
             </div>
             <?php endforeach; ?>
         </div>
@@ -336,7 +357,8 @@ require __DIR__ . '/includes/header.php';
             <span class="txt2">Tempo Limitado</span>
         </div>
         <div class="phones2 revelar">
-            <img src="<?php echo htmlspecialchars($b2_img); ?>" alt="Banner Image" class="headphone" onerror="this.src='assets/img/produto-sem-imagem.png'">
+            <img src="<?php echo htmlspecialchars($b2_img); ?>" alt="Banner Image" class="headphone"
+                onerror="this.src='assets/img/produto-sem-imagem.png'">
         </div>
         <div class="right-content revelar">
             <p class="p">Smart Design</p>

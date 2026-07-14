@@ -211,19 +211,41 @@ function useFallback(src, callback) {
 }
 
 /**
- * Aplica a cor num card
+ * Aplica a cor num card (background + textos)
  */
 function applyColorToCard(card, color) {
     const { r, g, b } = color;
     const rgb        = `rgb(${r}, ${g}, ${b})`;
     const rgbDark    = `rgb(${Math.floor(r * 0.6)}, ${Math.floor(g * 0.6)}, ${Math.floor(b * 0.6)})`;
+    const rgbLight   = `rgb(${Math.min(255, Math.floor(r * 1.6 + 40))}, ${Math.min(255, Math.floor(g * 1.6 + 40))}, ${Math.min(255, Math.floor(b * 1.6 + 40))})`;
 
     // Transição suave
     card.style.transition = 'background 0.6s ease';
     card.style.background = `linear-gradient(135deg, ${rgb} 0%, ${rgbDark} 100%)`;
     card.classList.add('card-color-loaded');
 
-    // Ajusta o botão para ter cor complementar
+    // ===== TÍTULO (h3) com cor dinâmica clara =====
+    const titulo = card.querySelector('h3');
+    if (titulo) {
+        titulo.style.background = `linear-gradient(135deg, ${rgbLight} 0%, #ffffff 100%)`;
+        titulo.style.webkitBackgroundClip = 'text';
+        titulo.style.backgroundClip = 'text';
+        titulo.style.webkitTextFillColor = 'transparent';
+        titulo.style.color = 'transparent';
+        titulo.style.textShadow = 'none';
+        titulo.style.filter = `drop-shadow(0 2px 4px rgba(0,0,0,0.3))`;
+    }
+
+    // ===== SUBTÍTULO (span) com tom claro complementar =====
+    const subtitulo = card.querySelector('.text span');
+    if (subtitulo) {
+        subtitulo.style.color = rgbLight;
+        subtitulo.style.opacity = '1';
+        subtitulo.style.fontWeight = '600';
+        subtitulo.style.textShadow = '0 1px 2px rgba(0,0,0,0.3)';
+    }
+
+    // ===== BOTÃO complementar =====
     const btn = card.querySelector('.btn');
     if (btn) {
         btn.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';

@@ -5,6 +5,7 @@ require __DIR__ . '/../config/db.php';
 $nomeProjeto = 'CANZALA, LDA.';
 $navbarMode = 'simple';
 $baseUrl = '../';
+$pageCSS     = 'checkout';
 
 // Verificar login
 if (empty($_SESSION['usuario_id'])) {
@@ -29,7 +30,7 @@ $observacoes  = trim($_POST['observacoes']   ?? '');
 // Validações
 $erros = [];
 
-if ($nomeCliente === '' || $emailCliente === '' || $endereco === '') {
+if (strlen($nomeCliente) < 3 || strlen($endereco) < 5) {
     $erros[] = 'Preencha nome, e-mail e endereço.';
 }
 
@@ -156,18 +157,42 @@ require __DIR__ . '/../includes/header.php';
 require __DIR__ . '/../includes/navbar.php';
 ?>
 
-<main>
-    <section class="section">
-        <h1>Pedido concluído!</h1>
+<main class="pedido-main">
+    <div class="pedido-container">
+        <div class="pedido-card">
 
-        <p>O seu pedido foi registado com sucesso.</p>
+            <div class="pedido-sucesso-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                        d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
 
-        <p><strong>Número do pedido:</strong> #<?php echo htmlspecialchars($pedidoId); ?></p>
+            <h1>Pedido concluído com sucesso!</h1>
 
-        <p><strong>Total:</strong> <?php echo number_format($totalGeral, 2, ',', '.'); ?> Kz</p>
+            <p>O seu pedido foi registado corretamente no sistema.</p>
 
-        <p><a href="/PA-E-COMMERCE/produtos.php">Voltar para a loja</a></p>
-    </section>
+            <div class="pedido-numero">
+                Número do pedido:
+                <strong>#<?php echo htmlspecialchars($pedidoId); ?></strong>
+            </div>
+
+            <div class="pedido-total">
+                Total: <?php echo number_format($totalGeral, 2, ',', '.'); ?> Kz
+            </div>
+
+            <div class="pedido-acoes">
+                <a href="/PA-E-COMMERCE/produtos.php" class="btn-pedido-principal">
+                    Continuar Comprando
+                </a>
+
+                <a href="/PA-E-COMMERCE/index.php" class="btn-pedido-secundario">
+                    Página Inicial
+                </a>
+            </div>
+
+        </div>
+    </div>
 </main>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>

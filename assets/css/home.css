@@ -196,10 +196,11 @@
    ============================================ */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* Duas primeiras colunas iguais, terceira 1.15x maior */
+  grid-template-columns: 1fr 1fr 1.3fr;
   gap: 30px;
-  width: 100%;
-  max-width: var(--max-width);
+  width: calc(100% - 40px);
+  max-width: 1400px; /* Mesma largura do Hero */
   margin: 0 auto;
   padding: 20px;
 }
@@ -259,6 +260,9 @@
   line-height: 1;
   margin: 0;
   color: rgba(255, 255, 255, 0.95);
+  /* Preparação para gradient text */
+  background-clip: text;
+  -webkit-background-clip: text;
 }
 
 .card img {
@@ -566,7 +570,7 @@
 /* Tablets */
 @media (max-width: 1024px) {
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* Volta a 2 colunas iguais em tablet */
   }
 
   .vitrine .produtos-grid {

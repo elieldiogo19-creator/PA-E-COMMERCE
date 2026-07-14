@@ -1,5 +1,24 @@
 <?php
 session_start();
+// =============================
+// LIMITE DE TENTATIVAS DE LOGIN
+// =============================
+$maxTentativas = 5;
+$tempoBloqueio = 300; // 5 minutos em segundos
+
+if (!isset($_SESSION['tentativas_login'])) {
+    $_SESSION['tentativas_login'] = 0;
+}
+
+if (!isset($_SESSION['bloqueado_ate'])) {
+    $_SESSION['bloqueado_ate'] = 0;
+}
+
+// Se estiver bloqueado
+if (time() < $_SESSION['bloqueado_ate']) {
+    $tempoRestante = $_SESSION['bloqueado_ate'] - time();
+    $erros[] = "Conta temporariamente bloqueada. Tente novamente em " . ceil($tempoRestante / 60) . " minutos.";
+}
 require __DIR__ . '/../config/db.php';
 
 // Se já estiver logado, redireciona
@@ -37,8 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$login, $login]);
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($usuario && password_verify($senha, $usuario['senha_hash'])) {
+            if (time() >= $_SESSION['bloqueado_ate'] && $usuario && password_verify($senha, $usuario['senha_hash'])) {
                 session_regenerate_id(true);
+                $_SESSION['tentativas_login'] = 0;
+                $_SESSION['bloqueado_ate'] = 0;
                 
                 $_SESSION['usuario_id'] = $usuario['id'];
                 $_SESSION['usuario_nome'] = $usuario['nome'];
@@ -51,7 +72,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 exit;
             } else {
-                $erros[] = 'E-mail ou senha incorretos.';
+                $_SESSION['tentativas_login']++;
+
+if ($_SESSION['tentativas_login'] >= $maxTentativas) {
+    $_SESSION['bloqueado_ate'] = time() + $tempoBloqueio;
+    $_SESSION['tentativas_login'] = 0;
+    $erros[] = "Muitas tentativas incorretas. Conta bloqueada por 5 minutos.";
+} else {
+    $erros[] = 'E-mail ou senha incorretos.';
+}
             }
         } catch (PDOException $e) {
             $erros[] = 'Erro ao tentar fazer login.';
