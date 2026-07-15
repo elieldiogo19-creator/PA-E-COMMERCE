@@ -179,7 +179,7 @@ require __DIR__ . '/includes/navbar.php';
             <div class="content revelar">
                 <span class="brand-name"><?= $prod['fallback'] ? 'Canzala' : 'Canzala Series'; ?></span>
                 <h1><?= htmlspecialchars($prod['nome_curto']); ?></h1>
-                <h2 class="bg-text"><?= $prod['fallback'] ? 'E-COMMERCE' : 'WIRELESS'; ?></h2>
+                <h2 class="bg-text"><?= $prod['fallback'] ? 'E-COMMERCE' : 'BRAND NEW'; ?></h2>
 
                 <?php if ($prod['fallback']): ?>
                 <button class="btn-shop">Ver Catálogo</button>
