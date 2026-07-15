@@ -1,29 +1,117 @@
-/* ============================================
-   HOVER NOS LINKS DO MENU MOBILE (Opcional)
-   ============================================ */
-.mobile-links > li > a {
-    position: relative;
-    transition: all 0.3s ease;
+/* ========================================================
+   assets/css/s.css (Estilos para Serviços, Sobre e Contacto)
+   ======================================================== */
+
+.section { padding: 100px 0; }
+.container { width: 90%; max-width: 1200px; margin: auto; }
+
+/* HERO SECTION (Serviços) */
+.hero {
+  min-height: 100vh;
+  background: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop') center/cover;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: -80px; /* Compensa a altura da navbar */
+}
+.hero-overlay { position: absolute; inset: 0; background: rgba(255,255,255,.55); }
+.hero-content {
+  position: relative; z-index: 2; display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap: 50px; align-items: center;
+}
+.hero-text h1 { font-size: 4rem; line-height: 1.2; margin-bottom: 20px; color: #222; width: 100%;}
+.hero-text p { color: #555; margin-bottom: 30px; line-height: 1.8; font-size: 1.1rem; }
+.hero-buttons { display: flex; gap: 20px; flex-wrap: wrap; }
+.btn {
+  padding: 14px 30px; border-radius: 12px; text-decoration: none;
+  font-weight: 600; transition: .3s; border: none; cursor: pointer; text-align: center;
+}
+.primary-btn { background: #d4af37; color: #fff; }
+.primary-btn:hover { background: #b8860b; transform: translateY(-4px); }
+.secondary-btn { border: 2px solid #d4af37; color: #d4af37; background: transparent; }
+.secondary-btn:hover { background: #d4af37; color: #fff; }
+
+.hero-card {
+  background: rgba(255,255,255,.95); border: 2px solid #d4af37;
+  padding: 40px; border-radius: 25px; backdrop-filter: blur(10px); color: #222;
+}
+.hero-card h3 { margin-bottom: 15px; font-size: 1.5rem; }
+.card-stats { display: flex; justify-content: space-between; margin-top: 30px; }
+.card-stats h2 { color: #d4af37; }
+
+/* SERVIÇOS GRID */
+.section-title { text-align: center; margin-bottom: 60px; }
+.section-title h2 { font-size: 2.8rem; margin-bottom: 15px; color: #222; }
+.section-title p { color: #777; }
+.services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+.service-card {
+  background: #ffffff; padding: 35px; border-radius: 20px; transition: .4s;
+  border: 2px solid #d4af37; box-shadow: 0 8px 20px rgba(0,0,0,.08); text-align: center;
+}
+.service-card:hover {
+  transform: translateY(-10px); border-color: #b8860b;
+  box-shadow: 0 15px 35px rgba(212,175,55,.35);
+}
+.service-card h3 { margin-bottom: 15px; color: #222; }
+.service-card p { color: #555; line-height: 1.7; }
+
+/* SOBRE NÓS E CONTACTO COMUM */
+.about-container, .contact-container {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px; align-items: center;
+}
+.small-title { color: #d4af37; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+.about-content h2, .contact-info h2 { font-size: 2.7rem; margin: 20px 0; color: #222; }
+.about-content p, .contact-info p { color: #555; line-height: 1.8; margin-bottom: 25px; }
+
+/* SOBRE NÓS */
+.about-image img { width: 100%; border-radius: 25px; border: 3px solid #d4af37; object-fit: cover;}
+.about-features { display: grid; gap: 15px; margin-bottom: 35px; }
+.feature {
+  background: #fafafa; padding: 15px; border-radius: 12px;
+  border-left: 5px solid #d4af37; color: #222; font-weight: 500;
 }
 
-.mobile-links > li > a::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 60%;
-    background: linear-gradient(90deg, rgba(212, 175, 55, 0.2), transparent);
-    transition: width 0.3s ease;
-    border-radius: 0 4px 4px 0;
+/* CONTACTOS */
+.contact-form {
+  background: #ffffff; padding: 40px; border-radius: 20px;
+  border: 2px solid #d4af37; box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+.contact-form input, .contact-form textarea {
+  width: 100%; padding: 16px; margin-bottom: 20px; border-radius: 12px;
+  border: 1px solid #d4af37; background: #f9f9f9; color: #222; font-size: 1rem;
+}
+.contact-form input:focus, .contact-form textarea:focus {
+  outline: none; border-color: #b8860b; box-shadow: 0 0 10px rgba(212,175,55,.35);
+}
+.contact-box { margin-bottom: 20px; display: flex; flex-direction: column; gap: 5px; }
+.contact-box h4 { color: #d4af37; }
+.contact-box p, .contact-box span { color: #555; }
+
+/* RESPONSIVO ESPECÍFICO */
+@media (max-width: 900px) {
+  .hero-content { grid-template-columns: 1fr; text-align: center; padding-top: 100px;}
+  .hero-text h1 { font-size: 2.8rem; }
+  .about-container, .contact-container { grid-template-columns: 1fr; text-align: center; }
+  .card-stats { flex-direction: column; gap: 20px; }
+}
+@media (max-width: 600px) {
+  .hero-text h1 { font-size: 2.2rem; }
+  .section-title h2, .about-content h2, .contact-info h2 { font-size: 2rem; }
+  .hero-buttons { flex-direction: column; align-items: center; }
+  .btn { width: 100%; max-width: 300px; }
+  .hero-card, .service-card, .contact-form { padding: 25px; }
 }
 
-.mobile-links > li > a:hover {
-    color: #d4af37;
-    padding-left: 25px; /* Leve indentação no mobile */
-}
-
-.mobile-links > li > a:hover::before {
-    width: 100%;
-}
+/* ========================================================
+   BLOG E NOTÍCIAS (Adicionado para blog.php)
+   ======================================================== */
+.blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px; }
+.blog-card { background: #fff; border-radius: 15px; border: 2px solid #eee; overflow: hidden; transition: .3s; }
+.blog-card:hover { border-color: #d4af37; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+.blog-img { height: 200px; background: #eee; width: 100%; display: flex; align-items: center; justify-content: center; color: #999; }
+.blog-info { padding: 25px; }
+.blog-date { color: #d4af37; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; display: block; }
+.blog-info h3 { margin-bottom: 15px; color: #222; }
+.blog-info p { color: #666; font-size: 0.95rem; margin-bottom: 15px; }
+.read-more { color: #222; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+.read-more:hover { color: #d4af37; }

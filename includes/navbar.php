@@ -75,8 +75,8 @@ $categoriasNav = getNavbarCategorias($pdo ?? null);
                 <li><a href="<?php echo $baseUrl; ?>sobre.php"
                         class="<?php echo basename($_SERVER['PHP_SELF']) == 'sobre.php' ? 'active' : ''; ?>">About</a>
                 </li>
-                <li><a href="<?php echo $baseUrl; ?>blog.php"
-                        class="<?php echo basename($_SERVER['PHP_SELF']) == 'blog.php' ? 'active' : ''; ?>">Blogs</a>
+                <li><a href="<?php echo $baseUrl; ?>contacto.php"
+                        class="<?php echo basename($_SERVER['PHP_SELF']) == 'contacto.php' ? 'active' : ''; ?>">Contact</a>
                 </li>
             </ul>
         </nav>
@@ -192,7 +192,7 @@ $categoriasNav = getNavbarCategorias($pdo ?? null);
 
             <li><a href="<?php echo $baseUrl; ?>servicos.php">Services</a></li>
             <li><a href="<?php echo $baseUrl; ?>sobre.php">About</a></li>
-            <li><a href="<?php echo $baseUrl; ?>blog.php">Blogs</a></li>
+            <li><a href="<?php echo $baseUrl; ?>contacto.php">Contact</a></li>
         </ul>
     </nav>
 

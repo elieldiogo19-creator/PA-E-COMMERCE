@@ -1,166 +1,116 @@
 <?php
-session_start();
-require __DIR__ . '/config/db.php';
-
-$nomeProjeto = 'CANZALA, LDA.';
-$baseUrl = '';
-$pageTitle = 'Serviços - ' . $nomeProjeto;
-$pageCSS = 'servicos';
-
-$mensagem = '';
-$erros = [];
-$servicoSelecionado = '';
-
-$servicos = [
-    "Manutenção de Geradores",
-    "Instalação de Sistemas de Intrusão",
-    "Instalação de Sistemas de Video Vigilancia",
-    "Instalação de Controlo de Acesso",
-    "Manutenção de Sistemas de Video Vigilancia",
-    "Manutenção de Sistemas de Intrusão"
-];
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    if (empty($_SESSION['usuario_id'])) {
-        header('Location: ../auth/login.php?from=servicos');
-        exit;
-    }
-
-    $tipoServico = trim($_POST['tipo_servico'] ?? '');
-    $descricao = trim($_POST['descricao'] ?? '');
-
-    $servicoSelecionado = $tipoServico;
-
-    if (strlen($descricao) < 10) {
-        $erros[] = "Descreva melhor o problema (mín. 10 caracteres).";
-    }
-
-    if (empty($erros)) {
-        $stmt = $pdo->prepare("
-            INSERT INTO solicitacoes_servico 
-            (usuario_id, tipo_servico, descricao)
-            VALUES (?, ?, ?)
-        ");
-
-        $stmt->execute([
-            $_SESSION['usuario_id'],
-            $tipoServico,
-            $descricao
-        ]);
-
-        $mensagem = "Serviço solicitado com sucesso!";
-        $servicoSelecionado = '';
-    }
-}
-
-require __DIR__ . '/includes/header.php';
-require __DIR__ . '/includes/navbar.php';
+$pageTitle = "Serviços | CANZALA, LDA";
+$pageCSS = "s";
+include 'includes/header.php';
+include 'includes/navbar.php';
 ?>
 
-<!-- HERO IGUAL AO EXEMPLAR -->
-<section class="hero-servicos">
-    <div class="hero-overlay"></div>
-
-    <div class="hero-content container">
-        <div class="hero-text">
-            <p>Prestação de serviços especializados</p>
-            <h1>Soluções Técnicas Profissionais</h1>
-            <p>
-                Instalação e manutenção de sistemas de segurança,
-                controlo e infraestrutura técnica para empresas e residências.
-            </p>
-        </div>
-
-        <div class="hero-card">
-            <h3>Atendimento Especializado</h3>
-            <p>Equipe técnica qualificada e pronta para atender.</p>
-
-            <div class="card-stats">
-                <div>
-                    <h2>+200</h2>
-                    <span>Projetos</span>
+<main>
+    <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <div class="hero-text">
+                <p>Especialistas em Segurança e Energia</p>
+                <h1>Proteção e Continuidade para o seu Negócio</h1>
+                <p>
+                    A CANZALA, LDA oferece soluções integradas de instalação e manutenção técnica. 
+                    Garantimos a segurança do seu património e a disponibilidade de energia para que a sua empresa nunca pare.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#services" class="btn primary-btn">Nossos Serviços</a>
+                    <a href="<?php echo $baseUrl; ?>contacto.php" class="btn secondary-btn">Solicitar Orçamento</a>
                 </div>
+            </div>
 
-                <div>
-                    <h2>100%</h2>
-                    <span>Compromisso</span>
+            <div class="hero-card">
+                <h3>Por que escolher a CANZALA?</h3>
+                <p>Equipa técnica qualificada e equipamentos de alta tecnologia ao serviço da sua tranquilidade.</p>
+                <div class="card-stats">
+                    <div>
+                        <h2>100%</h2>
+                        <span>Fiabilidade</span>
+                    </div>
+                    <div>
+                        <h2>24/7</h2>
+                        <span>Monitorização</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="services section">
-    <div class="container">
-
-        <div class="section-title">
-            <h2>Nossos Serviços</h2>
-            <p>Especialistas em sistemas técnicos e segurança eletrónica.</p>
-        </div>
-
-        <?php if ($mensagem): ?>
-            <div class="alert-sucesso"><?php echo htmlspecialchars($mensagem); ?></div>
-        <?php endif; ?>
-
-        <?php if (!empty($erros)): ?>
-            <div class="alert-erro">
-                <?php foreach ($erros as $erro): ?>
-                    <div><?php echo htmlspecialchars($erro); ?></div>
-                <?php endforeach; ?>
+    <section class="services section" id="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Os Nossos Serviços Técnicos</h2>
+                <p>Soluções profissionais de instalação e manutenção preventiva ou corretiva.</p>
             </div>
-        <?php endif; ?>
 
-        <div class="services-grid">
-
-            <?php foreach ($servicos as $servico): ?>
+            <div class="services-grid">
+                
+                <!-- Serviço 1 -->
                 <div class="service-card">
-
-                    <h3><?php echo htmlspecialchars($servico); ?></h3>
-
-                    <?php if (!empty($_SESSION['usuario_id'])): ?>
-
-                        <?php if ($servicoSelecionado === $servico): ?>
-
-                            <form method="POST" class="form-servico">
-                                <input type="hidden" name="tipo_servico"
-                                       value="<?php echo htmlspecialchars($servico); ?>">
-
-                                <textarea name="descricao"
-                                    placeholder="Descreva o problema ou necessidade..."
-                                    required></textarea>
-
-                                <button type="submit" class="btn primary-btn">
-                                    Confirmar Solicitação
-                                </button>
-                            </form>
-
-                        <?php else: ?>
-
-                            <form method="POST">
-                                <input type="hidden" name="tipo_servico"
-                                       value="<?php echo htmlspecialchars($servico); ?>">
-                                <button type="submit" class="btn primary-btn">
-                                    Solicitar Serviço
-                                </button>
-                            </form>
-
-                        <?php endif; ?>
-
-                    <?php else: ?>
-
-                        <a href="../auth/login.php?from=servicos"
-                           class="btn primary-btn">
-                           Iniciar sessão para solicitar
-                        </a>
-
-                    <?php endif; ?>
-
+                    <div class="service-icon">
+                        <!-- Ícone de Energia/Raio (Gerador) -->
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+                    </div>
+                    <h3>Manutenção de Geradores</h3>
+                    <p>Assistência preventiva e corretiva para garantir que a sua fonte de energia alternativa funcione de forma ininterrupta e eficiente.</p>
                 </div>
-            <?php endforeach; ?>
+                
+                <!-- Serviço 2 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <!-- Ícone de Escudo/Segurança (Intrusão) -->
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <h3>Instalação de Sist. de Intrusão</h3>
+                    <p>Projetamos e instalamos alarmes de alta precisão para detetar rapidamente acessos não autorizados às suas instalações.</p>
+                </div>
 
+                <!-- Serviço 3 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <!-- Ícone de Câmara (Video Vigilância) -->
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                    </div>
+                    <h3>Instalação de Vídeo Vigilância</h3>
+                    <p>Implementação de circuitos fechados de TV (CCTV) com câmaras de alta definição para monitorização em tempo real do seu espaço.</p>
+                </div>
+
+                <!-- Serviço 4 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <!-- Ícone de Cartão/Crachá (Controlo de Acesso) -->
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="M15 10h2M15 14h2M5 16h8"></path></svg>
+                    </div>
+                    <h3>Instalação de Controlo de Acesso</h3>
+                    <p>Sistemas de restrição de entrada através de biometria, cartões magnéticos ou códigos, garantindo acesso exclusivo a pessoas autorizadas.</p>
+                </div>
+
+                <!-- Serviço 5 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <!-- Ícone de Engrenagem (Manutenção) -->
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </div>
+                    <h3>Manutenção de Vídeo Vigilância</h3>
+                    <p>Limpeza de lentes, afinação de foco, configuração de DVR/NVR e substituição de peças avariadas nas suas câmaras.</p>
+                </div>
+
+                <!-- Serviço 6 -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <!-- Ícone de Chave de Boca (Manutenção) -->
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                    </div>
+                    <h3>Manutenção de Sist. de Intrusão</h3>
+                    <p>Calibração de sensores de movimento, verificação de baterias e testes de comunicação com a central de alarmes.</p>
+                </div>
+
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+</main>
 
-<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php include 'includes/footer.php'; ?>

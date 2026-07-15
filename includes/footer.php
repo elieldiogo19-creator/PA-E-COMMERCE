@@ -39,8 +39,8 @@
             <ul>
                 <li><a href="<?php echo $baseUrl; ?>index.php">Home</a></li>
                 <li><a href="<?php echo $baseUrl; ?>produtos.php">Shop</a></li>
-                <li><a href="<?php echo $baseUrl; ?>sobre.php">Sobre Nós</a></li>
-                <li><a href="<?php echo $baseUrl; ?>blog.php">Blog</a></li>
+                <li><a href="<?php echo $baseUrl; ?>sobre.php">About</a></li>
+                <li><a href="<?php echo $baseUrl; ?>contacto.php">Contact</a></li>
             </ul>
         </div>
 
