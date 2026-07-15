@@ -2,9 +2,6 @@
 session_start();
 require __DIR__ . '/config/db.php';
 
-/**
- * CONFIGURAÇÕES GERAIS
- */
 $nomeProjeto = 'CANZALA, LDA.';
 $pageTitle   = 'Home - ' . $nomeProjeto;
 $navbarMode  = 'full';
@@ -15,159 +12,160 @@ $usuarioNome = $_SESSION['usuario_nome'] ?? null;
 $qtdCarrinho = 0;
 
 /**
- * LÓGICA DE ROTAÇÃO E CATEGORIAS
- * As categorias mudam a cada 6 minutos (360 segundos)
+ * 6 CATEGORIAS FIXAS ESCOLHIDAS POR TI
+ * Com base no teu banco:
+ * 1  = Computadores Portáteis
+ * 7  = Redes e Internet
+ * 8  = Ratos
+ * 9  = Teclados
+ * 10 = Smartphones e Tablets
+ * 11 = Vídeo Vigilância
  */
-$categoriasHome = [2, 10, 11, 1, 7, 6, 3, 9];
-$seed           = floor(time() / 360);
-
-function seededShuffle(array $array, int $seed): array {
-    mt_srand($seed);
-    $keys = array_keys($array);
-    for ($i = count($keys) - 1; $i > 0; $i--) {
-        $j = mt_rand(0, $i);
-        $tmp = $keys[$i];
-        $keys[$i] = $keys[$j];
-        $keys[$j] = $tmp;
-    }
-    mt_srand();
-    $result = [];
-    foreach ($keys as $k) { $result[] = $array[$k]; }
-    return $result;
-}
-
-$cats = seededShuffle($categoriasHome, $seed);
-
-// Distribuição dos IDs de categorias para as seções
-$heroCats    = [$cats[0], $cats[1], $cats[2]];
-$gridCats    = [$cats[3], $cats[4], $cats[5], $cats[6], $cats[7], $cats[0]];
-$bannerCats  = [$cats[1], $cats[2]];
-$vitrineCats = [$cats[3], $cats[4], $cats[5], $cats[6]];
+$categoriasHome = [1, 7, 8, 9, 10, 11];
 
 /**
- * FUNÇÕES DE BUSCA NO BANCO
- */
-function fetchRandomByCategories($pdo, array $catIds, array $extraFields = []) {
-    if (empty($catIds)) return [];
-    $placeholders = implode(',', array_fill(0, count($catIds), '?'));
-    $fields = !empty($extraFields) ? ', ' . implode(', ', $extraFields) : '';
-
-    $sql = "SELECT p.id, p.nome, p.nome_curto, p.imagem, p.categoria_id, c.nome as cat_nome {$fields}
-            FROM produtos p
-            LEFT JOIN categorias c ON c.id = p.categoria_id
-            WHERE p.categoria_id IN ($placeholders)";
-
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($catIds);
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    $grouped = [];
-    foreach ($rows as $row) { $grouped[$row['categoria_id']][] = $row; }
-
-    $result = [];
-    foreach ($catIds as $cid) {
-        if (!empty($grouped[$cid])) {
-            $pick = $grouped[$cid][array_rand($grouped[$cid])];
-            $pick['nome_curto'] = $pick['nome_curto'] ?: $pick['nome'];
-            $result[] = $pick;
-        }
-    }
-    return $result;
-}
-
-function fetchExpensiveByCategories($pdo, array $catIds) {
-    if (empty($catIds)) return [];
-    $placeholders = implode(',', array_fill(0, count($catIds), '?'));
-
-    $sql = "SELECT p.id, p.nome, p.nome_curto, p.imagem, p.preco, p.categoria_id, c.nome as cat_nome
-            FROM produtos p
-            LEFT JOIN categorias c ON c.id = p.categoria_id
-            INNER JOIN (
-                SELECT categoria_id, MAX(preco) as max_preco
-                FROM produtos
-                WHERE categoria_id IN ($placeholders)
-                GROUP BY categoria_id
-            ) m ON m.categoria_id = p.categoria_id AND m.max_preco = p.preco";
-
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($catIds);
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    $byCat = [];
-    foreach ($rows as $row) {
-        $row['nome_curto'] = $row['nome_curto'] ?: $row['nome'];
-        if (!isset($byCat[$row['categoria_id']])) { $byCat[$row['categoria_id']] = $row; }
-    }
-
-    $result = [];
-    foreach ($catIds as $cid) {
-        if (isset($byCat[$cid])) { $result[] = $byCat[$cid]; }
-    }
-    return $result;
-}
-
-/**
- * PROCESSAMENTO DE DADOS (DATA FETCHING)
+ * BUSCA TODOS OS PRODUTOS DAS 6 CATEGORIAS
+ * E EMBARALHA DE FORMA ALEATÓRIA
  */
 try {
-    $rawSliders = fetchRandomByCategories($pdo, $heroCats);
-    $dbGrid     = fetchRandomByCategories($pdo, $gridCats);
-    $dbBanners  = fetchExpensiveByCategories($pdo, $bannerCats);
-    $dbVitrine  = fetchRandomByCategories($pdo, $vitrineCats, ['p.preco']);
+    $placeholders = implode(',', array_fill(0, count($categoriasHome), '?'));
+
+    $stmt = $pdo->prepare("
+        SELECT
+            p.id,
+            p.nome,
+            p.nome_curto,
+            p.imagem,
+            p.preco,
+            p.estoque,
+            p.categoria_id,
+            c.nome AS cat_nome
+        FROM produtos p
+        LEFT JOIN categorias c ON c.id = p.categoria_id
+        WHERE p.categoria_id IN ($placeholders)
+        AND p.estoque > 0
+        ORDER BY RAND()
+    ");
+    $stmt->execute($categoriasHome);
+    $todosProdutos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
-    $rawSliders = $dbGrid = $dbBanners = $dbVitrine = [];
+    $todosProdutos = [];
 }
 
 /**
- * TRATAMENTO DE FALLBACKS E INTERFACE
+ * DIVIDE OS PRODUTOS SEM REPETIÇÃO
+ * Cada seção pega do pool geral em sequência
+ * garantindo que nenhum produto se repete
  */
+$totalProdutos = count($todosProdutos);
+$offset = 0; // controla a posição no array
 
-// 1. Sliders (Hero)
+// Função auxiliar para pegar N produtos do pool sem repetir
+function pegarProdutos(array $pool, int &$offset, int $quantidade): array {
+    $resultado = [];
+    for ($i = 0; $i < $quantidade; $i++) {
+        if ($offset < count($pool)) {
+            $resultado[] = $pool[$offset];
+            $offset++;
+        }
+    }
+    return $resultado;
+}
+
+// Hero Slider  → 3 produtos
+$produtosSlider  = pegarProdutos($todosProdutos, $offset, 3);
+
+// Grid 6 Cards → 6 produtos
+$produtosGrid    = pegarProdutos($todosProdutos, $offset, 6);
+
+// Banner 1     → 1 produto
+$produtosBanner1 = pegarProdutos($todosProdutos, $offset, 1);
+
+// Vitrine      → 4 produtos
+$produtosVitrine = pegarProdutos($todosProdutos, $offset, 4);
+
+// Banner 2     → 1 produto
+$produtosBanner2 = pegarProdutos($todosProdutos, $offset, 1);
+
+/**
+ * PREPARA OS DADOS PARA O HERO SLIDER
+ */
 $coresHero = ['cor1', 'cor2', 'cor3'];
 $dbSliders = [];
 for ($i = 0; $i < 3; $i++) {
-    if (isset($rawSliders[$i])) {
-        $dbSliders[] = array_merge($rawSliders[$i], ['cor' => $coresHero[$i], 'fallback' => false]);
+    if (isset($produtosSlider[$i])) {
+        $p = $produtosSlider[$i];
+        $p['nome_curto'] = $p['nome_curto'] ?: $p['nome'];
+        $dbSliders[] = array_merge($p, [
+            'cor'      => $coresHero[$i],
+            'fallback' => false
+        ]);
     } else {
         $dbSliders[] = [
-            'id' => '#', 'nome' => 'Novidades', 'nome_curto' => 'Novidades',
-            'imagem' => 'assets/img/produto-sem-imagem.png', 'cor' => $coresHero[$i], 'fallback' => true
+            'id'        => '#',
+            'nome'      => 'Novidades',
+            'nome_curto'=> 'Novidades',
+            'imagem'    => 'assets/img/produto-sem-imagem.png',
+            'cor'       => $coresHero[$i],
+            'fallback'  => true
         ];
     }
 }
 
-// 2. Grid de 6 Cards
+/**
+ * PREPARA OS DADOS PARA O GRID DE 6 CARDS
+ */
 $coresGrid = ['card-black', 'card-yellow', 'card-red', 'card-silver', 'card-green', 'card-blue'];
-$titulosFicticios = ['Earphone', 'Gadget', 'Laptop', 'Console', 'Oculus', 'Speakers'];
 $gridFinal = [];
 for ($i = 0; $i < 6; $i++) {
-    if (isset($dbGrid[$i])) {
+    if (isset($produtosGrid[$i])) {
+        $p = $produtosGrid[$i];
         $gridFinal[] = [
-            'id' => $dbGrid[$i]['id'],
-            'titulo' => $dbGrid[$i]['cat_nome'] ?? 'Novidade',
-            'subtitulo' => $dbGrid[$i]['nome_curto'],
-            'imagem' => $dbGrid[$i]['imagem'],
+            'id'       => $p['id'],
+            'titulo'   => $p['cat_nome'] ?? 'Novidade',
+            'subtitulo'=> $p['nome_curto'] ?: $p['nome'],
+            'imagem'   => $p['imagem'],
             'fallback' => false
         ];
     } else {
         $gridFinal[] = [
-            'id' => '#', 'titulo' => 'Enjoy With', 'subtitulo' => $titulosFicticios[$i],
-            'imagem' => 'assets/img/produto-sem-imagem.png', 'fallback' => true
+            'id'       => '#',
+            'titulo'   => 'Canzala',
+            'subtitulo'=> 'Novidade',
+            'imagem'   => 'assets/img/produto-sem-imagem.png',
+            'fallback' => true
         ];
     }
 }
 
-// 3. Vitrine
+/**
+ * PREPARA OS DADOS PARA A VITRINE
+ */
 $vitrineFinal = [];
 for ($i = 0; $i < 4; $i++) {
-    $vitrineFinal[] = $dbVitrine[$i] ?? [
-        'id' => '#', 'nome' => 'Produto Canzala', 'nome_curto' => 'Produto Canzala',
-        'preco' => '00.00', 'imagem' => 'assets/img/produto-sem-imagem.png'
-    ];
+    if (isset($produtosVitrine[$i])) {
+        $p = $produtosVitrine[$i];
+        $vitrineFinal[] = $p;
+    } else {
+        $vitrineFinal[] = [
+            'id'        => '#',
+            'nome'      => 'Produto Canzala',
+            'nome_curto'=> 'Produto Canzala',
+            'preco'     => '00.00',
+            'imagem'    => 'assets/img/produto-sem-imagem.png'
+        ];
+    }
 }
 
+/**
+ * PREPARA OS BANNERS
+ */
+$b1 = $produtosBanner1[0] ?? null;
+$b2 = $produtosBanner2[0] ?? null;
+
 require __DIR__ . '/includes/header.php';
-require __DIR__ . '/includes/navbar.php'; 
+require __DIR__ . '/includes/navbar.php';
 ?>
 
 <main class="main-content">
@@ -177,22 +175,23 @@ require __DIR__ . '/includes/navbar.php';
         <?php foreach ($dbSliders as $prod): 
             $img = !empty($prod['imagem']) ? $prod['imagem'] : 'assets/img/produto-sem-imagem.png';
         ?>
-            <div class="carrosel <?= $prod['cor']; ?>">
-                <div class="content revelar">
-                    <span class="brand-name"><?= $prod['fallback'] ? 'Canzala' : 'Canzala Series'; ?></span>
-                    <h1><?= htmlspecialchars($prod['nome_curto']); ?></h1>
-                    <h2 class="bg-text"><?= $prod['fallback'] ? 'E-COMMERCE' : 'WIRELESS'; ?></h2>
-                    
-                    <?php if ($prod['fallback']): ?>
-                        <button class="btn-shop">Ver Catálogo</button>
-                    <?php else: ?>
-                        <button class="btn-shop" onclick="irParaDetalhes(<?= $prod['id']; ?>)">Shop Now</button>
-                    <?php endif; ?>
-                </div>
-                <div class="hero-images revelar">
-                    <img src="<?= htmlspecialchars($img); ?>" alt="Hero Image" class="image" onerror="this.src='assets/img/produto-sem-imagem.png'">
-                </div>
+        <div class="carrosel <?= $prod['cor']; ?>">
+            <div class="content revelar">
+                <span class="brand-name"><?= $prod['fallback'] ? 'Canzala' : 'Canzala Series'; ?></span>
+                <h1><?= htmlspecialchars($prod['nome_curto']); ?></h1>
+                <h2 class="bg-text"><?= $prod['fallback'] ? 'E-COMMERCE' : 'WIRELESS'; ?></h2>
+
+                <?php if ($prod['fallback']): ?>
+                <button class="btn-shop">Ver Catálogo</button>
+                <?php else: ?>
+                <button class="btn-shop" onclick="irParaDetalhes(<?= $prod['id']; ?>)">Shop Now</button>
+                <?php endif; ?>
             </div>
+            <div class="hero-images revelar">
+                <img src="<?= htmlspecialchars($img); ?>" alt="Hero Image" class="image"
+                    onerror="this.src='assets/img/produto-sem-imagem.png'">
+            </div>
+        </div>
         <?php endforeach; ?>
     </section>
 
@@ -201,25 +200,25 @@ require __DIR__ . '/includes/navbar.php';
         <?php foreach ($gridFinal as $index => $item): 
             $link = $item['id'] !== '#' ? "pages/detalhes.php?id=" . $item['id'] : "#";
         ?>
-            <div class="card <?= $coresGrid[$index]; ?> revelar">
-                <div class="text">
-                    <span><?= htmlspecialchars($item['titulo']); ?></span>
-                    <h3><?= htmlspecialchars($item['subtitulo']); ?></h3>
-                    <a href="<?= $link; ?>" class="btn">Saiba Mais</a>
-                </div>
-                <img src="<?= htmlspecialchars($item['imagem']); ?>" alt="Grid Image" onerror="this.src='assets/img/produto-sem-imagem.png'">
+        <div class="card <?= $coresGrid[$index]; ?> revelar">
+            <div class="text">
+                <span><?= htmlspecialchars($item['titulo']); ?></span>
+                <h3><?= htmlspecialchars($item['subtitulo']); ?></h3>
+                <a href="<?= $link; ?>" class="btn">Saiba Mais</a>
             </div>
+            <img src="<?= htmlspecialchars($item['imagem']); ?>" alt="Grid Image"
+                onerror="this.src='assets/img/produto-sem-imagem.png'">
+        </div>
         <?php endforeach; ?>
     </section>
 
     <!-- 3. BANNER 1 -->
-    <?php 
-        $b1 = $dbBanners[0] ?? null;
-        $b1_nome = $b1 ? ($b1['nome_curto'] ?: $b1['nome']) : 'Fine Smile';
-        $b1_preco = $b1 ? number_format($b1['preco'], 2, ',', '.') . ' Kz' : '$129';
-        $b1_img = $b1['imagem'] ?? 'assets/img/produto-sem-imagem.png';
-        $b1_link = $b1 ? "irParaDetalhes({$b1['id']})" : "";
-    ?>
+    <?php
+    $b1_nome  = $b1 ? ($b1['nome_curto'] ?: $b1['nome']) : 'Fine Smile';
+    $b1_preco = $b1 ? number_format($b1['preco'], 2, ',', '.') . ' Kz' : '$129';
+    $b1_img   = $b1['imagem'] ?? 'assets/img/produto-sem-imagem.png';
+    $b1_link  = $b1 ? "irParaDetalhes({$b1['id']})" : "";
+?>
     <div class="banner revelar">
         <div class="left-content revelar">
             <span class="txt">10% OFF</span>
@@ -227,7 +226,8 @@ require __DIR__ . '/includes/navbar.php';
             <span class="txt2">Campanha de Inverno</span>
         </div>
         <div class="phones2 revelar">
-            <img src="<?= htmlspecialchars($b1_img); ?>" alt="Banner 1" class="headphone" onerror="this.src='assets/img/produto-sem-imagem.png'">
+            <img src="<?= htmlspecialchars($b1_img); ?>" alt="Banner 1" class="headphone"
+                onerror="this.src='assets/img/produto-sem-imagem.png'">
         </div>
         <div class="right-content revelar">
             <p class="p">Air Sale Now</p>
@@ -245,28 +245,28 @@ require __DIR__ . '/includes/navbar.php';
                 $img = !empty($prod['imagem']) ? $prod['imagem'] : 'assets/img/produto-sem-imagem.png';
                 $link = $prod['id'] !== '#' ? "irParaDetalhes({$prod['id']})" : "#";
             ?>
-                <div class="produto-card revelar">
-                    <div class="image-container">
-                        <img src="<?= htmlspecialchars($img); ?>" alt="Produto" onerror="this.src='assets/img/produto-sem-imagem.png'">
-                        <button class="add-to-cart" onclick="<?= $link; ?>">Saiba Mais</button>
-                    </div>
-                    <h3 class="vamos"><?= htmlspecialchars($prod['nome_curto'] ?: $prod['nome']); ?></h3>
-                    <p class="preco">
-                        <?= is_numeric($prod['preco']) ? number_format($prod['preco'], 2, ',', '.') . ' Kz' : $prod['preco']; ?>
-                    </p>
+            <div class="produto-card revelar">
+                <div class="image-container">
+                    <img src="<?= htmlspecialchars($img); ?>" alt="Produto"
+                        onerror="this.src='assets/img/produto-sem-imagem.png'">
+                    <button class="add-to-cart" onclick="<?= $link; ?>">Saiba Mais</button>
                 </div>
+                <h3 class="vamos"><?= htmlspecialchars($prod['nome_curto'] ?: $prod['nome']); ?></h3>
+                <p class="preco">
+                    <?= is_numeric($prod['preco']) ? number_format($prod['preco'], 2, ',', '.') . ' Kz' : $prod['preco']; ?>
+                </p>
+            </div>
             <?php endforeach; ?>
         </div>
     </section>
 
     <!-- 5. BANNER 2 -->
-    <?php 
-        $b2 = $dbBanners[1] ?? null;
-        $b2_nome = $b2 ? ($b2['nome_curto'] ?: $b2['nome']) : 'Smart Solo';
-        $b2_preco = $b2 ? number_format($b2['preco'], 2, ',', '.') . ' Kz' : '$129';
-        $b2_img = $b2['imagem'] ?? 'assets/img/produto-sem-imagem.png';
-        $b2_link = $b2 ? "irParaDetalhes({$b2['id']})" : "";
-    ?>
+    <?php
+    $b2_nome  = $b2 ? ($b2['nome_curto'] ?: $b2['nome']) : 'Smart Solo';
+    $b2_preco = $b2 ? number_format($b2['preco'], 2, ',', '.') . ' Kz' : '$129';
+    $b2_img   = $b2['imagem'] ?? 'assets/img/produto-sem-imagem.png';
+    $b2_link  = $b2 ? "irParaDetalhes({$b2['id']})" : "";
+?>
     <div class="banner2 revelar">
         <div class="left-content revelar">
             <span class="txt">30% OFF</span>
@@ -274,7 +274,8 @@ require __DIR__ . '/includes/navbar.php';
             <span class="txt2">Tempo Limitado</span>
         </div>
         <div class="phones2 revelar">
-            <img src="<?= htmlspecialchars($b2_img); ?>" alt="Banner 2" class="headphone" onerror="this.src='assets/img/produto-sem-imagem.png'">
+            <img src="<?= htmlspecialchars($b2_img); ?>" alt="Banner 2" class="headphone"
+                onerror="this.src='assets/img/produto-sem-imagem.png'">
         </div>
         <div class="right-content revelar">
             <p class="p">Smart Design</p>

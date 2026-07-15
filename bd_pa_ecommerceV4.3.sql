@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 13/07/2026 às 07:55
+-- Tempo de geração: 15/07/2026 às 03:53
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.0.30
 
@@ -41,7 +41,7 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `nome`, `email`, `senha_hash`, `ultimo_acesso`, `criado_em`) VALUES
-(1, 'Admin DaHoodie', 'dahoodiewrld@gmail.com', '$2y$10$68860yDGeEI5GMTMB/yFHOjguwbJ4abaDClBPMJJzKMsFAwdWiP0C', '2026-07-12 02:26:39', '2026-04-06 20:48:00'),
+(1, 'Admin DaHoodie', 'dahoodiewrld@gmail.com', '$2y$10$68860yDGeEI5GMTMB/yFHOjguwbJ4abaDClBPMJJzKMsFAwdWiP0C', '2026-07-14 20:46:02', '2026-04-06 20:48:00'),
 (2, 'Eliel Diogo', 'elieldiogo@gmail.com', '$2y$10$cB1gDXDalXmc0NclYcAQzuhzDkLpF1IQ7/.w3eujonRwIiNmwzBbq', NULL, '2026-05-05 13:00:02'),
 (3, 'vou le aleja', 'josediogo2344@gmail.com', '$2y$10$j8uv2oEWa.HGncleqx0b3.5/oTjAlZU87aKQpS8dwlm0aNUsdfJaG', '2026-07-07 01:34:58', '2026-07-10 15:16:02');
 
@@ -89,6 +89,13 @@ CREATE TABLE `itens_pedido` (
   `preco_unitario` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Despejando dados para a tabela `itens_pedido`
+--
+
+INSERT INTO `itens_pedido` (`id`, `pedido_id`, `produto_id`, `quantidade`, `preco_unitario`) VALUES
+(12, 9, 80, 1, 25000.90);
+
 -- --------------------------------------------------------
 
 --
@@ -105,6 +112,13 @@ CREATE TABLE `pedidos` (
   `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
   `status` varchar(50) NOT NULL DEFAULT 'pendente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `pedidos`
+--
+
+INSERT INTO `pedidos` (`id`, `usuario_id`, `nome_cliente`, `email_cliente`, `endereco`, `total`, `criado_em`, `status`) VALUES
+(9, 1, 'DaHoodie', 'dahoodiewrld@gmail.com', 'Viana - Zango 1.', 25000.90, '2026-07-14 03:52:19', 'pendente');
 
 -- --------------------------------------------------------
 
@@ -130,10 +144,10 @@ CREATE TABLE `produtos` (
 --
 
 INSERT INTO `produtos` (`id`, `nome`, `nome_curto`, `descricao`, `descricao_curta`, `preco`, `imagem`, `criado_em`, `estoque`, `categoria_id`) VALUES
-(29, 'Beats Solo HEADPHONES', NULL, '', '', 9499.90, 'assets/img/prods/prod_6a47d98c325f96.28105985.png', '2026-07-03 15:47:24', 29, 4),
-(30, 'Beats Solo HEADPHONES', NULL, '', '', 9499.90, 'assets/img/prods/prod_6a47d9b457cd55.07107259.png', '2026-07-03 15:48:04', 29, 4),
-(31, 'Beats Solo HEADPHONES', NULL, '', '', 9499.90, 'assets/img/prods/prod_6a47d9c96667d8.97566723.png', '2026-07-03 15:48:25', 29, 4),
-(32, 'Beats Solo HEADPHONES', NULL, '', '', 9499.90, 'assets/img/prods/prod_6a47da368328d7.48591629.png', '2026-07-03 15:50:14', 29, 4),
+(29, 'Teclado Mecânico Ultra-Compacto 60% RGB Anti-Ghosting – Branco', 'Compacto RGB', 'Se procura estética impecável combinada com alta performance de digitação, este teclado mecânico na cor branca é a peça central que faltava no seu ambiente de trabalho ou lazer. O seu layout compacto de 61 teclas reduz o cansaço dos braços ao permitir que os seus ombros fiquem numa posição mais natural e alinhada durante a digitação diária. Por trás do design clean, o teclado esconde um poderoso sistema de iluminação em arco-íris (Rainbow/RGB) que cria um contraste espetacular com a estrutura branca, iluminando as letras com clareza mesmo em divisões totalmente escuras. Conta com tecnologia de engenharia anti-ghosting avançada, permitindo que pressione várias teclas ao mesmo tempo sem que o computador perca nenhum comand.', 'Visual clean e minimalista com switches macios e luzes multicoloridas.', 39500.90, 'assets/img/prods/prod_6a56b32d19d9d3.54531124.png', '2026-07-03 15:47:24', 8, 9),
+(30, 'Teclado Mecânico Gamer Compacto 60% RGB Switch Blue – Preto', 'Teclado Gamer', 'Projetado especificamente para entusiastas de jogos e utilizadores que possuem mesas com espaço limitado, este teclado mecânico no formato 60% elimina completamente o teclado numérico lateral e as teclas de função dedicadas para garantir o máximo de área livre para o movimento do rato. Equipado com switches mecânicos do tipo Blue, ele oferece o feedback tátil e o clique audível característicos que os gamers adoram, garantindo que cada comando seja sentido e confirmado com precisão absoluta. O grande destaque visual fica por conta do seu sistema de retroiluminação RGB integrado por baixo das teclas, que conta com múltiplos efeitos dinâmicos de transição de cores e níveis de brilho ajustáveis diretamente através de atalhos no próp', '', 38000.90, 'assets/img/prods/prod_6a56b1e86f64a9.14728993.png', '2026-07-03 15:48:04', 8, 9),
+(31, 'Teclado Mecânico Custom Premium Layout 60% Retro Grey', 'Custom Grey & White', 'Unindo com perfeição a nostalgia do design clássico de computadores antigos com a tecnologia de ponta dos teclados modernos, este modelo customizado de 60% é feito para programadores, redatores e entusiastas que valorizam uma experiência de digitação superior. O seu conjunto de teclas (keycaps) adota uma elegante combinação de tons de cinza industrial, branco gelo e detalhes em fontes coloridas, conferindo um visual vintage sofisticado à sua secretária. As teclas são esculpidas em plástico PBT de alta qualidade, um material muito mais espesso e resistente do que o plástico comum, que oferece uma textura fosca agradável ao toque e impede que as teclas fiquem com aquele aspeto oleoso e brilhante após meses de uso contínuo.', 'Estilo retro exclusivo com teclas PBT premium de escrita macia.', 48000.90, 'assets/img/prods/prod_6a56b136262729.54441988.png', '2026-07-03 15:48:25', 8, 9),
+(32, 'Teclado com Fio Padrão Verbatim USB Slim Premium – Preto', 'Teclado de Escritório', 'O teclado com fio da Verbatim é a escolha definitiva para escritórios, recepções, escolas e ambientes de trabalho corporativos que exigem máxima confiabilidade e resistência a longo prazo. Construído com um layout completo de tamanho padrão (100%), ele inclui o teclado numérico lateral dedicado, facilitando consideravelmente a inserção de dados em folhas de cálculo, contabilidade e rotinas administrativas diárias. As suas teclas possuem uma altura otimizada de perfil médio-baixo, proporcionando uma digitação extremamente suave, silenciosa e confortável que ajuda a evitar dores nos dedos após longas jornadas de trabalho. A carcaça plástica de alta densidade conta com um design resistente a pequenos salpicos de líquidos acidentais, possuindo canais interno.', 'Durabilidade e digitação confortável para o trabalho do dia a dia.', 12500.90, 'assets/img/prods/prod_6a56b089766746.88984338.png', '2026-07-03 15:50:14', 8, 9),
 (46, 'Kit CFTV CP Plus DVR + 4 Câmeras HD + Disco Rígido e Acessórios', 'CFTV CP Plus DVR', 'Expanda a proteção do seu patrimônio com o Kit Completo de 4 Câmeras da CP Plus. Ideal para comércios de médio porte ou residências familiares, ele permite monitorar quatro pontos estratégicos em simultâneo (como salas, corredores, quintal e entrada principal). O sistema inclui o gravador central DVR, conectores BNC, fontes de alimentação e um disco rígido otimizado para gravação ininterrupta. As câmeras oferecem excelente nitidez e filtros inteligentes para entregar imagens claras tanto no brilho do dia quanto no escuro da noite.', NULL, 210000.90, 'assets/img/prod_6a52781028f1d9.24657552.png', '2026-07-09 23:05:32', 14, 11),
 (47, 'Kit CFTV CP Plus DVR + 2 Câmeras HD + Disco Rígido 1TB e Cabos', 'CFTV CP Plus DVR', 'Tenha tudo o que precisa para proteger o seu imóvel com o Kit de Segurança CP Plus. Este combo completo inclui um gravador digital DVR de alta performance, uma câmera bullet para o exterior, uma câmera dome compacta para o interior, além de cabos e fontes de alimentação. O kit vem acompanhado de um disco rígido de 1TB de nível de vigilância, garantindo espaço suficiente para armazenar semanas de gravação contínua com total estabilidade e segurança dos dados.', NULL, 145000.90, 'assets/img/prod_6a5278ddf13a28.77619130.png', '2026-07-11 02:02:25', 11, 11),
 (48, 'Câmera Hikvision PanoVu / Multi-Sensor', 'Hikvision', 'A Câmera Hikvision Multi-Sensor redefine o monitoramento de alta segurança. Este dispositivo avançado combina múltiplas lentes fixas para gerar uma visão panorâmica contínua e sem pontos cegos, integrada a uma câmera PTZ inferior de alta velocidade. Enquanto os sensores superiores mantêm os olhos em todo o ambiente simultaneamente, a lente móvel faz aproximações detalhadas e rastreia alvos em movimento automaticamente, oferecendo uma cobertura completa e inteligente para grandes empresas.', NULL, 390000.90, 'assets/img/prod_6a527915509974.73215673.png', '2026-07-11 02:52:00', 14, 11),
@@ -159,7 +173,39 @@ INSERT INTO `produtos` (`id`, `nome`, `nome_curto`, `descricao`, `descricao_curt
 (69, 'Projetor Digital Home Cinema Full HD USB/HDMI', 'Home Cinema', 'O Projetor Home Cinema Digital entrega uma experiência imersiva de alta qualidade na sua sala de estar ou escritório. Com múltiplas portas de entrada como HDMI e USB, ele conecta-se facilmente a computadores, consolas de videojogos e descodificadores de TV. A sua lâmpada LED de longa duração oferece excelente brilho e contraste, garantindo cores vivas e textos nítidos mesmo em ambientes com luz indireta. Conta ainda com botões de controle rápido na parte superior para ajustes rápidos sem complicações.', 'Projeção nítida e brilhante de alta definição para a sua sala.', 115000.90, 'assets/img/prods/prod_6a546f3410c064.48953118.png', '2026-07-13 04:53:08', 20, 3),
 (70, 'Monitor Computador Slim Borderless Full HD IPS 24', 'Slim Borderless', 'Eleve o nível do seu espaço de trabalho ou setup de jogos com este Monitor Slim de 24 polegadas. Graças à tecnologia de painel IPS, ele exibe imagens com cores incrivelmente realistas e ângulos de visão amplos de até 178 graus. O design com bordas ultrafinas minimiza as distrações visuais e o torna ideal para configurações de múltiplos monitores lado a lado. A sua base estável e elegante garante firmeza na mesa, enquanto o filtro de luz azul integrado protege os seus olhos durante longas horas de uso.', 'Cores realistas e bordas ultrafinas para máxima produtividade.', 95000.90, 'assets/img/prods/prod_6a546fb80c2ef7.28166702.png', '2026-07-13 04:55:20', 20, 3),
 (71, 'Monitor LED LG Full HD com Base ArcLine e Conexão HDMI', 'LG Multimídia', 'Unindo elegância e desempenho, o Monitor LED LG traz a renomada fidelidade de imagem da marca para as suas tarefas diárias. Destaca-se pela sua sofisticada base curva ArcLine, que acrescenta um toque moderno a qualquer ambiente de trabalho. Perfeito para edição de documentos, navegação web e entretenimento multimídia, ele oferece um gerenciamento de cores inteligente e tempos de resposta rápidos para evitar rastros na tela em cenas de movimento, garantindo uma transição visual extremamente suave.', 'Visualização confortável com a qualidade de imagem da tecnologia LG.', 110000.90, 'assets/img/prods/prod_6a54701326bd19.56961929.png', '2026-07-13 04:56:51', 20, 3),
-(72, 'Smart TV Roku LED com Sistema de Streaming Integrado', 'Smart TV', 'Desfrute de uma experiência de entretenimento completa e sem complicações com a Smart TV Roku. A sua tela de alta definição proporciona imagens vibrantes e ótimo contraste para os seus filmes, séries e partidas de futebol.\r\nO grande diferencial está na plataforma Roku integrada: uma interface extremamente limpa, rápida e intuitiva que organiza os seus canais de streaming, dispositivos conectados e TV aberta numa única tela inicial. Ideal para quem procura praticidade e velocidade ao navegar pelos conteúdos favoritos.', 'Todo o entretenimento com o sistema mais rápido e fácil de usar.', 195000.90, 'assets/img/prods/prod_6a54705bbc9391.20993319.png', '2026-07-13 04:58:03', 8, 3);
+(72, 'Smart TV Roku LED com Sistema de Streaming Integrado', 'Smart TV', 'Desfrute de uma experiência de entretenimento completa e sem complicações com a Smart TV Roku. A sua tela de alta definição proporciona imagens vibrantes e ótimo contraste para os seus filmes, séries e partidas de futebol.\r\nO grande diferencial está na plataforma Roku integrada: uma interface extremamente limpa, rápida e intuitiva que organiza os seus canais de streaming, dispositivos conectados e TV aberta numa única tela inicial. Ideal para quem procura praticidade e velocidade ao navegar pelos conteúdos favoritos.', 'Todo o entretenimento com o sistema mais rápido e fácil de usar.', 195000.90, 'assets/img/prods/prod_6a54705bbc9391.20993319.png', '2026-07-13 04:58:03', 8, 3),
+(73, 'Switch MikroTik Cloud Router CRS309-1G-8S+IN 8 Portas SFP+ 10Gbps', 'Router Switch MikroTik', 'O MikroTik CRS309-1G-8S+IN é um switch de alta performance compacto, ideal para empresas que exigem velocidade extrema e estabilidade na infraestrutura de rede. Ele conta com 8 portas SFP+ que suportam conexões de até 10 Gbps por canal, além de uma porta Gigabit Ethernet para gerenciamento com suporte a PoE. Com sua refrigeração passiva (totalmente silencioso) e carcaça metálica robusta, ele entrega um poder de processamento incrível com opções de boot duplo (RouterOS ou SwitchOS).', 'Switch profissional com 8 portas SFP+ para redes de fibra óptica.', 245000.90, 'assets/img/prods/prod_6a558104794ef0.51070237.png', '2026-07-14 00:21:24', 8, 7),
+(74, 'Hub Adaptador Ugreen com 4 Portas USB 3.0 Extensor – Preto', 'Hub USB Ugreen', 'O Hub USB 3.0 da Ugreen é a solução ideal para expandir instantaneamente a conectividade do seu computador ou notebook. Construído com materiais de alta durabilidade e um cabo reforçado, ele transforma uma única porta USB numa estação com quatro entradas adicionais. Perfeito para conectar ratos, teclados, pen drives e discos externos simultaneamente, garantindo taxas de transferência de dados supervelozes de até 5 Gbps sem lentidão.', 'Multiplique as portas USB do seu PC ou portátil com alta velocidade.', 14500.90, 'assets/img/prods/prod_6a5581a5583e37.81910731.png', '2026-07-14 00:24:05', 8, 7),
+(75, 'Cabo Adaptador Micro-USB para USB Fêmea OTG Compacto', 'Adaptador Micro-USB', 'Dê uma nova vida e novas funcionalidades aos seus aparelhos com este prático Cabo Adaptador Micro-USB OTG. Extremamente leve e portátil, ele transforma a entrada de carregamento antiga do seu celular ou tablet numa porta USB padrão. Com ele, você pode conectar mouses para navegar na tela, teclados para digitar textos longos de forma confortável ou ler arquivos diretamente de um pen drive sem precisar ligar o aparelho a um computador.', 'Conecte acessórios USB em tablets e celulares com entrada Micro-USB.', 3500.90, 'assets/img/prods/prod_6a5581f994fc77.54668108.png', '2026-07-14 00:25:29', 8, 7),
+(76, 'Carregador Portátil Power Bank 20.000mAh com Cabos Embutidos e Display', 'Power Bank Portátil', 'Nunca mais fique sem bateria na rua com este Power Bank de alta capacidade de 20.000mAh. Capaz de dar múltiplas cargas completas no seu smartphone, ele destaca-se pela conveniência de possuir cabos de carregamento embutidos na própria estrutura (incluindo USB-C e Lightning), eliminando a necessidade de andar com fios enrolados na mala. O display digital LED frontal exibe com precisão exata a porcentagem de energia restante na bateria externa, para você saber exatamente quando recarregá-la.', 'Bateria gigante com cabos integrados e indicador digital de carga.', 32000.90, 'assets/img/prods/prod_6a558267df4728.52139861.png', '2026-07-14 00:27:19', 8, 7),
+(77, 'Cabo de Rede Ethernet Patch Cord RJ45 Cat6 Homologado – Cinza', 'Ethernet RJ45', 'O Cabo de Rede Ethernet Cat6 garante a velocidade máxima contratada da sua internet sem as oscilações e perdas comuns do sinal Wi-Fi. Equipado com conectores RJ45 blindados e travas resistentes, ele é ideal para interligar computadores, consolas de videojogos, smart TVs e roteadores à rede.\r\nA sua malha interna reduz drasticamente as interferências externas, assegurando uma transmissão de dados limpa, rápida e com a menor latência possível para jogos online e chamadas de vídeo de alta qualidade.', 'Velocidade máxima e estabilidade para computadores.', 4500.90, 'assets/img/prods/prod_6a5582cf3ac5e7.53868103.png', '2026-07-14 00:29:03', 8, 7),
+(78, 'Hub Adaptador USB-C Ugreen com 4 Portas USB 3.0 – Alumínio', 'Hub USB-C Ugreen', 'Se o seu notebook moderno tem poucas entradas, o Hub USB-C da Ugreen é o acessório que faltava. Construído com uma elegante carcaça de alumínio que ajuda a dissipar o calor, ele expande uma única porta USB-C em quatro entradas USB 3.0 de alta velocidade. Perfeito para conectar pen drives, discos rígidos externos, mouses e impressoras simultaneamente. Possui também uma entrada de alimentação auxiliar de 5V para garantir energia estável mesmo ao usar múltiplos acessórios pesados ao mesmo tempo.', 'Multiplique as conexões do seu portátil com velocidade e estilo.', 18500.90, 'assets/img/prods/prod_6a5583ae1cd742.03979786.png', '2026-07-14 00:32:46', 8, 7),
+(79, 'Modem e Roteador Wi-Fi Motorola Residencial Banda Larga – Preto', 'Router Motorola', 'O Modem Roteador Motorola foi desenvolvido para entregar estabilidade máxima à sua rede de internet residencial ou de pequenos escritórios. Com um design vertical elegante que otimiza o espaço e melhora a dissipação de calor, ele combina as funções de recepção de sinal e distribuição de sinal Wi-Fi num único aparelho. Possui indicadores LED frontais de fácil leitura para acompanhar o status da conexão, além de portas traseiras para ligar dispositivos diretamente via cabo de rede com latência mínima.', 'Conexão estável e gerenciamento inteligente de internet banda larga.', 42000.90, 'assets/img/prods/prod_6a5584061e9807.82019446.png', '2026-07-14 00:34:14', 8, 7),
+(80, 'Roteador Wireless Intelbras com Duas Antenas de Alto Ganho – Preto', 'Wi-Fi Intelbras', 'Garanta uma cobertura de internet ampla e sem pontos cegos com o Roteador Wi-Fi Intelbras. Equipado com duas antenas externas de alto ganho, ele propaga o sinal com facilidade através de paredes, garantindo que o seu smartphone, smart TV e computador fiquem conectados mesmo em divisões distantes. A sua configuração é simples e rápida, permitindo gerenciar a rede, criar acessos exclusivos para visitas e controlar os horários de navegação das crianças com total praticidade.', 'Wi-Fi de longo alcance e sinal forte para toda a sua casa.', 25000.90, 'assets/img/prods/prod_6a55844c2fb604.38578917.png', '2026-07-14 00:35:24', 8, 7),
+(81, 'Patch Panel de Rede Panduit 48 Portas Cat5e/Cat6 para Rack', 'Patch Panel Panduit', 'O Patch Panel Panduit de 48 portas é a solução indispensável para organizar e identificar o cabeamento estruturado de grandes redes de dados. Projetado para fixação padrão em racks de 19 polegadas, ele centraliza a terminação de até 48 cabos de rede (Cat5e ou Cat6), facilitando manutenções, mudanças de layout e testes de conectividade. A sua estrutura metálica altamente resistente garante durabilidade e firmeza nas conexões, evitando desconexões acidentais no coração do seu CPD.', 'Organização profissional para cabos de rede em racks de servidores.', 85000.90, 'assets/img/prods/prod_6a558521319ed3.26032655.png', '2026-07-14 00:38:57', 8, 7),
+(82, 'Switch Gigabit D-Link 24 Portas Easy Smart (DGS-1100-24) – Cinza e Preto', 'Switch D-Link', 'O Switch D-Link de 24 portas é a espinha dorsal perfeita para a infraestrutura de rede da sua empresa ou escritório de grande porte. Oferecendo velocidades de transferência Gigabit em todas as portas, ele permite conectar dezenas de computadores, impressoras de rede, servidores e câmeras IP com estabilidade absoluta e sem gargalos.', 'Expansão de rede estável com 24 portas Gigabit de alta velocidade.', 135000.90, 'assets/img/prods/prod_6a55873d0963b5.99876521.png', '2026-07-14 00:47:57', 8, 7),
+(83, 'Cabo Adaptador Trançado USB-C para USB 3.0 Fêmea OTG', 'USB-C To USB-A', 'Elimine a incompatibilidade de conexões com este prático Cabo Adaptador USB-C para USB-A. Com um acabamento premium em nylon trançado de alta resistência e carcaça de alumínio, ele permite ligar pen drives, mouses, teclados ou discos rígidos externos diretamente no seu smartphone, tablet ou portáteis de última geração. Suporta tecnologia OTG (On-The-Go) e transferências de dados em alta velocidade USB 3.0, garantindo o envio rápido de arquivos pesados sem interrupções.', 'Conecte pen drives e acessórios USB antigos em aparelhos modernos.', 7500.90, 'assets/img/prods/prod_6a5587980c25b4.00639202.png', '2026-07-14 00:49:28', 8, 7),
+(84, 'Estação de Carregamento de Mesa Cellonic 5x USB-C + 1x USB-A', 'Multi-Portas Cellonic', 'Mantenha todos os seus aparelhos carregados e organize a sua mesa de trabalho com a Estação Multimídia Cellonic. Este carregador potente conta com cinco portas USB-C e uma porta USB-A de carregamento rápido, permitindo alimentar smartphones, tablets, fones de ouvido e relógios inteligentes ao mesmo tempo a partir de um único cabo de tomada. O seu circuito inteligente gerencia a distribuição de energia de forma segura, evitando superaquecimentos e protegendo a vida útil das baterias dos seus dispositivos.', 'Carregue até 6 dispositivos simultaneamente numa única tomada.', 28000.90, 'assets/img/prods/prod_6a558852d0eae9.68807226.png', '2026-07-14 00:52:35', 8, 7),
+(85, 'Roteador Wireless Northwest 300M com Duas Antenas – Branco', 'Wi-Fi Northwest', 'O Roteador Wi-Fi Northwest 300M oferece um sinal de internet confiável e de boa qualidade para a sua rotina diária em casa ou no escritório. Equipado com duas antenas externas que melhoram a distribuição do sinal pelas divisões, ele opera na velocidade de 300 Mbps, ideal para navegar em sites, estudar e assistir a vídeos. Possui painel frontal com LEDs indicadores de status (SYS, WLAN, WAN, LAN) e portas traseiras para conexões cabeadas rápidas e seguras.', 'Internet estável com duas antenas para melhor cobertura residencial.', 19000.90, 'assets/img/prods/prod_6a5588d24f37e3.11413174.png', '2026-07-14 00:54:42', 8, 7),
+(86, 'Switch MikroTik Cloud Router CRS309-1G-8S+IN 8 Portas SFP+ 10Gbps', 'Router Switch MikroTik', 'O MikroTik CRS309-1G-8S+IN é um switch de alta performance compacto, ideal para empresas que exigem velocidade extrema e estabilidade na infraestrutura de rede. Ele conta com 8 portas SFP+ que suportam conexões de até 10 Gbps por canal, além de uma porta Gigabit Ethernet para gerenciamento com suporte a PoE. Com sua refrigeração passiva (totalmente silencioso) e carcaça metálica robusta, ele entrega um poder de processamento incrível com opções de boot duplo (RouterOS ou SwitchOS).', 'Switch profissional com 8 portas SFP+ para redes de fibra óptica.', 245000.90, 'assets/img/prods/prod_6a56a02fb17f30.17268062.png', '2026-07-14 00:56:09', 8, 7),
+(87, 'Rato Gamer Profissional Attack Shark Sem Fios de Alta Precisão', 'Attack Shark Pro', 'Desenvolvido para gamers exigentes e utilizadores que necessitam de máxima velocidade, o Rato Attack Shark Pro oferece uma experiência de rastreamento impecável. Com um sensor ótico topo de gama, ele garante uma precisão cirúrgica pixel por pixel, ideal para jogos de tiro (FPS) ou trabalhos detalhados de design gráfico e modelagem 3D. O seu corpo possui uma engenharia ultra-leve e formato simétrico confortável, permitindo movimentos extremamente rápidos com o mínimo de esforço. Na parte superior, os botões seletores de DPI permitem alternar a sensibilidade do cursor instantaneamente com base na sua necessidade atual, acompanhados por um discreto indicador LED de status. A sua construção robusta conta com switches de alta dur.', 'Alta precisão e ultra-leveza para jogabilidade de nível profissional.', 35000.90, 'assets/img/prods/prod_6a56c1bb5e0779.06950715.png', '2026-07-14 23:09:47', 8, 8),
+(88, 'Rato Sem Fios Recarregável 6D-Mouse com Indicador de Bateria', '6D-Mouse', 'Eleve o controle do seu fluxo de trabalho com o Rato Sem Fios 6D-Mouse. Este modelo destaca-se pelo seu design moderno que inclui um indicador de carga em LED azul brilhante no topo, permitindo saber exatamente o nível de energia restante para que nunca seja apanhado de surpresa no meio de uma tarefa importante. Ele possui uma bateria interna de longa duração recarregável via cabo, eliminando de vez a necessidade e o custo constante de comprar pilhas descartáveis. Conta com uma asa lateral texturizada para um encaixe perfeito do polegar, garantindo total firmeza nos movimentos. Além disso, os seus botões de atalho integrados na lateral facilitam o avanço e retrocesso de páginas web, otimizando o seu tempo de navegação na internet ou em sistemas int.', 'Conectividade estável com indicador de bateria LED integrado.', 16500.90, 'assets/img/prods/prod_6a56c21095fb46.61657594.png', '2026-07-14 23:11:12', 8, 8),
+(89, 'Rato Sem Fios Ergonómico Sanwa Supply com Scroll Lateral', 'Sanwa Supply', 'O Rato Sem Fios Sanwa Supply foi projetado especificamente para profissionais e estudantes que passam longas horas em frente ao computador e precisam de alívio na tensão do pulso. Com um formato anatómico que apoia a palma da mão de forma natural, ele reduz drasticamente a fadiga muscular. O seu grande diferencial é o segundo scroll texturizado na lateral, ideal para navegar horizontalmente por tabelas extensas do Excel, linhas de código ou edições de vídeo no Premiere. Equipado com cliques extremamente silenciosos, ele permite trabalhar em ambientes calmos sem distrações. A conexão é feita de forma instantânea através do mini recetor USB incluso, operando em uma frequência estável que elimina falhas ou atrasos na resposta.', 'Conforto ergonómico avançado com scroll lateral para produtividade.', 24000.90, 'assets/img/prods/prod_6a56c262c9eab9.99105933.png', '2026-07-14 23:12:34', 8, 8);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `solicitacoes_servico`
+--
+
+CREATE TABLE `solicitacoes_servico` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `usuario_id` int(10) UNSIGNED NOT NULL,
+  `tipo_servico` varchar(100) NOT NULL,
+  `descricao` text DEFAULT NULL,
+  `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` varchar(50) DEFAULT 'pendente'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -224,6 +270,13 @@ ALTER TABLE `produtos`
   ADD KEY `fk_categoria` (`categoria_id`);
 
 --
+-- Índices de tabela `solicitacoes_servico`
+--
+ALTER TABLE `solicitacoes_servico`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
+
+--
 -- Índices de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -252,19 +305,25 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de tabela `itens_pedido`
 --
 ALTER TABLE `itens_pedido`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de tabela `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
+
+--
+-- AUTO_INCREMENT de tabela `solicitacoes_servico`
+--
+ALTER TABLE `solicitacoes_servico`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
@@ -294,6 +353,12 @@ ALTER TABLE `pedidos`
 --
 ALTER TABLE `produtos`
   ADD CONSTRAINT `fk_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL;
+
+--
+-- Restrições para tabelas `solicitacoes_servico`
+--
+ALTER TABLE `solicitacoes_servico`
+  ADD CONSTRAINT `solicitacoes_servico_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

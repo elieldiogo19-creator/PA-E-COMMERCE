@@ -176,8 +176,10 @@ require_once __DIR__ . '/../../includes/header.php';
                                             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                                         </svg>
                                     </a>
-                                    <a href="excluir.php?id=X" data-ajax-action
-                                        data-confirm="Tem certeza que deseja excluir este produto?" data-row-id="X">
+                                    <a href="excluir.php?id=<?= (int) $produto['id'] ?>" class="btn-action"
+                                        title="Excluir" data-ajax-action
+                                        data-confirm="Tem certeza que deseja excluir este produto?"
+                                        data-row-id="<?= (int) $produto['id'] ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round">
