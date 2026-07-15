@@ -1,6 +1,43 @@
 <?php
+session_start();
+require __DIR__ . '/config/db.php'; // Conexão com o banco
+
 $pageTitle = "Apoio ao Cliente | CANZALA";
 $pageCSS = "s";
+
+// Variáveis para mensagens de alerta
+$mensagemSucesso = '';
+$mensagemErro = '';
+
+// Pega o serviço da URL (se o cliente vier da página servicos.php)
+$servicoPreSelecionado = $_GET['servico'] ?? '';
+
+// Processa o formulário quando o botão é clicado
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    // Verifica se o usuário está logado (tua tabela exige usuario_id)
+    if (empty($_SESSION['usuario_id'])) {
+        $mensagemErro = "Atenção: Precisa iniciar sessão na sua conta para solicitar um serviço ou enviar mensagem.";
+    } else {
+        $usuario_id   = $_SESSION['usuario_id'];
+        $tipo_servico = $_POST['assunto'] ?? 'Contacto Geral';
+        $descricao    = $_POST['mensagem'] ?? '';
+
+        try {
+            // Insere na tabela solicitacoes_servico
+            $stmt = $pdo->prepare("INSERT INTO solicitacoes_servico (usuario_id, tipo_servico, descricao) VALUES (?, ?, ?)");
+            $stmt->execute([$usuario_id, $tipo_servico, $descricao]);
+            
+            $mensagemSucesso = "Solicitação enviada com sucesso! A nossa equipa técnica entrará em contacto em breve.";
+            
+            // Limpa o formulário após enviar
+            $servicoPreSelecionado = ''; 
+        } catch (PDOException $e) {
+            $mensagemErro = "Erro ao processar solicitação. Tente novamente mais tarde.";
+        }
+    }
+}
+
 include 'includes/header.php';
 include 'includes/navbar.php';
 ?>
@@ -30,11 +67,32 @@ include 'includes/navbar.php';
                 </div>
             </div>
 
-            <form class="contact-form" action="#" method="POST">
-                <input type="text" name="nome" placeholder="O seu nome completo" required>
+            <form class="contact-form" action="contacto.php" method="POST">
+                
+                <!-- ALERTAS VISUAIS -->
+                <?php if ($mensagemSucesso): ?>
+                    <div style="background: #d4edda; color: #155724; padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #c3e6cb;">
+                        <strong>Sucesso!</strong> <?= $mensagemSucesso; ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($mensagemErro): ?>
+                    <div style="background: #f8d7da; color: #721c24; padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #f5c6cb;">
+                        <strong>Erro!</strong> <?= $mensagemErro; ?>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Os campos Nome e Email não vão para a tabela serviços, mas ficam para estética e contato -->
+                <input type="text" name="nome" placeholder="O seu nome completo" required 
+                       value="<?= $_SESSION['usuario_nome'] ?? ''; ?>">
+                       
                 <input type="email" name="email" placeholder="O seu email corporativo" required>
-                <input type="text" name="assunto" placeholder="Assunto da mensagem" required>
-                <textarea name="mensagem" rows="6" placeholder="Detalhe a sua solicitação aqui..." required></textarea>
+                
+                <!-- Aqui entra a mágica do preenchimento automático -->
+                <input type="text" name="assunto" placeholder="Assunto ou Serviço desejado" required 
+                       value="<?= htmlspecialchars($servicoPreSelecionado); ?>">
+                       
+                <textarea name="mensagem" rows="6" placeholder="Detalhe a sua solicitação ou morada da instalação aqui..." required></textarea>
                 
                 <button type="submit" class="btn primary-btn" style="width: 100%;">
                     Submeter Pedido
