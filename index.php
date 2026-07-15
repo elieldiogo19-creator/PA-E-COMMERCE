@@ -21,7 +21,7 @@ $qtdCarrinho = 0;
  * 10 = Smartphones e Tablets
  * 11 = Vídeo Vigilância
  */
-$categoriasHome = [1, 7, 8, 9, 10, 11];
+$categoriasHome = [1, 7, 2, 9, 10, 11];
 
 /**
  * BUSCA TODOS OS PRODUTOS DAS 6 CATEGORIAS
